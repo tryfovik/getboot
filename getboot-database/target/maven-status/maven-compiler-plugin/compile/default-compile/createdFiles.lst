@@ -1,0 +1,12 @@
+com/getboot/database/infrastructure/mybatisplus/handler/InverseBooleanTypeHandler.class
+com/getboot/database/infrastructure/datasource/autoconfigure/DataSourceAutoConfiguration.class
+com/getboot/database/infrastructure/mybatisplus/autoconfigure/MybatisPlusAutoConfiguration.class
+com/getboot/database/support/datasource/DataSourceInitializer.class
+com/getboot/database/api/properties/DatabaseProperties$Init.class
+com/getboot/database/infrastructure/sharding/autoconfigure/ShardingDataSourceAutoConfiguration.class
+com/getboot/database/api/properties/DatabaseProperties.class
+com/getboot/database/infrastructure/mybatisplus/handler/AuditFieldMetaObjectHandler.class
+com/getboot/database/infrastructure/mybatisplus/autoconfigure/MetaObjectHandlerAutoConfiguration.class
+com/getboot/database/api/properties/DatabaseProperties$Sharding.class
+com/getboot/database/api/properties/DatabaseProperties$Datasource.class
+com/getboot/database/infrastructure/environment/DatabasePropertyAliasEnvironmentPostProcessor.class

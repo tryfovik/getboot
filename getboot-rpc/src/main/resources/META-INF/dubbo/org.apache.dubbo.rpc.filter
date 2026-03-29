@@ -1,0 +1,3 @@
+dubboExceptionFilter=com.getboot.rpc.infrastructure.dubbo.filter.DubboExceptionFilter
+rpcConsumerAuthenticationFilter=com.getboot.rpc.infrastructure.dubbo.filter.RpcConsumerAuthenticationFilter
+rpcProviderAuthenticationFilter=com.getboot.rpc.infrastructure.dubbo.filter.RpcProviderAuthenticationFilter

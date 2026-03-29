@@ -1,0 +1,4 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-transaction/src/main/java/com/getboot/transaction/api/properties/DistributedTransactionProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-transaction/src/main/java/com/getboot/transaction/infrastructure/seata/autoconfigure/SeataDistributedTransactionAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-transaction/src/main/java/com/getboot/transaction/infrastructure/seata/environment/SeataPropertyAliasEnvironmentPostProcessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-transaction/src/main/java/com/getboot/transaction/support/compatibility/SeataShardingCompatibilityVerifier.java

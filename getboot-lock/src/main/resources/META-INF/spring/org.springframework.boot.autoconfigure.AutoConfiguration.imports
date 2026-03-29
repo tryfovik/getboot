@@ -1,0 +1,1 @@
+com.getboot.lock.infrastructure.redis.redisson.autoconfigure.DistributedLockAutoConfiguration

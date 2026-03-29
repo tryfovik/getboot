@@ -1,0 +1,16 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/api/message/MqMessage.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/api/model/MqSendReceipt.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/api/model/MqTransactionReceipt.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/api/producer/MqMessageProducer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/api/properties/MqTraceProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/aop/RocketMqTraceListenerAspect.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/autoconfigure/RocketMqEnhancementAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/environment/RocketMqPropertyAliasEnvironmentPostProcessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/listener/TopicRoutingTransactionListener.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/message/RocketMessage.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/producer/RocketMqMessageProducer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/strategy/AbstractTransactionStrategy.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/infrastructure/rocketmq/support/RocketMqTraceContextSupport.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/spi/MqMessageHeadersCustomizer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/spi/rocketmq/RocketMQMessageConverterCustomizer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-mq/src/main/java/com/getboot/mq/spi/rocketmq/TopicTransactionStrategy.java

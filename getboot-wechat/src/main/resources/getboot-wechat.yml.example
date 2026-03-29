@@ -1,0 +1,8 @@
+getboot:
+  wechat:
+    mini-program:
+      apps:
+        your-mini-program-app-id: your-mini-program-app-secret
+    official-account:
+      apps:
+        your-official-account-app-id: your-official-account-app-secret

@@ -1,0 +1,5 @@
+getboot:
+  observability:
+    skywalking:
+      enabled: true                         # 是否启用 SkyWalking TraceId 桥接
+      mdc-key: skywalkingTraceId            # 日志 MDC 中写入 SkyWalking TraceId 时使用的键名

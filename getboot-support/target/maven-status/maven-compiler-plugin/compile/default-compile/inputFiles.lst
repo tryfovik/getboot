@@ -1,0 +1,10 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/api/context/SpringContextHolder.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/api/trace/TraceContextHolder.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/autoconfigure/SpringContextHolderAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/autoconfigure/TraceContextPropagationAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/environment/PropertyAliasEnvironmentPostProcessorSupport.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/environment/package-info.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/trace/MdcThreadLocalAccessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/trace/TraceContextPropagationSupport.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/infrastructure/trace/TraceContextThreadLocalAccessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-support/src/main/java/com/getboot/support/package-info.java

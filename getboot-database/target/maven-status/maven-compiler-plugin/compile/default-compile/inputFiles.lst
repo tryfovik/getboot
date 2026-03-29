@@ -1,0 +1,9 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/api/properties/DatabaseProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/datasource/autoconfigure/DataSourceAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/environment/DatabasePropertyAliasEnvironmentPostProcessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/mybatisplus/autoconfigure/MetaObjectHandlerAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/mybatisplus/autoconfigure/MybatisPlusAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/mybatisplus/handler/AuditFieldMetaObjectHandler.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/mybatisplus/handler/InverseBooleanTypeHandler.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/infrastructure/sharding/autoconfigure/ShardingDataSourceAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-database/src/main/java/com/getboot/database/support/datasource/DataSourceInitializer.java

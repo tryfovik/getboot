@@ -1,0 +1,11 @@
+com/getboot/wechat/support/officialaccount/DefaultWechatOfficialAccountServices.class
+com/getboot/wechat/api/miniapp/WechatMiniProgramNativeServices.class
+com/getboot/wechat/api/miniapp/WechatMiniProgramServices.class
+com/getboot/wechat/api/officialaccount/WechatOfficialAccountServices.class
+com/getboot/wechat/api/officialaccount/WechatOfficialAccountNativeServices.class
+com/getboot/wechat/api/properties/WechatProperties.class
+com/getboot/wechat/infrastructure/autoconfigure/WechatAutoConfiguration.class
+com/getboot/wechat/api/properties/WechatProperties$AppCredentialGroup.class
+com/getboot/wechat/support/miniapp/DefaultWechatMiniProgramServices.class
+com/getboot/wechat/infrastructure/officialaccount/support/WechatOfficialAccountServiceFactory.class
+com/getboot/wechat/infrastructure/miniapp/support/WechatMiniProgramServiceFactory.class

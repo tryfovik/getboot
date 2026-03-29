@@ -1,0 +1,31 @@
+getboot:
+  rpc:
+    trace:
+      enabled: true                  # 是否启用 Dubbo TraceId 透传
+      mdc-key: traceId               # 日志 MDC 中使用的键名
+    dubbo:
+      application:
+        name: demo-rpc-provider      # Dubbo 应用名称
+      protocol:
+        name: dubbo                  # Dubbo 协议名称
+        port: 20880                  # Dubbo 服务端口
+      registry:
+        address: nacos://127.0.0.1:8848 # 注册中心地址
+    security:
+      authentication:
+        enabled: true                # 是否启用 RPC 鉴权
+        allowed-clock-skew-seconds: 300 # 时间戳允许偏差，单位秒
+        consumer:
+          app-id: demo-consumer      # 消费方应用标识
+          app-secret: change-me      # 消费方签名密钥
+        provider:
+          required: true             # 提供方是否强制要求鉴权
+          credentials:
+            demo-consumer: change-me # 提供方认可的调用方凭证
+      serialization:
+        enabled: true                # 是否启用序列化安全控制
+        check-status: STRICT         # 校验级别
+        check-serializable: true     # 是否要求对象实现 Serializable
+        allowed-prefixes:
+          - com.getboot              # 允许反序列化的包前缀
+          - com.example.api

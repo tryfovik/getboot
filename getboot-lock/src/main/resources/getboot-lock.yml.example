@@ -1,0 +1,9 @@
+getboot:
+  lock:
+    enabled: true
+    redis:
+      enabled: true
+      key-prefix: distributed_lock
+  coordination:
+    redisson:
+      file: classpath:redisson/redisson.yaml # Redisson 配置文件位置

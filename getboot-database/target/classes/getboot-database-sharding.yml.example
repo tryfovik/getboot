@@ -1,0 +1,11 @@
+getboot:
+  database:
+    enabled: true
+    sharding:
+      enabled: true
+      rule-config: classpath:sharding/demo-sharding-rule.yaml
+      reuse-bean-datasources: true
+      data-source-beans:
+        - ds0
+        - ds1
+      transaction-type: LOCAL

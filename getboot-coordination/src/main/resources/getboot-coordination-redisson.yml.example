@@ -1,0 +1,4 @@
+getboot:
+  coordination:
+    redisson:
+      file: classpath:redisson/redisson.yaml

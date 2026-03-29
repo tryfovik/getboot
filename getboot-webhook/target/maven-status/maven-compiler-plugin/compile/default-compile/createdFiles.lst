@@ -1,0 +1,14 @@
+com/getboot/webhook/api/processor/WebhookRequestProcessor.class
+com/getboot/webhook/infrastructure/servlet/filter/CachedBodyHttpServletRequest.class
+com/getboot/webhook/support/processor/DefaultWebhookRequestProcessor.class
+com/getboot/webhook/support/validator/WebhookRequestValidator.class
+com/getboot/webhook/api/properties/WebhookSecurityProperties$AppCredentials.class
+com/getboot/webhook/spi/WebhookRequestValidationContext.class
+com/getboot/webhook/api/properties/WebhookSecurityProperties.class
+com/getboot/webhook/api/resolver/AppSecretResolver.class
+com/getboot/webhook/infrastructure/servlet/filter/CachingRequestBodyFilter.class
+com/getboot/webhook/infrastructure/servlet/filter/CachedBodyHttpServletRequest$1.class
+com/getboot/webhook/infrastructure/autoconfigure/WebhookAutoConfiguration.class
+com/getboot/webhook/spi/WebhookRequestValidationHook.class
+com/getboot/webhook/support/resolver/PropertiesAppSecretResolver.class
+com/getboot/webhook/support/security/RequestSignatureChecksumGenerator.class

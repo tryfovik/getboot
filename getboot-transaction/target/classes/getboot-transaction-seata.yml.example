@@ -1,0 +1,12 @@
+getboot:
+  transaction:
+    enabled: true
+    seata:
+      enabled: true
+      mode: AT
+      application-id: demo-order-service
+      tx-service-group: demo_tx_group
+    compatibility:
+      fail-fast-on-sharding-conflict: true
+      allow-sharding-hybrid: false
+      expected-sharding-transaction-type: LOCAL

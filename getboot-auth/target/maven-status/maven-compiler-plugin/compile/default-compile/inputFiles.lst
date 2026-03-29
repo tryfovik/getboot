@@ -1,0 +1,4 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-auth/src/main/java/com/getboot/auth/api/accessor/CurrentUserAccessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-auth/src/main/java/com/getboot/auth/infrastructure/satoken/accessor/SaTokenCurrentUserAccessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-auth/src/main/java/com/getboot/auth/infrastructure/satoken/autoconfigure/SaTokenAuthAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-auth/src/main/java/com/getboot/auth/infrastructure/satoken/environment/SaTokenPropertyAliasEnvironmentPostProcessor.java

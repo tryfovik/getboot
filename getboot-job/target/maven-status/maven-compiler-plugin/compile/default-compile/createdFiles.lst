@@ -1,0 +1,10 @@
+com/getboot/job/infrastructure/xxl/client/XxlJobAdminClient.class
+com/getboot/job/api/properties/JobProperties$Executor.class
+com/getboot/job/spi/xxl/XxlJobAdminClientConfigurer.class
+com/getboot/job/api/properties/JobProperties.class
+com/getboot/job/support/CronExpressionUtils.class
+com/getboot/job/api/properties/JobProperties$Xxl.class
+com/getboot/job/infrastructure/xxl/autoconfigure/XxlJobAutoConfiguration.class
+com/getboot/job/spi/xxl/XxlJobExecutorCustomizer.class
+com/getboot/job/spi/xxl/XxlJobAdminClientConfiguration.class
+com/getboot/job/api/properties/JobProperties$Admin.class

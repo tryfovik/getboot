@@ -1,0 +1,2 @@
+com.getboot.support.infrastructure.autoconfigure.SpringContextHolderAutoConfiguration
+com.getboot.support.infrastructure.autoconfigure.TraceContextPropagationAutoConfiguration

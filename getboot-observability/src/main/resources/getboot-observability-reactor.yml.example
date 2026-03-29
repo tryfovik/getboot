@@ -1,0 +1,5 @@
+getboot:
+  observability:
+    reactor:
+      enabled: true                         # 是否启用 Reactor Trace 上下文传播
+      automatic-context-propagation-enabled: true # 是否启用 Reactor 自动上下文传播钩子

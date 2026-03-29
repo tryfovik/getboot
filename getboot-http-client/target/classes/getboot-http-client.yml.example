@@ -1,0 +1,14 @@
+getboot:
+  http-client:
+    openfeign:
+      trace:
+        enabled: true                     # 是否启用 OpenFeign TraceId 透传
+        header-name: X-Trace-Id           # OpenFeign 出站请求头名称
+    webclient:
+      trace:
+        enabled: true                     # 是否启用 WebClient TraceId 透传
+        header-name: X-Trace-Id           # WebClient 出站请求头名称
+    resttemplate:
+      trace:
+        enabled: true                     # 是否启用 RestTemplate TraceId 透传
+        header-name: X-Trace-Id           # RestTemplate 出站请求头名称

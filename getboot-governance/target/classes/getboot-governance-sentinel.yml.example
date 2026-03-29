@@ -1,0 +1,21 @@
+getboot:
+  governance:
+    enabled: true
+    sentinel:
+      enabled: true
+      eager: false
+      web-context-unify: true
+      transport:
+        dashboard: 127.0.0.1:8858
+        port: 8719
+      filter:
+        enabled: true
+      openfeign:
+        enabled: true
+      rest-template:
+        enabled: true
+      management:
+        endpoint:
+          enabled: true
+        health:
+          enabled: true

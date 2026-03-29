@@ -1,0 +1,4 @@
+com.getboot.database.infrastructure.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration
+com.getboot.database.infrastructure.mybatisplus.autoconfigure.MetaObjectHandlerAutoConfiguration
+com.getboot.database.infrastructure.sharding.autoconfigure.ShardingDataSourceAutoConfiguration
+com.getboot.database.infrastructure.datasource.autoconfigure.DataSourceAutoConfiguration

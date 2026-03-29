@@ -1,0 +1,5 @@
+com/getboot/webhook/processor/WebhookRequestProcessorTest$RecordingStringRedisTemplate.class
+com/getboot/webhook/resolver/PropertiesAppSecretResolverTest.class
+com/getboot/webhook/processor/WebhookRequestProcessorTest$ProxyHandler.class
+com/getboot/webhook/processor/WebhookRequestProcessorTest.class
+com/getboot/webhook/processor/WebhookRequestProcessorTest$MethodInvocation.class

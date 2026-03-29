@@ -1,0 +1,40 @@
+databaseName: logic_db
+
+dataSources:
+  ds0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${demo.sharding.datasource.ds0.url:jdbc:mysql://127.0.0.1:3306/demo_ds0}
+    username: ${demo.sharding.datasource.ds0.username:root}
+    password: ${demo.sharding.datasource.ds0.password:change-me}
+  ds1:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: ${demo.sharding.datasource.ds1.url:jdbc:mysql://127.0.0.1:3306/demo_ds1}
+    username: ${demo.sharding.datasource.ds1.username:root}
+    password: ${demo.sharding.datasource.ds1.password:change-me}
+
+rules:
+  - !SHARDING
+    tables:
+      t_order:
+        actualDataNodes: ds$->{0..1}.t_order_$->{0..1}
+        tableStrategy:
+          standard:
+            shardingColumn: user_id
+            shardingAlgorithmName: order-inline
+        keyGenerateStrategy:
+          column: id
+          keyGeneratorName: snowflake
+    shardingAlgorithms:
+      order-inline:
+        type: INLINE
+        props:
+          algorithm-expression: t_order_$->{user_id % 2}
+    keyGenerators:
+      snowflake:
+        type: SNOWFLAKE
+
+props:
+  sql-show: true
+  default-transaction-type: ${getboot.database.sharding.transaction-type:LOCAL}

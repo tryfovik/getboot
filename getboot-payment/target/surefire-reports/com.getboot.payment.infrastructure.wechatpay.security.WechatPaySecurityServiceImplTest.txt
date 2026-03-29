@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.getboot.payment.infrastructure.wechatpay.security.WechatPaySecurityServiceImplTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.016 s -- in com.getboot.payment.infrastructure.wechatpay.security.WechatPaySecurityServiceImplTest

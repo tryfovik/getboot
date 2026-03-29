@@ -1,0 +1,17 @@
+getboot:
+  observability:
+    metrics:
+      enabled: true                         # 是否启用 GetBoot 指标增强
+      common-tags:
+        app: demo-service                   # 业务系统标识
+        env: prod                           # 当前部署环境
+    prometheus:
+      enabled: true                         # 是否启用 Prometheus 指标导出
+    management:
+      endpoints:
+        web:
+          exposure:
+            include: health,info,prometheus # 对外暴露的 Actuator 端点
+      endpoint:
+        health:
+          show-details: always              # 健康检查详情展示策略

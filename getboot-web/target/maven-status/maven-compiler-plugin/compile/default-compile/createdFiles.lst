@@ -1,0 +1,8 @@
+com/getboot/web/infrastructure/servlet/GlobalExceptionHandler.class
+com/getboot/web/api/request/PagingRequest.class
+com/getboot/web/infrastructure/autoconfigure/WebExceptionAutoConfiguration.class
+com/getboot/web/api/response/ApiResponse$DebugInfo.class
+com/getboot/web/api/response/PagingResponse.class
+com/getboot/web/api/request/RequestPayload.class
+com/getboot/web/api/response/PagingResponse$PagingResponseBuilder.class
+com/getboot/web/api/response/ApiResponse.class

@@ -1,0 +1,8 @@
+singleServerConfig:
+  address: "redis://127.0.0.1:6379"  # Redis 单机地址
+  password: null                     # Redis 密码，没有可设为 null
+  database: 0                        # Redis 数据库索引
+threads: 16                          # Redisson 业务线程数
+nettyThreads: 32                     # Redisson 网络线程数
+codec: !<org.redisson.codec.JsonJacksonCodec> {}  # 序列化编解码器
+transportMode: "NIO"                 # 网络传输模式

@@ -1,0 +1,10 @@
+getboot:
+  mq:
+    enabled: true                      # 是否启用 GetBoot MQ 增强能力
+    trace:
+      enabled: true                    # 是否启用 MQ TraceId 透传
+      header-name: TRACE_ID            # MQ 消息头中保存 TraceId 的键名
+    rocketmq:
+      name-server: 127.0.0.1:9876      # RocketMQ NameServer 地址
+      producer:
+        group: demo-producer-group     # 生产者组

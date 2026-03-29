@@ -1,0 +1,6 @@
+com/getboot/cache/infrastructure/redis/autoconfigure/RedisAutoConfiguration.class
+com/getboot/cache/infrastructure/redis/environment/RedisPropertyAliasEnvironmentPostProcessor.class
+com/getboot/cache/api/operator/CacheOperator.class
+com/getboot/cache/spi/redis/RedisObjectMapperCustomizer.class
+com/getboot/cache/spi/redis/GetbootRedisTemplateCustomizer.class
+com/getboot/cache/infrastructure/redis/support/RedisCacheOperator.class

@@ -1,0 +1,10 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/api/miniapp/WechatMiniProgramNativeServices.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/api/miniapp/WechatMiniProgramServices.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/api/officialaccount/WechatOfficialAccountNativeServices.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/api/officialaccount/WechatOfficialAccountServices.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/api/properties/WechatProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/infrastructure/autoconfigure/WechatAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/infrastructure/miniapp/support/WechatMiniProgramServiceFactory.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/infrastructure/officialaccount/support/WechatOfficialAccountServiceFactory.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/support/miniapp/DefaultWechatMiniProgramServices.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-wechat/src/main/java/com/getboot/wechat/support/officialaccount/DefaultWechatOfficialAccountServices.java

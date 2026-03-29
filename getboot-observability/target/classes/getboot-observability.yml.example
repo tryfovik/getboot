@@ -1,0 +1,9 @@
+getboot:
+  observability:
+    trace:
+      enabled: true                         # 是否启用 Trace 过滤器
+      header-name: X-Trace-Id               # Trace 请求头名称，缺失时会自动生成
+      response-header-enabled: true         # 是否在响应头中回写 TraceId
+      mdc-key: traceId                      # 日志 MDC 中写入 TraceId 时使用的键名
+      request-attribute-name: GETBOOT_TRACE_ID # 当前请求属性中保存 TraceId 的键名
+      async-propagation-enabled: true       # 是否启用异步线程 Trace 上下文透传

@@ -1,0 +1,3 @@
+com.getboot.payment.infrastructure.autoconfigure.PaymentAutoConfiguration
+com.getboot.payment.infrastructure.autoconfigure.AlipayPaymentAutoConfiguration
+com.getboot.payment.infrastructure.autoconfigure.WechatPayPaymentAutoConfiguration

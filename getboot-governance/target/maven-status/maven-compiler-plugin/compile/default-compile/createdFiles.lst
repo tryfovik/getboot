@@ -1,0 +1,11 @@
+com/getboot/governance/api/properties/GovernanceProperties$RestTemplate.class
+com/getboot/governance/api/properties/GovernanceProperties$Filter.class
+com/getboot/governance/infrastructure/sentinel/environment/SentinelPropertyAliasEnvironmentPostProcessor.class
+com/getboot/governance/api/properties/GovernanceProperties$OpenFeign.class
+com/getboot/governance/api/properties/GovernanceProperties$Transport.class
+com/getboot/governance/infrastructure/sentinel/autoconfigure/SentinelGovernanceAutoConfiguration.class
+com/getboot/governance/api/properties/GovernanceProperties$Endpoint.class
+com/getboot/governance/api/properties/GovernanceProperties$Sentinel.class
+com/getboot/governance/api/properties/GovernanceProperties.class
+com/getboot/governance/api/properties/GovernanceProperties$Management.class
+com/getboot/governance/api/properties/GovernanceProperties$Health.class

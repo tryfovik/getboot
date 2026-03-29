@@ -1,0 +1,6 @@
+com/getboot/transaction/infrastructure/seata/environment/SeataPropertyAliasEnvironmentPostProcessor.class
+com/getboot/transaction/api/properties/DistributedTransactionProperties$Compatibility.class
+com/getboot/transaction/api/properties/DistributedTransactionProperties$Seata.class
+com/getboot/transaction/infrastructure/seata/autoconfigure/SeataDistributedTransactionAutoConfiguration.class
+com/getboot/transaction/support/compatibility/SeataShardingCompatibilityVerifier.class
+com/getboot/transaction/api/properties/DistributedTransactionProperties.class

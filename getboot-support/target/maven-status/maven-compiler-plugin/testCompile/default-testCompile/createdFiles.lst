@@ -1,0 +1,4 @@
+com/getboot/support/api/trace/TraceContextHolderTest.class
+com/getboot/support/infrastructure/environment/PropertyAliasEnvironmentPostProcessorSupportTest$DemoPropertyAliasEnvironmentPostProcessor.class
+com/getboot/support/infrastructure/environment/PropertyAliasEnvironmentPostProcessorSupportTest.class
+com/getboot/support/api/context/SpringContextHolderTest.class

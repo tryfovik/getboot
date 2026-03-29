@@ -1,0 +1,16 @@
+getboot:
+  job:
+    enabled: true
+    xxl:
+      access-token:
+      admin:
+        addresses: http://127.0.0.1:8080/xxl-job-admin
+        username: admin
+        password: change-me
+      executor:
+        app-name: demo-job-executor
+        address:
+        ip:
+        port: 9999
+        log-path: ./logs/xxl-job
+        log-retention-days: 30

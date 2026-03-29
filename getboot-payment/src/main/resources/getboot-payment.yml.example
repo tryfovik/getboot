@@ -1,0 +1,26 @@
+getboot:
+  payment:
+    enabled: true
+    alipay:
+      enabled: false
+      app-id: your-alipay-app-id
+      protocol: https
+      gateway-host: openapi.alipay.com
+      sign-type: RSA2
+      merchant-private-key: your-private-key
+      alipay-public-key: your-alipay-public-key
+      merchant-cert-path: classpath:payment/alipay/appCertPublicKey.crt
+      alipay-cert-path: classpath:payment/alipay/alipayCertPublicKey_RSA2.crt
+      alipay-root-cert-path: classpath:payment/alipay/alipayRootCert.crt
+      notify-url: https://demo.example.com/payment/alipay/notify
+      return-url: https://demo.example.com/payment/alipay/return
+      sandbox: false
+    wechatpay:
+      enabled: true
+      app-id: your-default-wechat-app-id
+      merchant-id: your-merchant-id
+      merchant-serial-number: your-serial-number
+      api-v3-key: your-api-v3-key
+      api-v2-key: your-api-v2-key
+      private-key-location: classpath:payment/wechat/apiclient_key.pem
+      notify-url: https://demo.example.com/payment/wechat/notify

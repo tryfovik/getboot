@@ -1,0 +1,3 @@
+# EnvironmentPostProcessor 仍通过 spring.factories 注册
+org.springframework.boot.env.EnvironmentPostProcessor=\
+com.getboot.coordination.infrastructure.redisson.environment.RedissonPropertyAliasEnvironmentPostProcessor

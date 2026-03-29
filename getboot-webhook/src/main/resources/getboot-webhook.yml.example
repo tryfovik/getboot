@@ -1,0 +1,7 @@
+getboot:
+  webhook:
+    security:
+      enabled: true
+      credentials:
+        - app-key: demo-app
+          app-secret: change-me

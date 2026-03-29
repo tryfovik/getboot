@@ -1,0 +1,6 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/api/request/PagingRequest.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/api/request/RequestPayload.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/api/response/ApiResponse.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/api/response/PagingResponse.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/infrastructure/autoconfigure/WebExceptionAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-web/src/main/java/com/getboot/web/infrastructure/servlet/GlobalExceptionHandler.java

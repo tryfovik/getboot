@@ -1,0 +1,12 @@
+getboot:
+  limiter:
+    enabled: true
+    sliding-window:
+      enabled: true
+      default-timeout: 5
+      key-prefix: rate_limiter
+      limiters:
+        create-order:
+          rate: 20
+          interval: 1
+          interval-unit: SECONDS

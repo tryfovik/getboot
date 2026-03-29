@@ -1,0 +1,23 @@
+getboot:
+  database:
+    enabled: true
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/demo
+      username: root
+      password: change-me
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      init:
+        enabled: true
+        strict-mode: true
+        timeout: 30000
+        validate-after-startup: true
+    mybatis-plus:
+      mapper-locations: classpath*:/mapper/**/*.xml
+    sharding:
+      enabled: false
+      rule-config: classpath:sharding/demo-sharding-rule.yaml
+      reuse-bean-datasources: true
+      data-source-beans:
+        - ds0
+        - ds1
+      transaction-type: LOCAL

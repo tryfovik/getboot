@@ -1,0 +1,12 @@
+com/getboot/httpclient/infrastructure/feign/autoconfigure/OpenFeignHttpClientAutoConfiguration.class
+com/getboot/httpclient/infrastructure/resttemplate/autoconfigure/RestTemplateHttpClientAutoConfiguration.class
+com/getboot/httpclient/infrastructure/webclient/support/TraceWebClientFilterFunction.class
+com/getboot/httpclient/infrastructure/feign/support/TraceFeignRequestInterceptor.class
+com/getboot/httpclient/infrastructure/webclient/autoconfigure/WebClientHttpClientAutoConfiguration.class
+com/getboot/httpclient/api/properties/WebClientTraceProperties.class
+com/getboot/httpclient/spi/resttemplate/RestTemplateTraceRequestCustomizer.class
+com/getboot/httpclient/spi/webclient/WebClientTraceRequestCustomizer.class
+com/getboot/httpclient/api/properties/RestTemplateTraceProperties.class
+com/getboot/httpclient/api/properties/OpenFeignTraceProperties.class
+com/getboot/httpclient/infrastructure/resttemplate/support/TraceRestTemplateInterceptor.class
+com/getboot/httpclient/spi/feign/OpenFeignTraceRequestCustomizer.class

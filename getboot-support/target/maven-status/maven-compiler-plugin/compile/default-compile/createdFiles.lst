@@ -1,0 +1,10 @@
+com/getboot/support/api/trace/TraceContextHolder.class
+com/getboot/support/infrastructure/environment/package-info.class
+com/getboot/support/package-info.class
+com/getboot/support/api/context/SpringContextHolder.class
+com/getboot/support/infrastructure/trace/TraceContextPropagationSupport.class
+com/getboot/support/infrastructure/environment/PropertyAliasEnvironmentPostProcessorSupport.class
+com/getboot/support/infrastructure/trace/MdcThreadLocalAccessor.class
+com/getboot/support/infrastructure/autoconfigure/TraceContextPropagationAutoConfiguration.class
+com/getboot/support/infrastructure/autoconfigure/SpringContextHolderAutoConfiguration.class
+com/getboot/support/infrastructure/trace/TraceContextThreadLocalAccessor.class

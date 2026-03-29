@@ -1,0 +1,12 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/api/properties/OpenFeignTraceProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/api/properties/RestTemplateTraceProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/api/properties/WebClientTraceProperties.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/feign/autoconfigure/OpenFeignHttpClientAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/feign/support/TraceFeignRequestInterceptor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/resttemplate/autoconfigure/RestTemplateHttpClientAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/resttemplate/support/TraceRestTemplateInterceptor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/webclient/autoconfigure/WebClientHttpClientAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/infrastructure/webclient/support/TraceWebClientFilterFunction.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/spi/feign/OpenFeignTraceRequestCustomizer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/spi/resttemplate/RestTemplateTraceRequestCustomizer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-http-client/src/main/java/com/getboot/httpclient/spi/webclient/WebClientTraceRequestCustomizer.java

@@ -1,0 +1,4 @@
+com/getboot/auth/infrastructure/satoken/environment/SaTokenPropertyAliasEnvironmentPostProcessor.class
+com/getboot/auth/infrastructure/satoken/accessor/SaTokenCurrentUserAccessor.class
+com/getboot/auth/infrastructure/satoken/autoconfigure/SaTokenAuthAutoConfiguration.class
+com/getboot/auth/api/accessor/CurrentUserAccessor.class

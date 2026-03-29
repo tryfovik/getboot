@@ -1,0 +1,116 @@
+/*
+ * Copyright (c) 2026 qiheng. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.getboot.payment.infrastructure.wechatpay.operation.businesscircle;
+
+import com.getboot.payment.api.wechatpay.operation.businesscircle.WechatPayBusinessCircleAuthorizationQueryRequest;
+import com.getboot.payment.api.wechatpay.operation.businesscircle.WechatPayBusinessCircleCommitStatusQueryRequest;
+import com.getboot.payment.api.wechatpay.operation.businesscircle.WechatPayBusinessCircleService;
+import com.getboot.payment.support.wechatpay.WechatPayHttpGateway;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+/**
+ * 微信智慧商圈能力默认实现。
+ *
+ * @author qiheng
+ */
+public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCircleService {
+
+    private final WechatPayHttpGateway httpGateway;
+
+    /**
+     * 构造智慧商圈服务。
+     *
+     * @param httpGateway 微信 HTTP 网关
+     */
+    public WechatPayBusinessCircleServiceImpl(WechatPayHttpGateway httpGateway) {
+        this.httpGateway = httpGateway;
+    }
+
+    @Override
+    public void syncPoints(Object requestBody) {
+        httpGateway.postWithoutResponse("/v3/businesscircle/points/notify", requestBody);
+    }
+
+    @Override
+    public Map<String, Object> queryUserAuthorization(WechatPayBusinessCircleAuthorizationQueryRequest request) {
+        Assert.notNull(request, "request must not be null");
+        Assert.hasText(request.getOpenId(), "request.openId must not be blank");
+        Assert.hasText(request.getAppId(), "request.appId must not be blank");
+
+        Map<String, Object> args = new LinkedHashMap<>();
+        args.put("appid", request.getAppId());
+        return getForMap(
+                "/v3/businesscircle/user-authorizations/" + urlEncode(request.getOpenId())
+                        + "?" + buildQueryString(args)
+        );
+    }
+
+    @Override
+    public Map<String, Object> queryCommitStatus(WechatPayBusinessCircleCommitStatusQueryRequest request) {
+        Assert.notNull(request, "request must not be null");
+        Assert.hasText(request.getOpenId(), "request.openId must not be blank");
+        Assert.notNull(request.getBrandId(), "request.brandId must not be null");
+        Assert.hasText(request.getAppId(), "request.appId must not be blank");
+
+        Map<String, Object> args = new LinkedHashMap<>();
+        if (StringUtils.hasText(request.getSubMerchantId())) {
+            args.put("sub_mchid", request.getSubMerchantId());
+        }
+        args.put("brandid", request.getBrandId());
+        args.put("appid", request.getAppId());
+
+        return getForMap(
+                "/v3/businesscircle/users/" + urlEncode(request.getOpenId()) + "/points/commit_status"
+                        + "?" + buildQueryString(args)
+        );
+    }
+
+    @Override
+    public void syncParking(Object requestBody) {
+        httpGateway.postWithoutResponse("/v3/businesscircle/parkings", requestBody);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getForMap(String path) {
+        return (Map<String, Object>) httpGateway.get(path, Map.class);
+    }
+
+    private String buildQueryString(Map<String, Object> args) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, Object> entry : args.entrySet()) {
+            if (entry.getValue() == null) {
+                continue;
+            }
+            if (builder.length() > 0) {
+                builder.append('&');
+            }
+            builder.append(entry.getKey())
+                    .append('=')
+                    .append(urlEncode(String.valueOf(entry.getValue())));
+        }
+        return builder.toString();
+    }
+
+    private String urlEncode(String value) {
+        return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
+    }
+}

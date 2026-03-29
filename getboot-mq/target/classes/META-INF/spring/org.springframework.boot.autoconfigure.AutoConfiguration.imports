@@ -1,0 +1,2 @@
+org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration
+com.getboot.mq.infrastructure.rocketmq.autoconfigure.RocketMqEnhancementAutoConfiguration

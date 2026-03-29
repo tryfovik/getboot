@@ -1,0 +1,6 @@
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/api/operator/CacheOperator.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/infrastructure/redis/autoconfigure/RedisAutoConfiguration.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/infrastructure/redis/environment/RedisPropertyAliasEnvironmentPostProcessor.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/infrastructure/redis/support/RedisCacheOperator.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/spi/redis/GetbootRedisTemplateCustomizer.java
+/Users/wangdongtao/coder/project/server/dt-starter-suite/getboot-cache/src/main/java/com/getboot/cache/spi/redis/RedisObjectMapperCustomizer.java
