@@ -51,7 +51,7 @@ public class RateLimitAspect {
         );
         if (!acquired) {
             String methodName = ((MethodSignature) joinPoint.getSignature()).getMethod().getName();
-            log.warn("Method invocation throttled by sliding window limiter: {}.{}",
+            log.warn("Method invocation throttled by limiter: {}.{}",
                     joinPoint.getTarget().getClass().getSimpleName(), methodName);
             throw new RateLimitException(rateLimit.message());
         }

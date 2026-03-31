@@ -16,6 +16,7 @@
 package com.getboot.limiter.infrastructure.autoconfigure;
 
 import com.getboot.limiter.infrastructure.slidingwindow.redisson.autoconfigure.RateLimiterAutoConfiguration;
+import com.getboot.limiter.infrastructure.tokenbucket.redisson.autoconfigure.TokenBucketRateLimiterAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
@@ -27,6 +28,10 @@ import org.springframework.context.annotation.Import;
  * @author qiheng
  */
 @AutoConfiguration
-@Import(RateLimiterAutoConfiguration.class)
+@Import({
+        RateLimiterCoreAutoConfiguration.class,
+        RateLimiterAutoConfiguration.class,
+        TokenBucketRateLimiterAutoConfiguration.class
+})
 public class LimiterAutoConfiguration {
 }

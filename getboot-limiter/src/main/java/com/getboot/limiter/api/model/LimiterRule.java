@@ -17,6 +17,8 @@ package com.getboot.limiter.api.model;
 
 import lombok.Data;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * 命名限流规则。
  *
@@ -26,6 +28,13 @@ import lombok.Data;
  */
 @Data
 public class LimiterRule {
+
+    /**
+     * 限流算法。
+     *
+     * <p>为空时由注册表或具体算法子树补默认值。</p>
+     */
+    private LimiterAlgorithm algorithm;
 
     /**
      * 时间窗口内允许的最大请求数。
@@ -41,4 +50,21 @@ public class LimiterRule {
      * 时间窗口单位，例如 SECONDS、MINUTES。
      */
     private String intervalUnit = "SECONDS";
+
+    public LimiterAlgorithm resolveAlgorithm(LimiterAlgorithm fallback) {
+        return algorithm != null ? algorithm : fallback;
+    }
+
+    public TimeUnit resolveIntervalUnit() {
+        return TimeUnit.valueOf(intervalUnit);
+    }
+
+    public LimiterRule copy() {
+        LimiterRule copied = new LimiterRule();
+        copied.setAlgorithm(this.algorithm);
+        copied.setRate(this.rate);
+        copied.setInterval(this.interval);
+        copied.setIntervalUnit(this.intervalUnit);
+        return copied;
+    }
 }

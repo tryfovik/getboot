@@ -17,14 +17,11 @@ package com.getboot.limiter.infrastructure.slidingwindow.redisson.autoconfigure;
 
 import com.getboot.limiter.api.limiter.RateLimiter;
 import com.getboot.limiter.api.properties.SlidingWindowRateLimiterProperties;
-import com.getboot.limiter.api.registry.RateLimiterRegistry;
 import com.getboot.limiter.infrastructure.slidingwindow.redisson.support.RedissonSlidingWindowRateLimiter;
-import com.getboot.limiter.infrastructure.slidingwindow.redisson.support.RedissonSlidingWindowRateLimiterRegistry;
+import com.getboot.limiter.infrastructure.slidingwindow.redisson.support.RedissonSlidingWindowRateLimiterHandler;
 import com.getboot.limiter.infrastructure.slidingwindow.redisson.support.SlidingWindowRedisSupport;
-import com.getboot.limiter.spi.RateLimiterRegistryCustomizer;
-import com.getboot.limiter.support.aop.RateLimitAspect;
+import com.getboot.limiter.spi.RateLimiterAlgorithmHandler;
 import org.redisson.api.RedissonClient;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -55,27 +52,16 @@ public class RateLimiterAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnMissingBean
-    public RateLimiterRegistry redissonSlidingWindowRateLimiterRegistry(
+    @ConditionalOnMissingBean(name = "redissonSlidingWindowRateLimiterHandler")
+    public RateLimiterAlgorithmHandler redissonSlidingWindowRateLimiterHandler(
             SlidingWindowRedisSupport slidingWindowRedisSupport,
-            SlidingWindowRateLimiterProperties properties,
-            ObjectProvider<RateLimiterRegistryCustomizer> registryCustomizers) {
-        RedissonSlidingWindowRateLimiterRegistry registry =
-                new RedissonSlidingWindowRateLimiterRegistry(slidingWindowRedisSupport, properties);
-        registryCustomizers.orderedStream().forEach(customizer -> customizer.customize(registry));
-        return registry;
+            SlidingWindowRateLimiterProperties properties) {
+        return new RedissonSlidingWindowRateLimiterHandler(slidingWindowRedisSupport, properties);
     }
 
     @Bean
     @ConditionalOnMissingBean
     public RateLimiter redissonSlidingWindowRateLimiter(SlidingWindowRedisSupport slidingWindowRedisSupport) {
         return new RedissonSlidingWindowRateLimiter(slidingWindowRedisSupport);
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    @ConditionalOnClass(name = "org.aspectj.lang.ProceedingJoinPoint")
-    public RateLimitAspect rateLimitAspect(RateLimiterRegistry rateLimiterRegistry) {
-        return new RateLimitAspect(rateLimiterRegistry);
     }
 }

@@ -10,3 +10,12 @@ getboot:
           rate: 20
           interval: 1
           interval-unit: SECONDS
+    token-bucket:
+      enabled: true
+      default-timeout: 2
+      key-prefix: rate_limiter_token_bucket
+      limiters:
+        send-sms:
+          rate: 30
+          interval: 1
+          interval-unit: SECONDS

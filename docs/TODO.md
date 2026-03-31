@@ -10,10 +10,7 @@
 
 ## P1 限流能力继续扩展
 
-- [ ] 在 `getboot-limiter` 增加 `token bucket` 实现子树
 - [ ] 在 `getboot-limiter` 增加 `leaky bucket` 实现子树
-- [ ] 把限流规则模型继续抽象到能兼容多算法实现
-- [ ] 为不同限流实现补统一示例与 README
 
 ## P1 分布式锁继续扩展
 
