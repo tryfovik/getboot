@@ -29,6 +29,20 @@ import java.util.concurrent.TimeUnit;
 public interface RateLimiterRegistry {
 
     /**
+     * 按运行时规则直接尝试获取指定数量的许可。
+     *
+     * @param limiterName 限流器名称
+     * @param rule 限流规则
+     * @param permits 许可数量
+     * @param timeout 超时时间
+     * @param timeUnit 时间单位
+     * @return 是否获取成功
+     */
+    default boolean tryAcquire(String limiterName, LimiterRule rule, long permits, long timeout, TimeUnit timeUnit) {
+        throw new UnsupportedOperationException("Current rate limiter registry does not support runtime rules.");
+    }
+
+    /**
      * 注册或更新命名限流器配置。
      *
      * @param limiterName 限流器名称

@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -80,6 +81,26 @@ class DefaultRateLimiterRegistryTest {
                 () -> new DefaultRateLimiterRegistry(List.of(slidingWindowHandler, tokenBucketHandler)));
 
         assertTrue(exception.getMessage().contains("duplicate"));
+    }
+
+    @Test
+    void shouldRouteRuntimeRuleWithoutPreconfiguration() {
+        FakeHandler slidingWindowHandler = new FakeHandler(LimiterAlgorithm.SLIDING_WINDOW, Map.of());
+        FakeHandler tokenBucketHandler = new FakeHandler(LimiterAlgorithm.TOKEN_BUCKET, Map.of());
+        DefaultRateLimiterRegistry registry =
+                new DefaultRateLimiterRegistry(List.of(slidingWindowHandler, tokenBucketHandler));
+
+        assertTrue(registry.tryAcquire(
+                "send-sms:13800000000",
+                rule(LimiterAlgorithm.TOKEN_BUCKET, 1, 60, "SECONDS"),
+                1,
+                0,
+                TimeUnit.SECONDS
+        ));
+        assertEquals(0, slidingWindowHandler.tryAcquireCalls);
+        assertEquals(1, tokenBucketHandler.tryAcquireCalls);
+        assertEquals("send-sms:13800000000", tokenBucketHandler.lastLimiterName);
+        assertEquals(LimiterAlgorithm.TOKEN_BUCKET, tokenBucketHandler.lastRule.getAlgorithm());
     }
 
     private static LimiterRule rule(LimiterAlgorithm algorithm, long rate, long interval, String intervalUnit) {

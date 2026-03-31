@@ -18,13 +18,18 @@ package com.getboot.limiter.support.aop;
 import com.getboot.limiter.api.annotation.RateLimit;
 import com.getboot.limiter.api.exception.RateLimitException;
 import com.getboot.limiter.api.registry.RateLimiterRegistry;
+import com.getboot.limiter.support.resolver.RateLimitOperationResolver;
+import com.getboot.limiter.support.resolver.RateLimitOperationResolver.RateLimitOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+
+import java.lang.reflect.Method;
 
 /**
  * 方法级限流切面。
@@ -40,21 +45,36 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 public class RateLimitAspect {
 
     private final RateLimiterRegistry rateLimiterRegistry;
+    private final RateLimitOperationResolver rateLimitOperationResolver;
 
     @Around("@annotation(rateLimit)")
     public Object around(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable {
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        Method method = resolveMethod(joinPoint, signature);
+        RateLimitOperation operation =
+                rateLimitOperationResolver.resolve(method, joinPoint.getArgs(), rateLimit);
         boolean acquired = rateLimiterRegistry.tryAcquire(
-                rateLimit.value(),
-                rateLimit.permits(),
-                rateLimit.timeout(),
-                rateLimit.timeUnit()
+                operation.limiterName(),
+                operation.rule(),
+                operation.permits(),
+                operation.timeout(),
+                operation.timeoutUnit()
         );
         if (!acquired) {
-            String methodName = ((MethodSignature) joinPoint.getSignature()).getMethod().getName();
+            String methodName = method.getName();
             log.warn("Method invocation throttled by limiter: {}.{}",
                     joinPoint.getTarget().getClass().getSimpleName(), methodName);
             throw new RateLimitException(rateLimit.message());
         }
         return joinPoint.proceed();
+    }
+
+    private Method resolveMethod(ProceedingJoinPoint joinPoint, MethodSignature signature) {
+        Method method = signature.getMethod();
+        Object target = joinPoint.getTarget();
+        if (target == null) {
+            return method;
+        }
+        return AopUtils.getMostSpecificMethod(method, target.getClass());
     }
 }

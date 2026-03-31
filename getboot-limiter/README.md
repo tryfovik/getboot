@@ -1,122 +1,136 @@
 # getboot-limiter
 
-分布式限流 starter，当前提供基于 Redis / Redisson 的滑动窗口、令牌桶与漏桶实现，并通过统一注册表按规则路由算法。
+分布式限流 starter，对外主入口只有一个：`@RateLimit`。
+
+业务方法直接在注解上选择算法、速率、周期和 key 解析方式，不需要先配一套命名规则再引用。
 
 ## 作用
 
-- 提供统一限流能力接口、规则模型与注解切面
-- 提供统一 `RateLimiterRegistry`，按命名规则在不同算法实现之间路由
-- 提供基于 Redis / Redisson 的滑动窗口、令牌桶与漏桶实现
-- 为后续更多限流算法预留模块边界
+- 提供单注解限流入口 `@RateLimit`
+- 在注解上直接声明滑动窗口、令牌桶或漏桶算法
+- 基于 Redis / Redisson 提供分布式限流实现
 
-## 目录约定
+## 接入方式
 
-- `api.*`：能力层接口、注解、异常与规则模型
-- `spi`：限流注册表定制与算法扩展点
-- `support`：内部注册表、AOP 与辅助能力
-- `infrastructure.slidingwindow.redisson.*`：滑动窗口 Redisson 实现
-- `infrastructure.tokenbucket.redisson.*`：令牌桶 Redisson 实现
-- `infrastructure.leakybucket.redisson.*`：漏桶 Redisson 实现
+业务项目继承父 `pom` 后，按需引入：
 
-## 配置示例
+```xml
+<dependency>
+    <groupId>com.dt</groupId>
+    <artifactId>getboot-limiter</artifactId>
+</dependency>
+```
+
+这个模块依赖 `getboot-coordination` 提供的 Redisson 基础设施，因此需要准备：
 
 ```yaml
 getboot:
   coordination:
     redisson:
-      file: classpath:redisson/redisson.yaml # Redisson 配置文件位置
-  limiter:
-    enabled: true                    # 是否启用限流能力
-    sliding-window:
-      enabled: true                  # 是否启用滑动窗口实现
-      default-timeout: 5             # 默认等待时间，单位秒
-      key-prefix: rate_limiter       # Redis 中的滑动窗口 key 前缀
-      limiters:
-        login:
-          rate: 10                   # 时间窗口内允许的请求数
-          interval: 1                # 时间窗口大小
-          interval-unit: MINUTES     # 时间窗口单位，可选 SECONDS / MINUTES / HOURS / DAYS
-    token-bucket:
-      enabled: true                  # 是否启用令牌桶实现
-      default-timeout: 2             # 默认等待时间，单位秒
-      key-prefix: rate_limiter_token_bucket
-      limiters:
-        sms:
-          rate: 30                   # 每个时间窗口补充的令牌数
-          interval: 1                # 令牌补充周期
-          interval-unit: SECONDS     # 支持 MILLISECONDS / SECONDS / MINUTES / HOURS / DAYS
-    leaky-bucket:
-      enabled: true                  # 是否启用漏桶实现
-      default-timeout: 3             # 默认等待时间，单位秒
-      key-prefix: rate_limiter_leaky_bucket
-      limiters:
-        webhook:
-          rate: 10                   # 桶容量，且按该速率在 interval 内均匀漏出
-          interval: 1                # 漏出周期
-          interval-unit: SECONDS     # 支持 MILLISECONDS / SECONDS / MINUTES / HOURS / DAYS
+      file: classpath:redisson/redisson.yaml
 ```
 
-## 算法选择
+## 最小用法
 
-- 放在 `getboot.limiter.sliding-window.limiters.*` 下的规则，默认走滑动窗口
-- 放在 `getboot.limiter.token-bucket.limiters.*` 下的规则，默认走令牌桶
-- 放在 `getboot.limiter.leaky-bucket.limiters.*` 下的规则，默认走漏桶
-- 通过 `RateLimiterRegistryCustomizer` 以编程方式注册规则时，如果不是默认滑动窗口，应显式设置 `LimiterRule.algorithm`
-
-示例：
+最简单的写法是直接对方法做整体限流，不区分调用方：
 
 ```java
-@Bean
-public RateLimiterRegistryCustomizer limiterRegistryCustomizer() {
-    return registry -> {
-        LimiterRule tokenBucketRule = new LimiterRule();
-        tokenBucketRule.setAlgorithm(LimiterAlgorithm.TOKEN_BUCKET);
-        tokenBucketRule.setRate(30);
-        tokenBucketRule.setInterval(1);
-        tokenBucketRule.setIntervalUnit("SECONDS");
-        registry.configureRateLimiter("send-sms", tokenBucketRule);
-
-        LimiterRule leakyBucketRule = new LimiterRule();
-        leakyBucketRule.setAlgorithm(LimiterAlgorithm.LEAKY_BUCKET);
-        leakyBucketRule.setRate(10);
-        leakyBucketRule.setInterval(1);
-        leakyBucketRule.setIntervalUnit("SECONDS");
-        registry.configureRateLimiter("webhook-callback", leakyBucketRule);
-    };
+@RateLimit(rate = 10, interval = 1, intervalUnit = TimeUnit.MINUTES)
+public void createOrder() {
 }
 ```
 
+如果要按业务 key 限流，可以在注解里直接写固定 key 或 SpEL：
+
+```java
+@RateLimit(
+        scene = "send-sms",
+        keyExpression = "#phone",
+        algorithm = LimiterAlgorithm.TOKEN_BUCKET,
+        rate = 1,
+        interval = 60,
+        intervalUnit = TimeUnit.SECONDS,
+        timeout = 0,
+        timeoutUnit = TimeUnit.SECONDS
+)
+public void sendSms(String phone) {
+}
+```
+
+漏桶也是同一个注解，只是算法不同：
+
+```java
+@RateLimit(
+        scene = "webhook-callback",
+        keyExpression = "#eventId",
+        algorithm = LimiterAlgorithm.LEAKY_BUCKET,
+        rate = 10,
+        interval = 1,
+        intervalUnit = TimeUnit.SECONDS
+)
+public void handleWebhook(String eventId) {
+}
+```
+
+## 注解说明
+
+- `scene`
+  限流场景名；为空时默认使用 `类名.方法名`
+- `key`
+  固定限流 key；配置后优先使用
+- `keyExpression`
+  动态限流 key 的 SpEL 表达式，例如 `#userId`、`#request.phone`、`#p0`、`#args[0]`
+- `algorithm`
+  限流算法，当前支持 `SLIDING_WINDOW`、`TOKEN_BUCKET`、`LEAKY_BUCKET`
+- `rate`
+  单个周期内的容量或配额
+- `interval` / `intervalUnit`
+  周期大小和单位
+- `permits`
+  单次调用申请的许可数，默认 `1`
+- `timeout` / `timeoutUnit`
+  获取许可时的最大等待时间，默认 `0`，即立即失败
+- `message`
+  获取许可失败时的提示信息
+
+## 可选配置
+
+这个模块默认零规则配置即可使用。
+
+如果只是想开启或关闭模块，通常只需要：
+
+```yaml
+getboot:
+  limiter:
+    enabled: true
+```
+
+下面这些配置只属于高级可选项，不是接入前提：
+
+- `getboot.limiter.sliding-window.key-prefix`
+  自定义滑动窗口 Redis key 前缀
+- `getboot.limiter.token-bucket.key-prefix`
+  自定义令牌桶 Redis key 前缀
+- `getboot.limiter.leaky-bucket.key-prefix`
+  自定义漏桶 Redis key 前缀
+
 ## 默认 Bean
 
-- `SlidingWindowRedisSupport`：滑动窗口 Redis 底层支持类
-- `TokenBucketRedisSupport`：令牌桶 Redis 底层支持类
-- `LeakyBucketRedisSupport`：漏桶 Redis 底层支持类
-- `RateLimiterRegistry`：统一算法路由注册表
-- `RateLimiterAlgorithmHandler`：滑动窗口、令牌桶与漏桶算法处理器
-- `RateLimiter`：滑动窗口兼容限流执行器
-- `RateLimitAspect`：存在 AOP 条件时自动注册注解切面
+- `RateLimitAspect`
+  方法级限流切面
+- `RateLimiterRegistry`
+  内部统一路由入口，按算法分发到具体实现
+- `SlidingWindowRedisSupport`
+  滑动窗口底层支持
+- `TokenBucketRedisSupport`
+  令牌桶底层支持
+- `LeakyBucketRedisSupport`
+  漏桶底层支持
 
-## 扩展点
+## 边界
 
-- `getboot-limiter` 复用 `getboot-coordination` 的 Redisson 基础设施配置，统一使用 `getboot.coordination.redisson.*`
-- `getboot.coordination.redisson.file` 指向 Redisson 原生 YAML 配置文件
-- 模块总开关保持在 `getboot.limiter.enabled`
-- 滑动窗口配置收敛在 `getboot.limiter.sliding-window.*`
-- 令牌桶配置收敛在 `getboot.limiter.token-bucket.*`
-- 漏桶配置收敛在 `getboot.limiter.leaky-bucket.*`
-- 能力层接口、注解、异常与规则模型统一收敛在 `com.getboot.limiter.api.*`
-- 统一注册表会按 `LimiterRule.algorithm` 路由算法；放在算法子树下的预定义规则会自动补对应算法
-- 可通过注册 `RateLimiterRegistryCustomizer` Bean 在启动阶段动态补充或改写命名规则
-- 如需以编程方式注册非默认算法规则，应显式设置 `LimiterRule.algorithm`
-- 如需新增算法，可额外注册 `RateLimiterAlgorithmHandler` Bean，保持外部 `RateLimiterRegistry` 不变
-- 当前滑动窗口实现是真正的滑动窗口计数，不暴露令牌桶语义
-- 当前令牌桶实现基于 Redisson `RRateLimiter`，桶容量与单周期补充速率保持一致
-- 当前漏桶实现基于 Redis 状态字符串与 Redisson 分布式锁，桶容量与单周期漏出速率保持一致
-- 对外跨算法访问优先依赖 `RateLimiterRegistry`；`RateLimiter` Bean 继续保留为滑动窗口兼容入口
-
-## 已实现技术栈
-
-- Sliding Window
-- Token Bucket
-- Leaky Bucket
-- Redis / Redisson
+- 对外推荐只使用 `@RateLimit`
+- `RateLimiterRegistry` 更偏内部能力拼装与高级编程式接入，不作为主文档入口
+- 当前滑动窗口实现基于 Redis 有序集合
+- 当前令牌桶实现基于 Redisson `RRateLimiter`
+- 当前漏桶实现基于 Redis 状态字符串与 Redisson 分布式锁

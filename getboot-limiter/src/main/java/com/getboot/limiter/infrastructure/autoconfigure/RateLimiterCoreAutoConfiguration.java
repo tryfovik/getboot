@@ -19,6 +19,7 @@ import com.getboot.limiter.api.registry.RateLimiterRegistry;
 import com.getboot.limiter.spi.RateLimiterAlgorithmHandler;
 import com.getboot.limiter.spi.RateLimiterRegistryCustomizer;
 import com.getboot.limiter.support.aop.RateLimitAspect;
+import com.getboot.limiter.support.resolver.RateLimitOperationResolver;
 import com.getboot.limiter.support.registry.DefaultRateLimiterRegistry;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -53,8 +54,15 @@ public class RateLimiterCoreAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
+    public RateLimitOperationResolver rateLimitOperationResolver() {
+        return new RateLimitOperationResolver();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     @ConditionalOnClass(name = "org.aspectj.lang.ProceedingJoinPoint")
-    public RateLimitAspect rateLimitAspect(RateLimiterRegistry rateLimiterRegistry) {
-        return new RateLimitAspect(rateLimiterRegistry);
+    public RateLimitAspect rateLimitAspect(RateLimiterRegistry rateLimiterRegistry,
+                                           RateLimitOperationResolver rateLimitOperationResolver) {
+        return new RateLimitAspect(rateLimiterRegistry, rateLimitOperationResolver);
     }
 }

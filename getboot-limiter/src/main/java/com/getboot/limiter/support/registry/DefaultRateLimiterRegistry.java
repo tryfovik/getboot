@@ -78,6 +78,18 @@ public class DefaultRateLimiterRegistry implements RateLimiterRegistry {
     }
 
     @Override
+    public boolean tryAcquire(String limiterName, LimiterRule rule, long permits, long timeout, TimeUnit timeUnit) {
+        validateLimiterName(limiterName);
+        if (rule == null) {
+            throw new IllegalArgumentException("Limiter rule must not be null.");
+        }
+        LimiterRule normalizedRule = normalizeRule(rule, defaultHandler.algorithm());
+        RateLimiterAlgorithmHandler handler = getHandler(normalizedRule.getAlgorithm());
+        handler.validateRule(normalizedRule);
+        return tryAcquire(new ResolvedLimiter(limiterName, normalizedRule, handler), permits, timeout, timeUnit);
+    }
+
+    @Override
     public boolean tryAcquire(String limiterName) {
         ResolvedLimiter resolvedLimiter = resolveLimiter(limiterName);
         return tryAcquire(resolvedLimiter, 1, resolvedLimiter.handler.defaultTimeout(), TimeUnit.SECONDS);
