@@ -19,3 +19,12 @@ getboot:
           rate: 30
           interval: 1
           interval-unit: SECONDS
+    leaky-bucket:
+      enabled: true
+      default-timeout: 3
+      key-prefix: rate_limiter_leaky_bucket
+      limiters:
+        callback:
+          rate: 10
+          interval: 1
+          interval-unit: SECONDS

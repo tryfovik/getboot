@@ -32,5 +32,10 @@ public enum LimiterAlgorithm {
     /**
      * 令牌桶。
      */
-    TOKEN_BUCKET
+    TOKEN_BUCKET,
+
+    /**
+     * 漏桶。
+     */
+    LEAKY_BUCKET
 }

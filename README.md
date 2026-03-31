@@ -251,7 +251,7 @@ transportMode: "NIO"
 | Redis 缓存 | `getboot-cache` | 统一走 `getboot.cache.redis.*`，不要把原生 Redis 配置散在各处 |
 | Redisson 基础设施 | `getboot-coordination` | 锁、限流、Webhook 这类能力通常先依赖它 |
 | 分布式锁 | `getboot-coordination` + `getboot-lock` | `getboot-lock` 负责能力层，`getboot-coordination` 负责 Redisson 接入 |
-| 分布式限流 | `getboot-coordination` + `getboot-limiter` | 当前已支持滑动窗口与令牌桶实现 |
+| 分布式限流 | `getboot-coordination` + `getboot-limiter` | 当前已支持滑动窗口、令牌桶与漏桶实现 |
 | Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
 | RocketMQ | `getboot-mq` + `getboot-observability` | 重点看生产入口、事务消息路由和消费端 Trace 恢复 |
@@ -367,7 +367,6 @@ transportMode: "NIO"
 
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
-- `getboot-limiter` 增加更多限流算法实现
 - `getboot-lock` 增加数据库锁、ZooKeeper 锁实现
 - `getboot-mq` 评估并扩展 `Kafka`
 - `getboot-database` 评估 `MongoDB` 方向
