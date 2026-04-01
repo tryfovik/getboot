@@ -12,6 +12,20 @@ getboot:
       lease-ms: 30000
       retry-interval-ms: 100
       initialize-schema: false
+    zookeeper:
+      enabled: false
+      key-prefix: distributed_lock
+      base-path: /getboot/lock
   coordination:
     redisson:
-      file: classpath:redisson/redisson.yaml # Redisson 配置文件位置
+      file: classpath:redisson/redisson.yaml
+    zookeeper:
+      enabled: false
+      connect-string: 127.0.0.1:2181
+      namespace: getboot
+      session-timeout-ms: 60000
+      connection-timeout-ms: 15000
+      retry:
+        base-sleep-time-ms: 1000
+        max-retries: 3
+        max-sleep-ms: 8000

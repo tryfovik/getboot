@@ -249,8 +249,8 @@ transportMode: "NIO"
 | --- | --- | --- |
 | 普通 HTTP API 服务 | `getboot-web` + `getboot-observability` + `getboot-http-client` | 先把统一响应、Trace 和出站调用透传打通 |
 | Redis 缓存 | `getboot-cache` | 统一走 `getboot.cache.redis.*`，不要把原生 Redis 配置散在各处 |
-| Redisson 基础设施 | `getboot-coordination` | 锁、限流、Webhook 这类能力通常先依赖它 |
-| 分布式锁 | `getboot-coordination` + `getboot-lock` | `getboot-lock` 负责能力层，`getboot-coordination` 负责 Redisson 接入 |
+| 分布式协调基础设施 | `getboot-coordination` | 锁、限流、Webhook 这类能力通常先依赖它 |
+| 分布式锁 | `getboot-coordination` + `getboot-lock` | `getboot-lock` 负责能力层，`getboot-coordination` 负责 Redisson / Curator 接入 |
 | 分布式限流 | `getboot-coordination` + `getboot-limiter` | 主入口是 `@RateLimit`，注解上直接选择滑动窗口、令牌桶或漏桶 |
 | Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
@@ -277,7 +277,7 @@ transportMode: "NIO"
 - [`getboot-cache`](./getboot-cache/README.md)
   Redis 接入、默认 `RedisTemplate`、缓存操作门面
 - [`getboot-coordination`](./getboot-coordination/README.md)
-  Redisson 基础设施接入
+  Redisson / Curator 基础设施接入
 - [`getboot-database`](./getboot-database/README.md)
   数据源预热、MyBatis-Plus、ShardingSphere
 - [`getboot-observability`](./getboot-observability/README.md)
@@ -367,7 +367,6 @@ transportMode: "NIO"
 
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
-- `getboot-lock` 增加数据库锁、ZooKeeper 锁实现
 - `getboot-mq` 评估并扩展 `Kafka`
 - `getboot-database` 评估 `MongoDB` 方向
 - `getboot-ai`、`getboot-storage`、`getboot-search`、`getboot-sms` 等新能力规划

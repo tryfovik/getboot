@@ -16,7 +16,7 @@
 package com.getboot.lock.api.constant;
 
 /**
- * 分布式锁常量类
+ * Distributed lock constants.
  *
  * @author qiheng
  */
@@ -25,18 +25,15 @@ public final class DistributedLockConstants {
     private DistributedLockConstants() {
     }
 
-    // 空key标识
     public static final String NONE_KEY = "NONE";
 
-    // 默认超时时间（不设置超时）
     public static final int DEFAULT_EXPIRE_TIME = -1;
 
-    // 默认等待时间（无限等待）
     public static final int DEFAULT_WAIT_TIME = Integer.MAX_VALUE;
 
-    // 默认实现类型
     public static final String LOCK_TYPE_REDIS = "redis";
 
-    // JDBC 实现类型
     public static final String LOCK_TYPE_DATABASE = "database";
+
+    public static final String LOCK_TYPE_ZOOKEEPER = "zookeeper";
 }

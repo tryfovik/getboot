@@ -26,25 +26,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "getboot.lock")
 public class LockProperties {
 
-    /**
-     * Whether distributed lock support is enabled.
-     */
     private boolean enabled = true;
 
-    /**
-     * Active lock implementation type.
-     */
     private String type = DistributedLockConstants.LOCK_TYPE_REDIS;
 
-    /**
-     * Redis implementation configuration.
-     */
     private Redis redis = new Redis();
 
-    /**
-     * JDBC implementation configuration.
-     */
     private Database database = new Database();
+
+    private Zookeeper zookeeper = new Zookeeper();
 
     public static class Redis {
         private boolean enabled = true;
@@ -124,6 +114,36 @@ public class LockProperties {
         }
     }
 
+    public static class Zookeeper {
+        private boolean enabled = false;
+        private String keyPrefix = "distributed_lock";
+        private String basePath = "/getboot/lock";
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getKeyPrefix() {
+            return keyPrefix;
+        }
+
+        public void setKeyPrefix(String keyPrefix) {
+            this.keyPrefix = keyPrefix;
+        }
+
+        public String getBasePath() {
+            return basePath;
+        }
+
+        public void setBasePath(String basePath) {
+            this.basePath = basePath;
+        }
+    }
+
     public boolean isEnabled() {
         return enabled;
     }
@@ -154,5 +174,13 @@ public class LockProperties {
 
     public void setDatabase(Database database) {
         this.database = database;
+    }
+
+    public Zookeeper getZookeeper() {
+        return zookeeper;
+    }
+
+    public void setZookeeper(Zookeeper zookeeper) {
+        this.zookeeper = zookeeper;
     }
 }

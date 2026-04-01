@@ -25,9 +25,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 /**
- * 分布式锁共性辅助类。
+ * Shared distributed lock helper methods.
  *
  * @author qiheng
  */
@@ -90,5 +92,44 @@ public final class DistributedLockSupport {
         throw new DistributedLockException(
                 "Distributed lock acquire failure handler completed without throwing. key=" + lockKey
         );
+    }
+
+    public static long resolveZookeeperLeaseMs(DistributedLock distributedLock) {
+        if (distributedLock.expireTime() != DistributedLockConstants.DEFAULT_EXPIRE_TIME) {
+            throw new DistributedLockException(
+                    "ZooKeeper distributed lock does not support explicit expireTime. "
+                            + "Please keep expireTime=-1 to use session-based semantics."
+            );
+        }
+        return DistributedLockConstants.DEFAULT_EXPIRE_TIME;
+    }
+
+    public static String buildZookeeperLockPath(String basePath, String lockKey) {
+        if (!StringUtils.hasText(basePath)) {
+            throw new DistributedLockException("ZooKeeper basePath must not be empty.");
+        }
+        if (!StringUtils.hasText(lockKey)) {
+            throw new DistributedLockException("ZooKeeper lock key must not be empty.");
+        }
+
+        String normalizedBasePath = normalizeZookeeperBasePath(basePath);
+        String encodedLockKey = Base64.getUrlEncoder()
+                .withoutPadding()
+                .encodeToString(lockKey.getBytes(StandardCharsets.UTF_8));
+        return normalizedBasePath + "/" + encodedLockKey;
+    }
+
+    private static String normalizeZookeeperBasePath(String basePath) {
+        String normalized = basePath.trim();
+        if (!normalized.startsWith("/")) {
+            throw new DistributedLockException("ZooKeeper basePath must start with '/'.");
+        }
+        while (normalized.endsWith("/") && normalized.length() > 1) {
+            normalized = normalized.substring(0, normalized.length() - 1);
+        }
+        if ("/".equals(normalized)) {
+            throw new DistributedLockException("ZooKeeper basePath must not be root path '/'.");
+        }
+        return normalized;
     }
 }

@@ -1,2 +1,3 @@
 com.getboot.lock.infrastructure.redis.redisson.autoconfigure.DistributedLockAutoConfiguration
 com.getboot.lock.infrastructure.database.jdbc.autoconfigure.JdbcDistributedLockAutoConfiguration
+com.getboot.lock.infrastructure.zookeeper.curator.autoconfigure.ZookeeperDistributedLockAutoConfiguration

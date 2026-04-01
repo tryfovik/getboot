@@ -8,12 +8,6 @@
 - TODO 只保留下一个阶段真实会继续做的内容
 - 每一项尽量写成可执行动作，而不是口号
 
-## P1 分布式锁继续扩展
-
-- [ ] 在 `getboot-lock` 增加 ZooKeeper 分布式锁实现子树
-
-当前设计基线见 [`getboot-lock/docs/LOCK_EVOLUTION_PLAN.md`](../getboot-lock/docs/LOCK_EVOLUTION_PLAN.md)。
-
 ## P1 现有能力补更多实现
 
 - [ ] 在 `getboot-mq` 增加 `Kafka` 实现子树
