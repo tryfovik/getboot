@@ -87,3 +87,4 @@ getboot:
 - 当前内部实现只有 RocketMQ；后续如果新增 Kafka，也仍沿用 `getboot-mq` 作为统一消息模块
 - `getboot.mq.trace.*` 由 `@ConfigurationProperties` 直接承接；`getboot.mq.rocketmq.*` 通过环境别名桥接到底层 RocketMQ 原生前缀
 - 可直接参考 `src/main/resources/getboot-mq.yml.example`
+- 如果你关心下一阶段 RocketMQ / Kafka 共存时的接口收敛，而不是当前接入方式，先看主 README，再看 [`docs/MQ_EVOLUTION_PLAN.md`](./docs/MQ_EVOLUTION_PLAN.md)
