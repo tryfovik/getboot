@@ -10,9 +10,6 @@
 
 ## P1 现有能力补更多实现
 
-- [ ] 在 `getboot-mq` 增加 `Kafka` 实现子树
-- [ ] 梳理 `getboot-mq` 的能力层接口，确保 `RocketMQ / Kafka` 可以共存，不重做外部 API
-  当前设计基线见 [`getboot-mq/docs/MQ_EVOLUTION_PLAN.md`](../getboot-mq/docs/MQ_EVOLUTION_PLAN.md)。
 - [ ] 在 `getboot-database` 评估并预留 `MongoDB` 实现方向
   当前方向评估见 [`getboot-database/docs/MONGODB_DIRECTION_PLAN.md`](../getboot-database/docs/MONGODB_DIRECTION_PLAN.md)。
 - [ ] 在 `getboot-http-client` 继续评估是否补充更通用的客户端封装或新的实现子树

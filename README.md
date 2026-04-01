@@ -12,7 +12,7 @@
 
 如果团队只做一个 demo，直接从裸 Spring Boot 起步通常没什么问题。真正麻烦的是第二个、第三个、第五个服务开始之后，大家重复建设的往往已经不是业务，而是基础设施装配和团队规范本身：
 
-- 每起一个新服务，都要重新搭一遍基础项目骨架，再重新对 Spring Boot、Spring Cloud、Redis、Dubbo、RocketMQ、XXL-JOB、支付宝、微信支付这批依赖版本，还要反复确认它们能不能一起工作
+- 每起一个新服务，都要重新搭一遍基础项目骨架，再重新对 Spring Boot、Spring Cloud、Redis、Dubbo、RocketMQ、Kafka、XXL-JOB、支付宝、微信支付这批依赖版本，还要反复确认它们能不能一起工作
 - 没有统一基础设施维护者时，统一响应、统一异常、TraceId 透传、默认 `RedisTemplate`、Redisson、分布式锁、限流、Webhook 验签这类能力，总是在业务仓库里复制、删改、再复制
 - MQ、缓存、RPC、支付这类中间件经常由不同团队分别接入，最后连消息模型、异常包装、Header 透传、配置前缀和默认约定都不一样
 - HTTP、RPC、MQ、支付、微信生态这些接入虽然业务目标不同，但大量样板代码、环境桥接、自动配置和默认 Bean 设计其实高度重复
@@ -91,7 +91,7 @@
 </parent>
 ```
 
-这样做的目的只有一个：统一版本管理，业务项目不需要自己再对一遍 Spring Boot、Spring Cloud、Redis、Dubbo、RocketMQ、XXL-JOB、WeChat Pay、支付宝这些依赖版本。
+这样做的目的只有一个：统一版本管理，业务项目不需要自己再对一遍 Spring Boot、Spring Cloud、Redis、Dubbo、RocketMQ、Kafka、XXL-JOB、WeChat Pay、支付宝这些依赖版本。
 
 ### 2. 再按场景引入模块
 
@@ -254,7 +254,7 @@ transportMode: "NIO"
 | 分布式限流 | `getboot-coordination` + `getboot-limiter` | 主入口是 `@RateLimit`，注解上直接选择滑动窗口、令牌桶或漏桶 |
 | Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
-| RocketMQ | `getboot-mq` + `getboot-observability` | 重点看生产入口、事务消息路由和消费端 Trace 恢复 |
+| RocketMQ / Kafka | `getboot-mq` + `getboot-observability` | 重点看统一生产入口、Trace 透传；RocketMQ 额外支持事务消息路由 |
 | 数据访问增强 | `getboot-database` | 重点看数据源预热、MyBatis-Plus、ShardingSphere |
 | Seata 分布式事务 | `getboot-transaction` + `getboot-database` | 先确认分库分表与事务组合策略 |
 | Sa-Token 鉴权 | `getboot-auth` | 统一从 `CurrentUserAccessor` 进入，不要让业务层直接耦合实现 |
@@ -305,7 +305,7 @@ transportMode: "NIO"
 - [`getboot-rpc`](./getboot-rpc/README.md)
   Dubbo 安全增强、Trace 透传、配置适配
 - [`getboot-mq`](./getboot-mq/README.md)
-  RocketMQ 生产、事务消息、Trace 透传与配置适配
+  RocketMQ / Kafka 生产、RocketMQ 事务消息、Trace 透传与配置适配
 - [`getboot-job`](./getboot-job/README.md)
   XXL-JOB 执行器和管理端客户端
 
@@ -367,7 +367,6 @@ transportMode: "NIO"
 
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
-- `getboot-mq` 评估并扩展 `Kafka`
 - `getboot-database` 评估 `MongoDB` 方向
 - `getboot-ai`、`getboot-storage`、`getboot-search`、`getboot-sms` 等新能力规划
 

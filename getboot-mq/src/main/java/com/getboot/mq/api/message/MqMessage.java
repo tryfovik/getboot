@@ -16,9 +16,6 @@
 package com.getboot.mq.api.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -32,9 +29,6 @@ import java.util.UUID;
  *
  * @author qiheng
  */
-@Getter
-@Setter
-@Accessors(chain = true)
 public abstract class MqMessage implements Serializable {
 
     @Serial
@@ -91,5 +85,77 @@ public abstract class MqMessage implements Serializable {
         public MessageCreateException(String message, Throwable cause) {
             super(message, cause);
         }
+    }
+
+    public String getBizKey() {
+        return bizKey;
+    }
+
+    public MqMessage setBizKey(String bizKey) {
+        this.bizKey = bizKey;
+        return this;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public MqMessage setVersion(String version) {
+        this.version = version;
+        return this;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public MqMessage setMessageId(String messageId) {
+        this.messageId = messageId;
+        return this;
+    }
+
+    public String getTraceId() {
+        return traceId;
+    }
+
+    public MqMessage setTraceId(String traceId) {
+        this.traceId = traceId;
+        return this;
+    }
+
+    public LocalDateTime getSendTime() {
+        return sendTime;
+    }
+
+    public MqMessage setSendTime(LocalDateTime sendTime) {
+        this.sendTime = sendTime;
+        return this;
+    }
+
+    public int getRetryCount() {
+        return retryCount;
+    }
+
+    public MqMessage setRetryCount(int retryCount) {
+        this.retryCount = retryCount;
+        return this;
+    }
+
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
+    public MqMessage setMaxRetries(int maxRetries) {
+        this.maxRetries = maxRetries;
+        return this;
+    }
+
+    public String getSourceSystem() {
+        return sourceSystem;
+    }
+
+    public MqMessage setSourceSystem(String sourceSystem) {
+        this.sourceSystem = sourceSystem;
+        return this;
     }
 }

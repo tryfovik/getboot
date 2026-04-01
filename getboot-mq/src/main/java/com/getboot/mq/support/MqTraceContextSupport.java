@@ -13,30 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.getboot.mq.infrastructure.rocketmq.support;
+package com.getboot.mq.support;
 
 import com.getboot.mq.api.message.MqMessage;
 import com.getboot.mq.api.properties.MqTraceProperties;
 import com.getboot.support.api.trace.TraceContextHolder;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.common.header.Header;
+import org.apache.kafka.common.header.Headers;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.slf4j.MDC;
 import org.springframework.messaging.Message;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
+import java.nio.charset.StandardCharsets;
 
 /**
- * RocketMQ Trace 上下文支撑工具。
+ * MQ Trace 上下文支撑工具。
  *
  * @author qiheng
  */
-public class RocketMqTraceContextSupport {
+public class MqTraceContextSupport {
 
     private static final String DEFAULT_TRACE_MDC_KEY = "traceId";
 
     private final MqTraceProperties traceProperties;
 
-    public RocketMqTraceContextSupport(MqTraceProperties traceProperties) {
+    public MqTraceContextSupport(MqTraceProperties traceProperties) {
         this.traceProperties = traceProperties;
     }
 
@@ -74,9 +77,9 @@ public class RocketMqTraceContextSupport {
             return null;
         }
         if (source instanceof Message<?> springMessage) {
-            String traceId = springMessage.getHeaders().get(getTraceHeaderName(), String.class);
+            String traceId = normalizeTraceValue(springMessage.getHeaders().get(getTraceHeaderName()));
             if (StringUtils.hasText(traceId)) {
-                return traceId.trim();
+                return traceId;
             }
             return resolveInboundTraceId(springMessage.getPayload());
         }
@@ -90,8 +93,25 @@ public class RocketMqTraceContextSupport {
             }
             return null;
         }
-        if (source instanceof Collection<?> collection) {
-            for (Object item : collection) {
+        if (source instanceof ConsumerRecord<?, ?> consumerRecord) {
+            String traceId = resolveInboundTraceId(consumerRecord.headers());
+            if (StringUtils.hasText(traceId)) {
+                return traceId;
+            }
+            return resolveInboundTraceId(consumerRecord.value());
+        }
+        if (source instanceof Headers headers) {
+            Header traceHeader = headers.lastHeader(getTraceHeaderName());
+            if (traceHeader == null || traceHeader.value() == null) {
+                return null;
+            }
+            return normalizeTraceValue(traceHeader.value());
+        }
+        if (source instanceof Header header) {
+            return normalizeTraceValue(header.value());
+        }
+        if (source instanceof Iterable<?> iterable) {
+            for (Object item : iterable) {
                 String traceId = resolveInboundTraceId(item);
                 if (StringUtils.hasText(traceId)) {
                     return traceId;
@@ -111,6 +131,21 @@ public class RocketMqTraceContextSupport {
         String previousMdcTraceId = MDC.get(traceMdcKey);
         MDC.put(traceMdcKey, normalizedTraceId);
         return new TraceScope(previousTraceId, traceMdcKey, previousMdcTraceId, true);
+    }
+
+    private String normalizeTraceValue(Object traceValue) {
+        if (traceValue instanceof byte[] bytes) {
+            String traceId = new String(bytes, StandardCharsets.UTF_8);
+            return StringUtils.hasText(traceId) ? traceId.trim() : null;
+        }
+        if (traceValue instanceof String traceId && StringUtils.hasText(traceId)) {
+            return traceId.trim();
+        }
+        if (traceValue != null) {
+            String traceId = traceValue.toString();
+            return StringUtils.hasText(traceId) ? traceId.trim() : null;
+        }
+        return null;
     }
 
     public record TraceScope(

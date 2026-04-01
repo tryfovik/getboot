@@ -56,7 +56,7 @@
 | `getboot-webhook` | 回调安全编排 | 需要统一处理回调验签、限流、幂等、分布式锁时 | `getboot-cache` / `getboot-coordination` / `getboot-limiter` | `getboot.webhook.security.*` | `servlet` | [getboot-webhook/README.md](../getboot-webhook/README.md) |
 | `getboot-http-client` | 出站 HTTP 客户端 | 需要 Feign、WebClient、RestTemplate 出站透传请求头和 `traceId` 时 | `getboot-observability` | `getboot.http-client.*` | `feign` / `webclient` / `resttemplate` | [getboot-http-client/README.md](../getboot-http-client/README.md) |
 | `getboot-rpc` | 远程调用 | 需要 Dubbo Trace 透传、请求签名校验、序列化安全时 | `getboot-observability` | `getboot.rpc.trace.*` / `getboot.rpc.security.*` / `getboot.rpc.dubbo.*` | `dubbo` | [getboot-rpc/README.md](../getboot-rpc/README.md) |
-| `getboot-mq` | 消息能力 | 需要 RocketMQ 统一生产入口、事务消息路由、Trace 透传时 | `getboot-observability` | `getboot.mq.*` | `rocketmq` | [getboot-mq/README.md](../getboot-mq/README.md) |
+| `getboot-mq` | 消息能力 | 需要 RocketMQ / Kafka 统一生产入口、Trace 透传，或 RocketMQ 事务消息路由时 | `getboot-observability` | `getboot.mq.*` | `rocketmq` / `kafka` | [getboot-mq/README.md](../getboot-mq/README.md) |
 | `getboot-job` | 调度能力 | 需要 XXL-JOB 执行器自动装配和管理端客户端时 | 无强制配套模块 | `getboot.job.*` | `xxl` | [getboot-job/README.md](../getboot-job/README.md) |
 | `getboot-wechat` | 微信生态接入 | 需要小程序或服务号 SDK 接入时 | `getboot-cache` 可选，用于 Redis token 存储 | `getboot.wechat.*` | `miniapp` / `officialaccount` | [getboot-wechat/README.md](../getboot-wechat/README.md) |
 | `getboot-payment` | 支付能力 | 需要支付宝或微信支付主链路、渠道增强能力时 | `getboot-wechat` 不是前置，只有你同时要微信生态 SDK 才再引 | `getboot.payment.*` | `alipay` / `wechatpay` | [getboot-payment/README.md](../getboot-payment/README.md) |
@@ -76,8 +76,6 @@
 
 ## 5. 已明确的后续扩展方向
 
-- `getboot-mq`
-  继续评估并补 `Kafka`
 - `getboot-database`
   继续评估 `MongoDB`
 - `getboot-payment`

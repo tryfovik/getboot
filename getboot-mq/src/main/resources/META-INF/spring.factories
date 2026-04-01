@@ -1,3 +1,4 @@
 # EnvironmentPostProcessor 仍通过 spring.factories 注册
 org.springframework.boot.env.EnvironmentPostProcessor=\
-com.getboot.mq.infrastructure.rocketmq.environment.RocketMqPropertyAliasEnvironmentPostProcessor
+com.getboot.mq.infrastructure.rocketmq.environment.RocketMqPropertyAliasEnvironmentPostProcessor,\
+com.getboot.mq.infrastructure.kafka.environment.KafkaPropertyAliasEnvironmentPostProcessor

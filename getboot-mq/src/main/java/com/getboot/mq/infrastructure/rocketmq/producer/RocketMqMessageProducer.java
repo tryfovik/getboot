@@ -20,15 +20,16 @@ import com.getboot.mq.api.model.MqSendReceipt;
 import com.getboot.mq.api.model.MqTransactionReceipt;
 import com.getboot.mq.api.producer.MqMessageProducer;
 import com.getboot.mq.api.properties.MqTraceProperties;
-import com.getboot.mq.infrastructure.rocketmq.support.RocketMqTraceContextSupport;
 import com.getboot.mq.spi.MqMessageHeadersCustomizer;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import com.getboot.mq.support.MqDestination;
+import com.getboot.mq.support.MqTraceContextSupport;
 import org.apache.rocketmq.client.producer.SendCallback;
 import org.apache.rocketmq.client.producer.SendResult;
 import org.apache.rocketmq.client.producer.TransactionSendResult;
 import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQHeaders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.util.StopWatch;
@@ -45,12 +46,12 @@ import java.util.concurrent.CompletableFuture;
  *
  * @author qiheng
  */
-@Slf4j
-@Getter
 public class RocketMqMessageProducer implements MqMessageProducer {
 
+    private static final Logger log = LoggerFactory.getLogger(RocketMqMessageProducer.class);
+
     private final RocketMQTemplate template;
-    private final RocketMqTraceContextSupport traceContextSupport;
+    private final MqTraceContextSupport traceContextSupport;
     private final List<MqMessageHeadersCustomizer> messageHeadersCustomizers;
 
     public RocketMqMessageProducer(RocketMQTemplate template) {
@@ -61,13 +62,13 @@ public class RocketMqMessageProducer implements MqMessageProducer {
                                    MqTraceProperties traceProperties,
                                    List<MqMessageHeadersCustomizer> messageHeadersCustomizers) {
         this.template = template;
-        this.traceContextSupport = new RocketMqTraceContextSupport(traceProperties);
+        this.traceContextSupport = new MqTraceContextSupport(traceProperties);
         this.messageHeadersCustomizers = messageHeadersCustomizers == null ? List.of() : List.copyOf(messageHeadersCustomizers);
     }
 
     @Override
     public <T extends MqMessage> MqSendReceipt send(String topic, String tag, T message) {
-        return send(buildDestination(topic, tag), message);
+        return send(MqDestination.of(topic, tag).destination(), message);
     }
 
     @Override
@@ -90,7 +91,7 @@ public class RocketMqMessageProducer implements MqMessageProducer {
 
     @Override
     public <T extends MqMessage> CompletableFuture<MqSendReceipt> asyncSend(String topic, String tag, T message) {
-        return asyncSend(buildDestination(topic, tag), message);
+        return asyncSend(MqDestination.of(topic, tag).destination(), message);
     }
 
     @Override
@@ -115,7 +116,7 @@ public class RocketMqMessageProducer implements MqMessageProducer {
     @Override
     public <T extends MqMessage> MqSendReceipt sendWithDelay(String topic, String tag, T message, int delayLevel) {
         validateDelayLevel(delayLevel);
-        return sendWithDelay(buildDestination(topic, tag), message, delayLevel);
+        return sendWithDelay(MqDestination.of(topic, tag).destination(), message, delayLevel);
     }
 
     @Override
@@ -133,7 +134,7 @@ public class RocketMqMessageProducer implements MqMessageProducer {
 
     @Override
     public <T extends MqMessage> MqSendReceipt sendBatch(String topic, String tag, List<T> messages) {
-        String destination = buildDestination(topic, tag);
+        String destination = MqDestination.of(topic, tag).destination();
         List<Message<T>> messageList = messages.stream()
                 .map(message -> buildMessage(destination, message))
                 .toList();
@@ -149,7 +150,7 @@ public class RocketMqMessageProducer implements MqMessageProducer {
 
     @Override
     public <T extends MqMessage> MqSendReceipt sendOrderly(String topic, String tag, T message, String hashKey) {
-        return sendOrderly(buildDestination(topic, tag), message, hashKey);
+        return sendOrderly(MqDestination.of(topic, tag).destination(), message, hashKey);
     }
 
     @Override
@@ -178,29 +179,18 @@ public class RocketMqMessageProducer implements MqMessageProducer {
 
     @Override
     public <T extends MqMessage> MqTransactionReceipt sendTransaction(String topic, String tag, T message, Object arg) {
-        return sendTransaction(buildDestination(topic, tag), message, arg);
-    }
-
-    private String buildDestination(String topic, String tag) {
-        if (!StringUtils.hasText(tag)) {
-            return topic;
-        }
-        return topic + ":" + tag;
+        return sendTransaction(MqDestination.of(topic, tag).destination(), message, arg);
     }
 
     private <T extends MqMessage> Message<T> buildMessage(String destination, T message) {
+        MqDestination mqDestination = MqDestination.parse(destination);
         Map<String, Object> headers = new LinkedHashMap<>();
         headers.put(RocketMQHeaders.KEYS, message.getBizKey());
         if (traceContextSupport.isEnabled()) {
             headers.put(traceContextSupport.getTraceHeaderName(), generateTraceId(message));
         }
-        String topic = destination;
-        int separatorIndex = destination.indexOf(':');
-        if (separatorIndex >= 0) {
-            topic = destination.substring(0, separatorIndex);
-        }
-        if (StringUtils.hasText(topic)) {
-            headers.put(RocketMQHeaders.TOPIC, topic);
+        if (StringUtils.hasText(mqDestination.topic())) {
+            headers.put(RocketMQHeaders.TOPIC, mqDestination.topic());
         }
         messageHeadersCustomizers.forEach(customizer -> customizer.customize(headers, message, destination));
         MessageBuilder<T> builder = MessageBuilder.withPayload(message);
@@ -231,5 +221,17 @@ public class RocketMqMessageProducer implements MqMessageProducer {
         public RocketMqSendException(String message, Throwable cause) {
             super(message, cause);
         }
+    }
+
+    public RocketMQTemplate getTemplate() {
+        return template;
+    }
+
+    public MqTraceContextSupport getTraceContextSupport() {
+        return traceContextSupport;
+    }
+
+    public List<MqMessageHeadersCustomizer> getMessageHeadersCustomizers() {
+        return messageHeadersCustomizers;
     }
 }

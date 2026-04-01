@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.getboot.mq.infrastructure.rocketmq.aop;
+package com.getboot.mq.infrastructure.kafka.aop;
 
 import com.getboot.mq.api.properties.MqTraceProperties;
 import com.getboot.mq.support.MqTraceContextSupport;
@@ -22,33 +22,24 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
- * RocketMQ Trace 监听切面。
+ * Kafka Trace 监听切面。
  *
- * <p>用于在消息消费与事务回查时自动恢复 Trace 上下文，保障日志链路连续。</p>
+ * <p>用于在 {@code @KafkaListener} 方法执行前恢复 Trace 上下文。</p>
  *
  * @author qiheng
  */
 @Aspect
-public class RocketMqTraceListenerAspect {
+public class KafkaMqTraceListenerAspect {
 
     private final MqTraceContextSupport traceContextSupport;
 
-    public RocketMqTraceListenerAspect(MqTraceProperties traceProperties) {
+    public KafkaMqTraceListenerAspect(MqTraceProperties traceProperties) {
         this.traceContextSupport = new MqTraceContextSupport(traceProperties);
     }
 
-    @Around("this(org.apache.rocketmq.spring.core.RocketMQListener) && execution(* *.onMessage(..))")
-    public Object aroundRocketMqListener(ProceedingJoinPoint joinPoint) throws Throwable {
-        return proceedWithTrace(joinPoint);
-    }
-
-    @Around("this(org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener) && "
-            + "(execution(* *.executeLocalTransaction(..)) || execution(* *.checkLocalTransaction(..)))")
-    public Object aroundRocketMqLocalTransactionListener(ProceedingJoinPoint joinPoint) throws Throwable {
-        return proceedWithTrace(joinPoint);
-    }
-
-    private Object proceedWithTrace(ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(org.springframework.kafka.annotation.KafkaListener) || "
+            + "@within(org.springframework.kafka.annotation.KafkaListener)")
+    public Object aroundKafkaListener(ProceedingJoinPoint joinPoint) throws Throwable {
         if (!traceContextSupport.isEnabled()) {
             return joinPoint.proceed();
         }

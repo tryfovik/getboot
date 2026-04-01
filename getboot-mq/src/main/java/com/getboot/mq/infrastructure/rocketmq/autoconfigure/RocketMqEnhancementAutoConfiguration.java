@@ -18,6 +18,7 @@ package com.getboot.mq.infrastructure.rocketmq.autoconfigure;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.getboot.mq.api.producer.MqMessageProducer;
+import com.getboot.mq.api.properties.MqProperties;
 import com.getboot.mq.api.properties.MqTraceProperties;
 import com.getboot.mq.infrastructure.rocketmq.aop.RocketMqTraceListenerAspect;
 import com.getboot.mq.infrastructure.rocketmq.listener.TopicRoutingTransactionListener;
@@ -29,6 +30,8 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.apache.rocketmq.spring.support.RocketMQMessageConverter;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -46,8 +49,10 @@ import java.util.List;
  * @author qiheng
  */
 @AutoConfiguration
-@EnableConfigurationProperties(MqTraceProperties.class)
+@ConditionalOnClass(RocketMQTemplate.class)
+@EnableConfigurationProperties({MqProperties.class, MqTraceProperties.class})
 @ConditionalOnProperty(prefix = "getboot.mq", name = "enabled", havingValue = "true")
+@ConditionalOnExpression("'${getboot.mq.type:rocketmq}' == 'rocketmq' and '${getboot.mq.rocketmq.enabled:true}' == 'true'")
 public class RocketMqEnhancementAutoConfiguration {
 
     @Bean

@@ -15,7 +15,6 @@
  */
 package com.getboot.mq.api.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -25,7 +24,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author qiheng
  */
-@Data
 @ConfigurationProperties(prefix = "getboot.mq.trace")
 public class MqTraceProperties {
 
@@ -43,4 +41,28 @@ public class MqTraceProperties {
      * 日志 MDC 中使用的键名。
      */
     private String mdcKey = "traceId";
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public String getHeaderName() {
+        return headerName;
+    }
+
+    public void setHeaderName(String headerName) {
+        this.headerName = headerName;
+    }
+
+    public String getMdcKey() {
+        return mdcKey;
+    }
+
+    public void setMdcKey(String mdcKey) {
+        this.mdcKey = mdcKey;
+    }
 }

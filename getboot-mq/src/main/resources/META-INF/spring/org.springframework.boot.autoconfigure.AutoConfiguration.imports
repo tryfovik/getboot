@@ -1,2 +1,4 @@
 org.apache.rocketmq.spring.autoconfigure.RocketMQAutoConfiguration
+org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
 com.getboot.mq.infrastructure.rocketmq.autoconfigure.RocketMqEnhancementAutoConfiguration
+com.getboot.mq.infrastructure.kafka.autoconfigure.KafkaMqEnhancementAutoConfiguration

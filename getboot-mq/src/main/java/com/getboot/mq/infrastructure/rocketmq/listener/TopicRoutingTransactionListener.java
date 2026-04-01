@@ -16,8 +16,8 @@
 package com.getboot.mq.infrastructure.rocketmq.listener;
 
 import com.getboot.mq.api.properties.MqTraceProperties;
-import com.getboot.mq.infrastructure.rocketmq.support.RocketMqTraceContextSupport;
 import com.getboot.mq.spi.rocketmq.TopicTransactionStrategy;
+import com.getboot.mq.support.MqTraceContextSupport;
 import org.apache.rocketmq.spring.annotation.RocketMQTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionListener;
 import org.apache.rocketmq.spring.core.RocketMQLocalTransactionState;
@@ -35,12 +35,12 @@ import java.util.List;
 public class TopicRoutingTransactionListener implements RocketMQLocalTransactionListener {
 
     private final List<TopicTransactionStrategy> strategies;
-    private final RocketMqTraceContextSupport traceContextSupport;
+    private final MqTraceContextSupport traceContextSupport;
 
     public TopicRoutingTransactionListener(List<TopicTransactionStrategy> strategies,
                                            MqTraceProperties traceProperties) {
         this.strategies = strategies;
-        this.traceContextSupport = new RocketMqTraceContextSupport(traceProperties);
+        this.traceContextSupport = new MqTraceContextSupport(traceProperties);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class TopicRoutingTransactionListener implements RocketMQLocalTransaction
 
     private RocketMQLocalTransactionState executeWithTrace(Message msg, TransactionCallback callback) {
         String traceId = traceContextSupport.resolveInboundTraceId(msg);
-        try (RocketMqTraceContextSupport.TraceScope ignored = traceContextSupport.openScope(traceId)) {
+        try (MqTraceContextSupport.TraceScope ignored = traceContextSupport.openScope(traceId)) {
             return callback.execute();
         }
     }
