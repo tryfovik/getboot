@@ -25,7 +25,7 @@ import com.getboot.webhook.spi.WebhookRequestValidationHook;
 import com.getboot.webhook.support.processor.DefaultWebhookRequestProcessor;
 import com.getboot.webhook.support.resolver.PropertiesAppSecretResolver;
 import com.getboot.webhook.support.validator.WebhookRequestValidator;
-import org.redisson.api.RedissonClient;
+import com.getboot.idempotency.spi.IdempotencyStore;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -37,7 +37,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.Ordered;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
 /**
  * Webhook 安全处理自动配置。
@@ -111,24 +110,21 @@ public class WebhookAutoConfiguration {
      *
      * @param webhookRequestValidator 请求校验器
      * @param rateLimiter 限流器
-     * @param redissonClient Redisson 客户端
-     * @param stringRedisTemplate Redis 模板
+     * @param idempotencyStore 幂等存储
      * @return Webhook 请求处理器
      */
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnBean({RateLimiter.class, RedissonClient.class, StringRedisTemplate.class})
+    @ConditionalOnBean({RateLimiter.class, IdempotencyStore.class})
     public WebhookRequestProcessor webhookRequestProcessor(
             WebhookRequestValidator webhookRequestValidator,
             RateLimiter rateLimiter,
-            RedissonClient redissonClient,
-            StringRedisTemplate stringRedisTemplate
+            IdempotencyStore idempotencyStore
     ) {
         return new DefaultWebhookRequestProcessor(
                 webhookRequestValidator,
                 rateLimiter,
-                redissonClient,
-                stringRedisTemplate
+                idempotencyStore
         );
     }
 }

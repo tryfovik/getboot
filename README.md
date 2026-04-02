@@ -281,7 +281,7 @@ transportMode: "NIO"
 | 分布式锁 | `getboot-coordination` + `getboot-lock` | `getboot-lock` 负责能力层，`getboot-coordination` 负责 Redisson / Curator 接入 |
 | 分布式限流 | `getboot-coordination` + `getboot-limiter` | 主入口是 `@RateLimit`，注解上直接选择滑动窗口、令牌桶或漏桶 |
 | 幂等去重 | `getboot-idempotency` | 适合下单、支付、回调防重；当前第一版同 key 执行中请求直接拦截，成功后重复请求直接返回缓存结果 |
-| Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
+| Webhook 安全编排 | `getboot-webhook` | 需要准备 Redis 幂等存储和限流能力，模块内部会复用 `getboot-idempotency` 与 `getboot-limiter` |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
 | RocketMQ / Kafka | `getboot-mq` + `getboot-observability` | 重点看统一生产入口、Trace 透传；RocketMQ 额外支持事务消息路由 |
 | 数据访问增强 | `getboot-database` | 重点看数据源预热、MongoDB 启动校验、MyBatis-Plus、ShardingSphere |

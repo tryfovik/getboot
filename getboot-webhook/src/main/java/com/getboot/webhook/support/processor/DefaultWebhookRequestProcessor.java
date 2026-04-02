@@ -17,18 +17,17 @@ package com.getboot.webhook.support.processor;
 
 import com.getboot.exception.api.code.CommonErrorCode;
 import com.getboot.exception.api.exception.BusinessException;
+import com.getboot.idempotency.api.model.IdempotencyRecord;
+import com.getboot.idempotency.api.model.IdempotencyStatus;
+import com.getboot.idempotency.spi.IdempotencyStore;
 import com.getboot.limiter.api.limiter.RateLimiter;
 import com.getboot.webhook.api.processor.WebhookRequestProcessor;
 import com.getboot.webhook.infrastructure.servlet.filter.CachedBodyHttpServletRequest;
 import com.getboot.webhook.support.validator.WebhookRequestValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
-import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -41,22 +40,19 @@ import java.util.function.Supplier;
  */
 public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
 
-    private static final String PROCESSED_MARKER = "PROCESSED";
+    private static final Duration WEBHOOK_IDEMPOTENCY_TTL = Duration.ofHours(24);
 
     private final WebhookRequestValidator webhookRequestValidator;
     private final RateLimiter rateLimiter;
-    private final RedissonClient redissonClient;
-    private final StringRedisTemplate stringRedisTemplate;
+    private final IdempotencyStore idempotencyStore;
 
     public DefaultWebhookRequestProcessor(
             WebhookRequestValidator webhookRequestValidator,
             RateLimiter rateLimiter,
-            RedissonClient redissonClient,
-            StringRedisTemplate stringRedisTemplate) {
+            IdempotencyStore idempotencyStore) {
         this.webhookRequestValidator = webhookRequestValidator;
         this.rateLimiter = rateLimiter;
-        this.redissonClient = redissonClient;
-        this.stringRedisTemplate = stringRedisTemplate;
+        this.idempotencyStore = idempotencyStore;
     }
 
     @Override
@@ -78,26 +74,26 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
 
         String fingerprint = fingerprintGenerator.apply(appKey);
         String processedKey = lockPrefix + fingerprint;
-        RLock lock = redissonClient.getLock(processedKey);
-        try {
-            if (!lock.tryLock(0, TimeUnit.SECONDS)) {
-                throw new BusinessException(CommonErrorCode.REQUEST_PROCESSING);
-            }
+        IdempotencyRecord existingRecord = idempotencyStore.get(processedKey);
+        if (existingRecord != null) {
+            return handleDuplicateRecord(existingRecord);
+        }
 
-            if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(processedKey))) {
-                throw new BusinessException(CommonErrorCode.REQUEST_ALREADY_PROCESSED);
+        if (!idempotencyStore.markProcessing(processedKey, WEBHOOK_IDEMPOTENCY_TTL)) {
+            IdempotencyRecord latestRecord = idempotencyStore.get(processedKey);
+            if (latestRecord != null) {
+                return handleDuplicateRecord(latestRecord);
             }
-
-            T result = processor.get();
-            stringRedisTemplate.opsForValue().set(processedKey, PROCESSED_MARKER, Duration.ofHours(24));
-            return result;
-        } catch (InterruptedException exception) {
-            Thread.currentThread().interrupt();
             throw new BusinessException(CommonErrorCode.REQUEST_PROCESSING);
-        } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
-            }
+        }
+
+        try {
+            T result = processor.get();
+            idempotencyStore.markCompleted(processedKey, result, WEBHOOK_IDEMPOTENCY_TTL);
+            return result;
+        } catch (RuntimeException exception) {
+            idempotencyStore.delete(processedKey);
+            throw exception;
         }
     }
 
@@ -126,5 +122,13 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
                 "Request body cache is unavailable. Ensure CachingRequestBodyFilter is registered before request validation.",
                 CommonErrorCode.ERROR
         );
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T handleDuplicateRecord(IdempotencyRecord record) {
+        if (record.getStatus() == IdempotencyStatus.COMPLETED) {
+            return (T) record.getResult();
+        }
+        throw new BusinessException(CommonErrorCode.REQUEST_PROCESSING);
     }
 }
