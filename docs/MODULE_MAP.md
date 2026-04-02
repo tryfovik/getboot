@@ -76,13 +76,11 @@
 
 ## 5. 已明确的后续扩展方向
 
-- `getboot-observability`
-  持续补可观测性桥接实现
-- `getboot-payment`
-  持续围绕 `alipay` / `wechatpay` 两条实现子树演进
 - 新模块规划
   统一收敛在 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md)
+- 通用组件储备评估
+  统一收敛在 [`docs/TODO.md`](./TODO.md)
 - `Seata + ShardingSphere` 组合说明
   统一收敛在 [`docs/SEATA_SHARDING_COMPATIBILITY.md`](./SEATA_SHARDING_COMPATIBILITY.md)
 
-更细路线看 [`docs/TODO.md`](./TODO.md)。
+更细仓库级尾项看 [`docs/TODO.md`](./TODO.md)。

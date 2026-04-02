@@ -371,8 +371,8 @@ transportMode: "NIO"
 
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
-- `getboot-observability` 持续补可观测性桥接实现
-- 支付能力继续围绕 `alipay` / `wechatpay` 两条实现子树演进
+- 现有核心模块优先在各自 README 与模块内文档继续收口，不再把泛化演进项挂在根级 TODO
 - 新模块边界与落地顺序，优先看 [`docs/MODULE_ROADMAP.md`](./docs/MODULE_ROADMAP.md)
+- 仓库级剩余尾项，优先看 [`docs/TODO.md`](./docs/TODO.md)
 
 具体路线继续收敛在 [`docs/TODO.md`](./docs/TODO.md)。
