@@ -16,8 +16,9 @@
 package com.getboot.database.infrastructure.sharding.autoconfigure;
 
 import com.getboot.database.api.properties.DatabaseProperties;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.shardingsphere.driver.api.yaml.YamlShardingSphereDataSourceFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -46,12 +47,13 @@ import java.util.Map;
  *
  * @author qiheng
  */
-@Slf4j
 @AutoConfiguration(before = com.getboot.database.infrastructure.datasource.autoconfigure.DataSourceAutoConfiguration.class)
 @ConditionalOnClass({DataSource.class, YamlShardingSphereDataSourceFactory.class})
 @ConditionalOnProperty(prefix = "getboot.database", name = {"enabled", "sharding.enabled"}, havingValue = "true")
 @EnableConfigurationProperties(DatabaseProperties.class)
 public class ShardingDataSourceAutoConfiguration {
+
+    private static final Logger log = LoggerFactory.getLogger(ShardingDataSourceAutoConfiguration.class);
 
     /**
      * 注册 ShardingSphere 数据源。

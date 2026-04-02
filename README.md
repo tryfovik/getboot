@@ -255,7 +255,7 @@ transportMode: "NIO"
 | Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
 | RocketMQ / Kafka | `getboot-mq` + `getboot-observability` | 重点看统一生产入口、Trace 透传；RocketMQ 额外支持事务消息路由 |
-| 数据访问增强 | `getboot-database` | 重点看数据源预热、MyBatis-Plus、ShardingSphere |
+| 数据访问增强 | `getboot-database` | 重点看数据源预热、MongoDB 启动校验、MyBatis-Plus、ShardingSphere |
 | Seata 分布式事务 | `getboot-transaction` + `getboot-database` | 先确认分库分表与事务组合策略 |
 | Sa-Token 鉴权 | `getboot-auth` | 统一从 `CurrentUserAccessor` 进入，不要让业务层直接耦合实现 |
 | 微信小程序 / 服务号 | `getboot-wechat` | 这是微信生态接入，不等于支付接入 |
@@ -279,7 +279,7 @@ transportMode: "NIO"
 - [`getboot-coordination`](./getboot-coordination/README.md)
   Redisson / Curator 基础设施接入
 - [`getboot-database`](./getboot-database/README.md)
-  数据源预热、MyBatis-Plus、ShardingSphere
+  数据源预热、MongoDB 启动校验、MyBatis-Plus、ShardingSphere
 - [`getboot-observability`](./getboot-observability/README.md)
   Trace、日志上下文、Prometheus、SkyWalking、Reactor 传播
 
@@ -367,7 +367,7 @@ transportMode: "NIO"
 
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
-- `getboot-database` 评估 `MongoDB` 方向
+- `getboot-http-client` 评估更通用的客户端封装或新的实现子树
 - `getboot-ai`、`getboot-storage`、`getboot-search`、`getboot-sms` 等新能力规划
 
 具体路线继续收敛在 [`docs/TODO.md`](./docs/TODO.md)。

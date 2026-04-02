@@ -11,6 +11,14 @@ getboot:
         strict-mode: true
         timeout: 30000
         validate-after-startup: true
+    mongodb:
+      enabled: true
+      uri: mongodb://127.0.0.1:27017/demo
+      auto-index-creation: false
+      init:
+        enabled: true
+        strict-mode: true
+        validate-after-startup: true
     mybatis-plus:
       mapper-locations: classpath*:/mapper/**/*.xml
     sharding:

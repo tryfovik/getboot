@@ -15,7 +15,6 @@
  */
 package com.getboot.database.api.properties;
 
-import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.ArrayList;
@@ -29,7 +28,6 @@ import java.util.List;
  * @author qiheng
  */
 @ConfigurationProperties(prefix = "getboot.database")
-@Data
 public class DatabaseProperties {
 
     /**
@@ -43,23 +41,34 @@ public class DatabaseProperties {
     private Datasource datasource = new Datasource();
 
     /**
+     * MongoDB 增强配置。
+     */
+    private MongoDb mongodb = new MongoDb();
+
+    /**
      * 分库分表增强配置。
      */
     private Sharding sharding = new Sharding();
 
-    @Data
     public static class Datasource {
 
         /**
          * 数据源预热初始化配置。
          */
         private Init init = new Init();
+
+        public Init getInit() {
+            return init;
+        }
+
+        public void setInit(Init init) {
+            this.init = init;
+        }
     }
 
     /**
      * 数据源预热初始化配置。
      */
-    @Data
     public static class Init {
         /**
          * 是否启用立即初始化。
@@ -80,12 +89,88 @@ public class DatabaseProperties {
          * 是否在应用启动完成后再次校验连接。
          */
         private boolean validateAfterStartup = true;
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isStrictMode() {
+            return strictMode;
+        }
+
+        public void setStrictMode(boolean strictMode) {
+            this.strictMode = strictMode;
+        }
+
+        public long getTimeout() {
+            return timeout;
+        }
+
+        public void setTimeout(long timeout) {
+            this.timeout = timeout;
+        }
+
+        public boolean isValidateAfterStartup() {
+            return validateAfterStartup;
+        }
+
+        public void setValidateAfterStartup(boolean validateAfterStartup) {
+            this.validateAfterStartup = validateAfterStartup;
+        }
+    }
+
+    /**
+     * MongoDB 配置。
+     */
+    public static class MongoDb {
+
+        /**
+         * 是否启用 MongoDB 增强能力。
+         */
+        private boolean enabled = false;
+
+        /**
+         * 是否启用自动索引创建。
+         */
+        private boolean autoIndexCreation = false;
+
+        /**
+         * MongoDB 启动初始化配置。
+         */
+        private Init init = new Init();
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public boolean isAutoIndexCreation() {
+            return autoIndexCreation;
+        }
+
+        public void setAutoIndexCreation(boolean autoIndexCreation) {
+            this.autoIndexCreation = autoIndexCreation;
+        }
+
+        public Init getInit() {
+            return init;
+        }
+
+        public void setInit(Init init) {
+            this.init = init;
+        }
     }
 
     /**
      * 分库分表配置。
      */
-    @Data
     public static class Sharding {
 
         /**
@@ -112,5 +197,77 @@ public class DatabaseProperties {
          * 对外声明的事务类型，供文档与兼容性检查使用。
          */
         private String transactionType = "LOCAL";
+
+        public boolean isEnabled() {
+            return enabled;
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
+
+        public String getRuleConfig() {
+            return ruleConfig;
+        }
+
+        public void setRuleConfig(String ruleConfig) {
+            this.ruleConfig = ruleConfig;
+        }
+
+        public boolean isReuseBeanDataSources() {
+            return reuseBeanDataSources;
+        }
+
+        public void setReuseBeanDataSources(boolean reuseBeanDataSources) {
+            this.reuseBeanDataSources = reuseBeanDataSources;
+        }
+
+        public List<String> getDataSourceBeans() {
+            return dataSourceBeans;
+        }
+
+        public void setDataSourceBeans(List<String> dataSourceBeans) {
+            this.dataSourceBeans = dataSourceBeans;
+        }
+
+        public String getTransactionType() {
+            return transactionType;
+        }
+
+        public void setTransactionType(String transactionType) {
+            this.transactionType = transactionType;
+        }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public Datasource getDatasource() {
+        return datasource;
+    }
+
+    public void setDatasource(Datasource datasource) {
+        this.datasource = datasource;
+    }
+
+    public MongoDb getMongodb() {
+        return mongodb;
+    }
+
+    public void setMongodb(MongoDb mongodb) {
+        this.mongodb = mongodb;
+    }
+
+    public Sharding getSharding() {
+        return sharding;
+    }
+
+    public void setSharding(Sharding sharding) {
+        this.sharding = sharding;
     }
 }

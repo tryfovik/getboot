@@ -43,6 +43,13 @@ public class DatabasePropertyAliasEnvironmentPostProcessor extends PropertyAlias
                 "spring.datasource.",
                 suffix -> !"enabled".equals(suffix) && !suffix.startsWith("init.")
         );
+        aliasPrefix(
+                environment,
+                aliasedProperties,
+                "getboot.database.mongodb.",
+                "spring.data.mongodb.",
+                suffix -> !"enabled".equals(suffix) && !suffix.startsWith("init.")
+        );
         aliasPrefix(environment, aliasedProperties, "getboot.database.mybatis-plus.", "mybatis-plus.");
         aliasPrefix(environment, aliasedProperties, "getboot.database.sharding.props.", "spring.shardingsphere.props.");
         aliasPrefix(environment, aliasedProperties, "getboot.database.sharding.mode.", "spring.shardingsphere.mode.");

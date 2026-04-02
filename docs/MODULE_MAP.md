@@ -46,7 +46,7 @@
 | `getboot-web` | Web 通用模型与异常收口 | 业务项目要直接对外提供 Spring MVC 接口时 | `getboot-observability` / `getboot-auth` | 无强制配置 | `servlet` | [getboot-web/README.md](../getboot-web/README.md) |
 | `getboot-cache` | Redis 缓存能力 | 需要统一 Redis 接入、默认模板和缓存门面时 | `getboot-coordination` / `getboot-lock` / `getboot-webhook` | `getboot.cache.redis.*` | `redis` | [getboot-cache/README.md](../getboot-cache/README.md) |
 | `getboot-coordination` | 分布式协调底座 | 需要 Redisson / Curator 协调基础设施，或者准备接锁、限流、Webhook 时 | `getboot-lock` / `getboot-limiter` / `getboot-webhook` | `getboot.coordination.redisson.*` / `getboot.coordination.zookeeper.*` | `redisson` / `zookeeper.curator` | [getboot-coordination/README.md](../getboot-coordination/README.md) |
-| `getboot-database` | 数据访问增强 | 需要数据源预热、MyBatis-Plus、ShardingSphere 时 | `getboot-transaction` | `getboot.database.*` | `datasource` / `mybatisplus` / `sharding` | [getboot-database/README.md](../getboot-database/README.md) |
+| `getboot-database` | 数据访问增强 | 需要数据源预热、MongoDB 启动校验、MyBatis-Plus、ShardingSphere 时 | `getboot-transaction` | `getboot.database.*` | `datasource` / `mongodb` / `mybatisplus` / `sharding` | [getboot-database/README.md](../getboot-database/README.md) |
 | `getboot-observability` | 可观测性 | 需要统一 Trace、日志上下文、指标、SkyWalking 时 | `getboot-http-client` / `getboot-rpc` / `getboot-mq` | `getboot.observability.trace.*` / `metrics.*` / `prometheus.*` / `management.*` / `skywalking.*` | `servlet` / `webflux` / `reactor` / `prometheus` / `skywalking` | [getboot-observability/README.md](../getboot-observability/README.md) |
 | `getboot-auth` | 认证能力 | 业务项目使用 Sa-Token，想把能力入口收敛到稳定门面时 | `getboot-web` / `getboot-cache` | `getboot.auth.satoken.*` | `satoken` | [getboot-auth/README.md](../getboot-auth/README.md) |
 | `getboot-limiter` | 分布式限流 | 需要在业务方法上直接声明限流规则时 | `getboot-coordination` | `getboot.limiter.*` + `getboot.coordination.redisson.*` | `slidingwindow.redisson` / `tokenbucket.redisson` / `leakybucket.redisson` | [getboot-limiter/README.md](../getboot-limiter/README.md) |
@@ -76,8 +76,8 @@
 
 ## 5. 已明确的后续扩展方向
 
-- `getboot-database`
-  继续评估 `MongoDB`
+- `getboot-http-client`
+  继续评估更通用的客户端封装或新的实现子树
 - `getboot-payment`
   持续围绕 `alipay` / `wechatpay` 两条实现子树演进
 

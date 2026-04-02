@@ -10,8 +10,6 @@
 
 ## P1 现有能力补更多实现
 
-- [ ] 在 `getboot-database` 评估并预留 `MongoDB` 实现方向
-  当前方向评估见 [`getboot-database/docs/MONGODB_DIRECTION_PLAN.md`](../getboot-database/docs/MONGODB_DIRECTION_PLAN.md)。
 - [ ] 在 `getboot-http-client` 继续评估是否补充更通用的客户端封装或新的实现子树
   当前方向评估见 [`getboot-http-client/docs/HTTP_CLIENT_EVOLUTION_PLAN.md`](../getboot-http-client/docs/HTTP_CLIENT_EVOLUTION_PLAN.md)。
 - [ ] 在 `getboot-observability` 继续补可观测性桥接实现，保持 `api/spi/support` 稳定

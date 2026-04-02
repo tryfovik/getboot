@@ -17,7 +17,8 @@ package com.getboot.database.support.datasource;
 
 import com.getboot.database.api.properties.DatabaseProperties;
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
@@ -32,9 +33,9 @@ import java.sql.SQLException;
  *
  * @author qiheng
  */
-@Slf4j
 public class DataSourceInitializer {
 
+    private static final Logger log = LoggerFactory.getLogger(DataSourceInitializer.class);
 
     private final DataSource dataSource;
     private final DatabaseProperties.Init properties;

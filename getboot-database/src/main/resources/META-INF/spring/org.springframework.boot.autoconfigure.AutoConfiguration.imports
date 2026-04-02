@@ -2,3 +2,4 @@ com.getboot.database.infrastructure.mybatisplus.autoconfigure.MybatisPlusAutoCon
 com.getboot.database.infrastructure.mybatisplus.autoconfigure.MetaObjectHandlerAutoConfiguration
 com.getboot.database.infrastructure.sharding.autoconfigure.ShardingDataSourceAutoConfiguration
 com.getboot.database.infrastructure.datasource.autoconfigure.DataSourceAutoConfiguration
+com.getboot.database.infrastructure.mongodb.autoconfigure.MongoDatabaseAutoConfiguration
