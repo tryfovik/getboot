@@ -20,8 +20,16 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * {@link TraceContextHolder} 测试。
+ *
+ * @author qiheng
+ */
 class TraceContextHolderTest {
 
+    /**
+     * 验证 TraceId 绑定与恢复逻辑。
+     */
     @Test
     void shouldBindAndRestoreTraceId() {
         TraceContextHolder.clear();
@@ -40,6 +48,9 @@ class TraceContextHolderTest {
         assertNull(TraceContextHolder.getTraceId());
     }
 
+    /**
+     * 验证绑定空白 TraceId 时会清空线程上下文。
+     */
     @Test
     void shouldClearTraceIdWhenBlankValueIsBound() {
         TraceContextHolder.bindTraceId("trace-1");

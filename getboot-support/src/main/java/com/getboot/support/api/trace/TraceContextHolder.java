@@ -27,8 +27,14 @@ import org.springframework.util.StringUtils;
  */
 public final class TraceContextHolder {
 
+    /**
+     * 当前线程 TraceId 容器。
+     */
     private static final ThreadLocal<String> TRACE_ID_HOLDER = new NamedThreadLocal<>("getbootTraceId");
 
+    /**
+     * 禁止实例化工具类。
+     */
     private TraceContextHolder() {
     }
 

@@ -31,11 +31,17 @@ import java.util.function.Supplier;
  */
 public final class TraceContextPropagationSupport {
 
+    /**
+     * 默认上下文快照工厂。
+     */
     private static final ContextSnapshotFactory CONTEXT_SNAPSHOT_FACTORY = ContextSnapshotFactory.builder()
             .contextRegistry(ContextRegistry.getInstance())
             .clearMissing(true)
             .build();
 
+    /**
+     * 禁止实例化工具类。
+     */
     private TraceContextPropagationSupport() {
     }
 

@@ -34,7 +34,7 @@
 
 ### Foundation
 
-- [ ] `getboot-support`
+- [x] `getboot-support`
 - [ ] `getboot-exception`
 - [x] `getboot-web`
 

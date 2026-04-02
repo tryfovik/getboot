@@ -27,23 +27,44 @@ import io.micrometer.context.ThreadLocalAccessor;
  */
 public class TraceContextThreadLocalAccessor implements ThreadLocalAccessor<String> {
 
+    /**
+     * Micrometer 上下文中的 TraceId 键名。
+     */
     public static final String KEY = "getbootTraceId";
 
+    /**
+     * 返回当前访问器在 Micrometer 上下文中的键。
+     *
+     * @return 上下文键
+     */
     @Override
     public Object key() {
         return KEY;
     }
 
+    /**
+     * 读取当前线程中的 TraceId。
+     *
+     * @return 当前 TraceId
+     */
     @Override
     public String getValue() {
         return TraceContextHolder.getTraceId();
     }
 
+    /**
+     * 向当前线程写入 TraceId。
+     *
+     * @param value TraceId
+     */
     @Override
     public void setValue(String value) {
         TraceContextHolder.bindTraceId(value);
     }
 
+    /**
+     * 清理当前线程中的 TraceId。
+     */
     @Override
     public void setValue() {
         TraceContextHolder.clear();

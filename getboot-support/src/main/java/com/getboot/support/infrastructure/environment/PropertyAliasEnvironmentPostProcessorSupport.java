@@ -36,6 +36,12 @@ import java.util.function.Predicate;
  */
 public abstract class PropertyAliasEnvironmentPostProcessorSupport implements EnvironmentPostProcessor, Ordered {
 
+    /**
+     * 在应用启动早期收集并注册属性别名映射。
+     *
+     * @param environment 当前环境
+     * @param application Spring 应用
+     */
     @Override
     public final void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         Map<String, Object> aliasedProperties = new LinkedHashMap<>();
@@ -47,11 +53,30 @@ public abstract class PropertyAliasEnvironmentPostProcessorSupport implements En
         }
     }
 
+    /**
+     * 返回别名属性源名称。
+     *
+     * @return 属性源名称
+     */
     protected abstract String aliasedPropertySourceName();
 
+    /**
+     * 收集当前模块需要注册的属性别名。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 别名属性容器
+     */
     protected abstract void contributeAliases(ConfigurableEnvironment environment,
                                               Map<String, Object> aliasedProperties);
 
+    /**
+     * 将一个属性前缀整体映射为另一个前缀。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 别名属性容器
+     * @param sourcePrefix 源前缀
+     * @param targetPrefix 目标前缀
+     */
     protected void aliasPrefix(ConfigurableEnvironment environment,
                                Map<String, Object> aliasedProperties,
                                String sourcePrefix,
@@ -59,6 +84,15 @@ public abstract class PropertyAliasEnvironmentPostProcessorSupport implements En
         aliasPrefix(environment, aliasedProperties, sourcePrefix, targetPrefix, suffix -> true);
     }
 
+    /**
+     * 按给定后缀过滤规则映射属性前缀。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 别名属性容器
+     * @param sourcePrefix 源前缀
+     * @param targetPrefix 目标前缀
+     * @param suffixFilter 后缀过滤规则
+     */
     protected void aliasPrefix(ConfigurableEnvironment environment,
                                Map<String, Object> aliasedProperties,
                                String sourcePrefix,
@@ -85,6 +119,11 @@ public abstract class PropertyAliasEnvironmentPostProcessorSupport implements En
         }
     }
 
+    /**
+     * 返回环境后处理器顺序。
+     *
+     * @return 最高优先级
+     */
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;

@@ -29,18 +29,36 @@ import java.util.Map;
  */
 public class MdcThreadLocalAccessor implements ThreadLocalAccessor<Map<String, String>> {
 
+    /**
+     * Micrometer 上下文中的 MDC 键名。
+     */
     public static final String KEY = "getbootMdc";
 
+    /**
+     * 返回当前访问器在 Micrometer 上下文中的键。
+     *
+     * @return 上下文键
+     */
     @Override
     public Object key() {
         return KEY;
     }
 
+    /**
+     * 读取当前线程中的 MDC 值。
+     *
+     * @return MDC 副本
+     */
     @Override
     public Map<String, String> getValue() {
         return MDC.getCopyOfContextMap();
     }
 
+    /**
+     * 向当前线程写入 MDC 值。
+     *
+     * @param value 待写入的 MDC 值
+     */
     @Override
     public void setValue(Map<String, String> value) {
         if (value == null || value.isEmpty()) {
@@ -50,6 +68,9 @@ public class MdcThreadLocalAccessor implements ThreadLocalAccessor<Map<String, S
         MDC.setContextMap(value);
     }
 
+    /**
+     * 清空当前线程中的 MDC 值。
+     */
     @Override
     public void setValue() {
         MDC.clear();

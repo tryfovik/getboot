@@ -30,15 +30,35 @@ import java.util.Map;
  * @author qiheng
  */
 public class SpringContextHolder implements ApplicationContextAware, DisposableBean {
+
+    /**
+     * 静态 Spring 容器引用。
+     */
     private static ApplicationContext applicationContext;
+
+    /**
+     * 当前 Bean 注入的 Spring 容器引用。
+     */
     private ApplicationContext injectedApplicationContext;
 
+    /**
+     * 注入当前 Spring 容器，并同步刷新静态引用。
+     *
+     * @param context Spring 容器
+     */
     @Override
     public void setApplicationContext(@NonNull ApplicationContext context) {
         this.injectedApplicationContext = context;
         applicationContext = context;
     }
 
+    /**
+     * 按类型获取 Bean。
+     *
+     * @param beanType Bean 类型
+     * @param <T> Bean 泛型
+     * @return Bean 实例
+     */
     public static <T> T getBean(Class<T> beanType) {
         if (applicationContext == null) {
             throw new IllegalStateException("ApplicationContext has not been initialized.");
@@ -74,6 +94,9 @@ public class SpringContextHolder implements ApplicationContextAware, DisposableB
         return applicationContext.getBeansOfType(beanType);
     }
 
+    /**
+     * 在 Bean 销毁时清理当前实例写入的静态容器引用。
+     */
     @Override
     public void destroy() {
         if (applicationContext == injectedApplicationContext) {

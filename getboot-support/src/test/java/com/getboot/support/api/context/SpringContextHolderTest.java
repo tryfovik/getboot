@@ -24,8 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * {@link SpringContextHolder} 测试。
+ *
+ * @author qiheng
+ */
 class SpringContextHolderTest {
 
+    /**
+     * 验证能够从注入的 Spring 容器中读取 Bean。
+     */
     @Test
     void shouldReadBeansFromInjectedApplicationContext() {
         GenericApplicationContext context = new GenericApplicationContext();
@@ -40,6 +48,11 @@ class SpringContextHolderTest {
         assertEquals(Map.of("demoString", "demo"), SpringContextHolder.getBeansOfType(String.class));
     }
 
+    /**
+     * 验证销毁后会清理静态容器引用。
+     *
+     * @throws Exception 销毁异常
+     */
     @Test
     void shouldClearStaticContextOnDestroy() throws Exception {
         GenericApplicationContext context = new GenericApplicationContext();

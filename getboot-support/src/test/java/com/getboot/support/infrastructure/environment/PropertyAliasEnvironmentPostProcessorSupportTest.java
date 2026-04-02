@@ -25,8 +25,16 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * {@link PropertyAliasEnvironmentPostProcessorSupport} 测试。
+ *
+ * @author qiheng
+ */
 class PropertyAliasEnvironmentPostProcessorSupportTest {
 
+    /**
+     * 验证注册别名时不会覆盖已经存在的目标配置。
+     */
     @Test
     void shouldRegisterAliasedPropertiesWithoutOverridingExistingTarget() {
         ConfigurableEnvironment environment = new StandardEnvironment();
@@ -43,14 +51,28 @@ class PropertyAliasEnvironmentPostProcessorSupportTest {
         assertEquals("keep-b", environment.getProperty("modern.demo.beta"));
     }
 
+    /**
+     * 测试用属性别名环境后处理器。
+     */
     private static final class DemoPropertyAliasEnvironmentPostProcessor
             extends PropertyAliasEnvironmentPostProcessorSupport {
 
+        /**
+         * 返回测试用属性源名称。
+         *
+         * @return 属性源名称
+         */
         @Override
         protected String aliasedPropertySourceName() {
             return "demoAliases";
         }
 
+        /**
+         * 注册测试用属性别名映射。
+         *
+         * @param environment 当前环境
+         * @param aliasedProperties 别名属性容器
+         */
         @Override
         protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
             aliasPrefix(environment, aliasedProperties, "legacy.demo.", "modern.demo.");
