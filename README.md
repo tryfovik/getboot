@@ -282,6 +282,7 @@ transportMode: "NIO"
 | 分布式限流 | `getboot-coordination` + `getboot-limiter` | 主入口是 `@RateLimit`，注解上直接选择滑动窗口、令牌桶或漏桶 |
 | 幂等去重 | `getboot-idempotency` | 适合下单、支付、回调防重；当前第一版同 key 执行中请求直接拦截，成功后重复请求直接返回缓存结果 |
 | 对象存储上传 / 预签名 | `getboot-storage` | 统一从 `StorageOperator` 进入；当前第一版覆盖 MinIO 上传、下载、删除、元数据和预签名 URL |
+| 短信验证码 / 通知短信 | `getboot-sms` | 统一从 `SmsOperator` 进入；当前第一版覆盖阿里云单发、批量发送和验证码模板场景 |
 | Webhook 安全编排 | `getboot-webhook` | 需要准备 Redis 幂等存储和限流能力，模块内部会复用 `getboot-idempotency` 与 `getboot-limiter` |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
 | RocketMQ / Kafka | `getboot-mq` + `getboot-observability` | 重点看统一生产入口、Trace 透传；RocketMQ 额外支持事务消息路由 |
@@ -312,6 +313,8 @@ transportMode: "NIO"
   数据源预热、MongoDB 启动校验、MyBatis-Plus、ShardingSphere
 - [`getboot-storage`](./getboot-storage/README.md)
   对象上传、下载、删除、元数据读取和预签名 URL
+- [`getboot-sms`](./getboot-sms/README.md)
+  短信发送门面、验证码模板配置和阿里云短信接入
 - [`getboot-observability`](./getboot-observability/README.md)
   Trace、日志上下文、Prometheus、SkyWalking、Reactor 传播
 

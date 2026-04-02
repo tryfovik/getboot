@@ -1,0 +1,23 @@
+getboot:
+  sms:
+    enabled: true
+    type: aliyun
+    default-sign-name: GetBoot
+    scene-sign-names:
+      notice: NoticeSign
+    verification-scenes:
+      login:
+        sign-name: VerifySign
+        template-code: SMS_LOGIN_001
+        code-param-name: code
+        expire-minutes-param-name: expireMinutes
+        extra-params:
+          product: getboot
+    aliyun:
+      enabled: true
+      endpoint: dysmsapi.aliyuncs.com
+      region-id: cn-hangzhou
+      access-key-id: your-access-key-id
+      access-key-secret: your-access-key-secret
+      connect-timeout: 5000
+      read-timeout: 5000
