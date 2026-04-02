@@ -47,11 +47,14 @@ getboot:
       enabled: true
       eager: false
       web-context-unify: true
+      http-method-specify: false
+      block-page: /blocked.html
       transport:
         dashboard: 127.0.0.1:8858
         port: 8719
       filter:
         enabled: true
+        order: -2147483648
       openfeign:
         enabled: true
       rest-template:
@@ -78,6 +81,7 @@ getboot:
 - `getboot.governance.sentinel.rest-template.enabled` 会映射为 `resttemplate.sentinel.enabled`
 - `getboot.governance.sentinel.management.endpoint.enabled` 会映射为 `management.endpoint.sentinel.enabled`
 - `getboot.governance.sentinel.management.health.enabled` 会映射为 `management.health.sentinel.enabled`
+- `getboot.governance.sentinel.transport.*`、`filter.*`、`block-page`、`http-method-specify` 等通用配置会映射到 `spring.cloud.sentinel.*`
 - 当前模块会在类路径存在 Sentinel Aspect 时自动注册 `SentinelResourceAspect`
 - 当前模块暂无独立 SPI，优先通过覆盖 `SentinelResourceAspect` 或复用 Sentinel 标准扩展点定制
 
@@ -88,6 +92,6 @@ getboot:
 ## 边界 / 补充文档
 
 - 当前模块主要负责 Sentinel 配置桥接与切面注册，不承接完整的规则管理平台能力
-- `getboot.governance.sentinel.*` 会桥接到 `spring.cloud.sentinel.*` 及少量周边原生前缀
+- `getboot.governance.sentinel.*` 会桥接到 `spring.cloud.sentinel.*`，其中 OpenFeign、RestTemplate、Actuator 相关开关会改写到各自原生前缀
 - 如果业务只需要统一限流注解和原生 Sentinel 配置，这个模块已经足够；如果还要治理更多中间件，建议继续按能力拆在各自模块内
 - 可直接参考 `src/main/resources/getboot-governance-sentinel.yml.example`

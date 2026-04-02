@@ -36,7 +36,15 @@ public class SentinelPropertyAliasEnvironmentPostProcessor extends PropertyAlias
 
     @Override
     protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
-        aliasPrefix(environment, aliasedProperties, "getboot.governance.sentinel.", "spring.cloud.sentinel.");
+        aliasPrefix(
+                environment,
+                aliasedProperties,
+                "getboot.governance.sentinel.",
+                "spring.cloud.sentinel.",
+                suffix -> !suffix.startsWith("openfeign.")
+                        && !suffix.startsWith("rest-template.")
+                        && !suffix.startsWith("management.")
+        );
         aliasProperty(environment, aliasedProperties,
                 "getboot.governance.sentinel.openfeign.enabled",
                 "feign.sentinel.enabled");

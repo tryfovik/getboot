@@ -5,11 +5,14 @@ getboot:
       enabled: true
       eager: false
       web-context-unify: true
+      http-method-specify: false
+      block-page: /blocked.html
       transport:
         dashboard: 127.0.0.1:8858
         port: 8719
       filter:
         enabled: true
+        order: -2147483648
       openfeign:
         enabled: true
       rest-template:
