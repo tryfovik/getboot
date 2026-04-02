@@ -269,6 +269,7 @@ transportMode: "NIO"
 - `getboot-cache` 的 `CacheOperator` 与默认 `RedisTemplate`
 - `getboot-coordination` 的 Redisson 基础设施
 - `getboot-lock` 的声明式分布式锁
+- `getboot-idempotency` 的重复请求去重与结果复用
 
 ## 常见接入场景
 
@@ -279,6 +280,7 @@ transportMode: "NIO"
 | 分布式协调基础设施 | `getboot-coordination` | 锁、限流、Webhook 这类能力通常先依赖它 |
 | 分布式锁 | `getboot-coordination` + `getboot-lock` | `getboot-lock` 负责能力层，`getboot-coordination` 负责 Redisson / Curator 接入 |
 | 分布式限流 | `getboot-coordination` + `getboot-limiter` | 主入口是 `@RateLimit`，注解上直接选择滑动窗口、令牌桶或漏桶 |
+| 幂等去重 | `getboot-idempotency` | 适合下单、支付、回调防重；当前第一版同 key 执行中请求直接拦截，成功后重复请求直接返回缓存结果 |
 | Webhook 安全编排 | `getboot-webhook` | 需要先准备 Redis / Redisson 环境，模块内部会复用缓存、锁、限流能力 |
 | Dubbo 服务 | `getboot-rpc` + `getboot-observability` | 重点看 RPC 认证、Trace 透传和序列化安全 |
 | RocketMQ / Kafka | `getboot-mq` + `getboot-observability` | 重点看统一生产入口、Trace 透传；RocketMQ 额外支持事务消息路由 |
@@ -318,6 +320,8 @@ transportMode: "NIO"
   分布式限流
 - [`getboot-lock`](./getboot-lock/README.md)
   分布式锁
+- [`getboot-idempotency`](./getboot-idempotency/README.md)
+  幂等去重与结果复用
 - [`getboot-governance`](./getboot-governance/README.md)
   Sentinel 流量治理抽象
 - [`getboot-transaction`](./getboot-transaction/README.md)

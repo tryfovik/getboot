@@ -51,6 +51,7 @@
 | `getboot-auth` | 认证能力 | 业务项目使用 Sa-Token，想把能力入口收敛到稳定门面时 | `getboot-web` / `getboot-cache` | `getboot.auth.satoken.*` | `satoken` | [getboot-auth/README.md](../getboot-auth/README.md) |
 | `getboot-limiter` | 分布式限流 | 需要在业务方法上直接声明限流规则时 | `getboot-coordination` | `getboot.limiter.*` + `getboot.coordination.redisson.*` | `slidingwindow.redisson` / `tokenbucket.redisson` / `leakybucket.redisson` | [getboot-limiter/README.md](../getboot-limiter/README.md) |
 | `getboot-lock` | 分布式锁 | 需要声明式锁注解和默认锁键解析策略时 | `getboot-coordination` | `getboot.lock.*` + `getboot.coordination.redisson.*` / `getboot.coordination.zookeeper.*` | `redis.redisson` / `database.jdbc` / `zookeeper.curator` | [getboot-lock/README.md](../getboot-lock/README.md) |
+| `getboot-idempotency` | 幂等去重 | 需要声明式幂等键、重复请求结果复用、下单/支付/回调防重时 | `getboot-cache` | `getboot.idempotency.*` | `redis` | [getboot-idempotency/README.md](../getboot-idempotency/README.md) |
 | `getboot-governance` | 流量治理 | 需要 Sentinel 接入抽象和统一配置前缀时 | `getboot-http-client` | `getboot.governance.*` | `sentinel` | [getboot-governance/README.md](../getboot-governance/README.md) |
 | `getboot-transaction` | 分布式事务 | 需要 Seata，且想把配置和兼容保护收口到模块内时 | `getboot-database` | `getboot.transaction.*` | `seata` | [getboot-transaction/README.md](../getboot-transaction/README.md) |
 | `getboot-webhook` | 回调安全编排 | 需要统一处理回调验签、限流、幂等、分布式锁时 | `getboot-cache` / `getboot-coordination` / `getboot-limiter` | `getboot.webhook.security.*` | `servlet` | [getboot-webhook/README.md](../getboot-webhook/README.md) |

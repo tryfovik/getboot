@@ -1,0 +1,62 @@
+/*
+ * Copyright (c) 2026 qiheng. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.getboot.idempotency.api.model;
+
+import java.io.Serializable;
+
+/**
+ * Stored idempotent invocation record.
+ *
+ * @author qiheng
+ */
+public class IdempotencyRecord implements Serializable {
+
+    private IdempotencyStatus status;
+
+    private Object result;
+
+    public IdempotencyRecord() {
+    }
+
+    public IdempotencyRecord(IdempotencyStatus status, Object result) {
+        this.status = status;
+        this.result = result;
+    }
+
+    public static IdempotencyRecord processing() {
+        return new IdempotencyRecord(IdempotencyStatus.PROCESSING, null);
+    }
+
+    public static IdempotencyRecord completed(Object result) {
+        return new IdempotencyRecord(IdempotencyStatus.COMPLETED, result);
+    }
+
+    public IdempotencyStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(IdempotencyStatus status) {
+        this.status = status;
+    }
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
+}

@@ -65,6 +65,7 @@
         <module>getboot-job</module>
         <module>getboot-limiter</module>
         <module>getboot-lock</module>
+        <module>getboot-idempotency</module>
         <module>getboot-mq</module>
         <module>getboot-rpc</module>
         <module>getboot-auth</module>
@@ -143,6 +144,11 @@
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-lock</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dt</groupId>
+                <artifactId>getboot-idempotency</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

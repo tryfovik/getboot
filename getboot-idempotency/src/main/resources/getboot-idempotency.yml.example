@@ -1,0 +1,8 @@
+getboot:
+  idempotency:
+    enabled: true
+    type: redis
+    default-ttl-seconds: 300
+    redis:
+      enabled: true
+      key-prefix: getboot:idempotency
