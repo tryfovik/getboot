@@ -29,6 +29,9 @@ import java.util.Map;
  */
 public class SeataPropertyAliasEnvironmentPostProcessor extends PropertyAliasEnvironmentPostProcessorSupport {
 
+    private static final String TRANSACTION_ENABLED_PROPERTY = "getboot.transaction.enabled";
+    private static final String SEATA_ENABLED_PROPERTY = "seata.enabled";
+
     @Override
     protected String aliasedPropertySourceName() {
         return "getbootTransactionSeataAliasedProperties";
@@ -36,6 +39,10 @@ public class SeataPropertyAliasEnvironmentPostProcessor extends PropertyAliasEnv
 
     @Override
     protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
+        if (!environment.getProperty(TRANSACTION_ENABLED_PROPERTY, Boolean.class, true)
+                && !environment.containsProperty(SEATA_ENABLED_PROPERTY)) {
+            aliasedProperties.put(SEATA_ENABLED_PROPERTY, false);
+        }
         aliasPrefix(
                 environment,
                 aliasedProperties,

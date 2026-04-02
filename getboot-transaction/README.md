@@ -29,6 +29,7 @@
 
 - 需要准备 Seata Server、注册中心、配置中心等运行环境
 - 至少开启 `getboot.transaction.enabled=true` 与 `getboot.transaction.seata.enabled=true`
+- 当 `getboot.transaction.enabled=false` 时，会同步压低桥接后的 `seata.enabled=false`，避免底层 Seata 自动装配残留生效
 - 如果与分库分表一起使用，建议同步引入 `getboot-database` 并明确事务组合策略
 - 默认将 `Seata + Sharding` 视为高风险组合；若必须混用，需要显式声明 `allow-sharding-hybrid=true`
 
@@ -66,6 +67,7 @@ getboot:
 - Seata 实现相关代码统一收敛在 `com.getboot.transaction.infrastructure.seata.*`
 - `getboot.transaction.enabled=true` 且 `getboot.transaction.seata.enabled=true` 时，会启用 Seata 配置桥接与兼容性检查
 - 当前兼容检查要求 `getboot.database.sharding.transaction-type=LOCAL`，避免 ShardingSphere 与 Seata 同时接管分布式事务
+- 兼容检查同时识别 `getboot.database.sharding.rules.*` 与原生 `spring.shardingsphere.rules.sharding.*`
 - 当前模块暂无独立 SPI，优先通过替换 `SeataShardingCompatibilityVerifier` Bean 或标准 Spring Bean 覆盖进行定制
 
 ## 已实现技术栈

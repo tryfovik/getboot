@@ -18,7 +18,10 @@ package com.getboot.transaction.support.compatibility;
 import com.getboot.transaction.api.properties.DistributedTransactionProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+import org.springframework.core.env.EnumerablePropertySource;
+import org.springframework.core.env.PropertySource;
 
 import java.util.Locale;
 
@@ -31,6 +34,11 @@ import java.util.Locale;
  */
 @Slf4j
 public class SeataShardingCompatibilityVerifier implements InitializingBean {
+
+    private static final String[] SHARDING_PROPERTY_PREFIXES = {
+            "getboot.database.sharding.rules.",
+            "spring.shardingsphere.rules.sharding."
+    };
 
     private final Environment environment;
     private final DistributedTransactionProperties properties;
@@ -46,7 +54,7 @@ public class SeataShardingCompatibilityVerifier implements InitializingBean {
         if (!properties.isEnabled() || !properties.getSeata().isEnabled()) {
             return;
         }
-        boolean shardingEnabled = environment.getProperty("getboot.database.sharding.enabled", Boolean.class, false);
+        boolean shardingEnabled = isShardingEnabled();
         if (!shardingEnabled) {
             return;
         }
@@ -78,5 +86,27 @@ public class SeataShardingCompatibilityVerifier implements InitializingBean {
             throw new IllegalStateException(message);
         }
         log.warn(message);
+    }
+
+    private boolean isShardingEnabled() {
+        if (environment.getProperty("getboot.database.sharding.enabled", Boolean.class, false)) {
+            return true;
+        }
+        if (!(environment instanceof ConfigurableEnvironment configurableEnvironment)) {
+            return false;
+        }
+        for (PropertySource<?> propertySource : configurableEnvironment.getPropertySources()) {
+            if (!(propertySource instanceof EnumerablePropertySource<?> enumerablePropertySource)) {
+                continue;
+            }
+            for (String propertyName : enumerablePropertySource.getPropertyNames()) {
+                for (String prefix : SHARDING_PROPERTY_PREFIXES) {
+                    if (propertyName.startsWith(prefix)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
