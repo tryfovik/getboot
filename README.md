@@ -351,8 +351,12 @@ transportMode: "NIO"
 
 - [`docs/MODULE_MAP.md`](./docs/MODULE_MAP.md)
   模块选型、接入顺序、配置前缀、模块文档入口
+- [`docs/MODULE_ROADMAP.md`](./docs/MODULE_ROADMAP.md)
+  下一批模块的边界规划与落地顺序
 - [`docs/DDD_PACKAGE_RULES.md`](./docs/DDD_PACKAGE_RULES.md)
   包结构规则
+- [`docs/SEATA_SHARDING_COMPATIBILITY.md`](./docs/SEATA_SHARDING_COMPATIBILITY.md)
+  `Seata + ShardingSphere` 组合约束与配置建议
 - [`docs/TODO.md`](./docs/TODO.md)
   路线图
 
@@ -368,6 +372,7 @@ transportMode: "NIO"
 后续会继续围绕“新项目常见基础能力”推进，优先关注：
 
 - `getboot-observability` 持续补可观测性桥接实现
-- `getboot-ai`、`getboot-storage`、`getboot-search`、`getboot-sms` 等新能力规划
+- 支付能力继续围绕 `alipay` / `wechatpay` 两条实现子树演进
+- 新模块边界与落地顺序，优先看 [`docs/MODULE_ROADMAP.md`](./docs/MODULE_ROADMAP.md)
 
 具体路线继续收敛在 [`docs/TODO.md`](./docs/TODO.md)。

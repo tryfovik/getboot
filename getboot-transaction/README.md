@@ -29,7 +29,7 @@
 
 - 需要准备 Seata Server、注册中心、配置中心等运行环境
 - 至少开启 `getboot.transaction.enabled=true` 与 `getboot.transaction.seata.enabled=true`
-- 当 `getboot.transaction.enabled=false` 时，会同步压低桥接后的 `seata.enabled=false`，避免底层 Seata 自动装配残留生效
+- 当 `getboot.transaction.enabled=false` 且未显式声明原生 `seata.enabled` 时，会同步压低桥接后的 `seata.enabled=false`，避免底层 Seata 自动装配残留生效
 - 如果与分库分表一起使用，建议同步引入 `getboot-database` 并明确事务组合策略
 - 默认将 `Seata + Sharding` 视为高风险组合；若必须混用，需要显式声明 `allow-sharding-hybrid=true`
 
