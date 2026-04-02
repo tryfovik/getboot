@@ -79,7 +79,7 @@
 - 新模块规划
   统一收敛在 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md)
 - 通用组件储备评估
-  统一收敛在 [`docs/TODO.md`](./TODO.md)
+  统一收敛在 [`docs/COMMON_CAPABILITY_ASSESSMENT.md`](./COMMON_CAPABILITY_ASSESSMENT.md)
 - `Seata + ShardingSphere` 组合说明
   统一收敛在 [`docs/SEATA_SHARDING_COMPATIBILITY.md`](./SEATA_SHARDING_COMPATIBILITY.md)
 

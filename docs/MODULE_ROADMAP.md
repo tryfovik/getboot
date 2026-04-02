@@ -17,7 +17,14 @@
 4. `getboot-search`
 5. `getboot-ai`
 
+补充：
+
+- 消息重试、延迟消息、死信治理优先在 `getboot-mq` 模块内增强，不单拆新模块
+- 邮件发送能力可作为 `getboot-mail` 后续候选模块，但优先级低于 `getboot-sms`
+
 排序原则很简单：越接近高频基础能力、越容易形成统一抽象的模块，优先级越高；模型编排、检索增强这类变化更快的能力，放在后面落地。
+
+更细评估见 [`docs/COMMON_CAPABILITY_ASSESSMENT.md`](./COMMON_CAPABILITY_ASSESSMENT.md)。
 
 ## 模块边界矩阵
 

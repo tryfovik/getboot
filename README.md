@@ -353,6 +353,8 @@ transportMode: "NIO"
   模块选型、接入顺序、配置前缀、模块文档入口
 - [`docs/MODULE_ROADMAP.md`](./docs/MODULE_ROADMAP.md)
   下一批模块的边界规划与落地顺序
+- [`docs/COMMON_CAPABILITY_ASSESSMENT.md`](./docs/COMMON_CAPABILITY_ASSESSMENT.md)
+  常用通用能力是否值得单拆模块的评估结论
 - [`docs/DDD_PACKAGE_RULES.md`](./docs/DDD_PACKAGE_RULES.md)
   包结构规则
 - [`docs/SEATA_SHARDING_COMPATIBILITY.md`](./docs/SEATA_SHARDING_COMPATIBILITY.md)
@@ -373,6 +375,7 @@ transportMode: "NIO"
 
 - 现有核心模块优先在各自 README 与模块内文档继续收口，不再把泛化演进项挂在根级 TODO
 - 新模块边界与落地顺序，优先看 [`docs/MODULE_ROADMAP.md`](./docs/MODULE_ROADMAP.md)
+- 常用能力是否单拆模块，优先看 [`docs/COMMON_CAPABILITY_ASSESSMENT.md`](./docs/COMMON_CAPABILITY_ASSESSMENT.md)
 - 仓库级剩余尾项，优先看 [`docs/TODO.md`](./docs/TODO.md)
 
 具体路线继续收敛在 [`docs/TODO.md`](./docs/TODO.md)。
