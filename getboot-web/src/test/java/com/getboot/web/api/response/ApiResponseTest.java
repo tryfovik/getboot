@@ -21,8 +21,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * 统一响应测试。
+ *
+ * @author qiheng
+ */
 class ApiResponseTest {
 
+    /**
+     * 验证默认成功响应。
+     */
     @Test
     void shouldCreateDefaultSuccessResponse() {
         ApiResponse<String> response = ApiResponse.success("ok");
@@ -34,6 +42,9 @@ class ApiResponseTest {
         assertEquals("ok", response.getData());
     }
 
+    /**
+     * 验证默认失败响应。
+     */
     @Test
     void shouldCreateDefaultFailResponse() {
         ApiResponse<Void> response = ApiResponse.fail();
@@ -44,6 +55,9 @@ class ApiResponseTest {
         assertEquals(ApiResponse.SYSTEM_ERROR_CODE, response.getCode());
     }
 
+    /**
+     * 验证调试信息链式设置。
+     */
     @Test
     void shouldUpdateDebugInfo() {
         ApiResponse<Void> response = ApiResponse.<Void>success()

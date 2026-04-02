@@ -71,7 +71,8 @@ Foundation 模块允许更轻量，但也必须保证“稳定层和实现层”
 
 ### 3.4 注释与日志语言约定
 
-- 代码注释、类注释、方法注释默认使用中文，优先降低仓库维护者的阅读门槛
+- 代码注释、类注释、字段注释、方法注释默认使用中文，优先降低仓库维护者的阅读门槛
+- 不能提交没有中文注释的类、字段和手写方法；如果是纯数据载体类，至少要有类注释和字段注释
 - 日志、异常消息、对外返回的技术性错误描述优先使用英文，便于统一检索、国际化和跨团队排障
 - 如果某段注释必须引用第三方术语，先用中文说清语义，再保留必要英文名词
 
@@ -81,6 +82,7 @@ Foundation 模块允许更轻量，但也必须保证“稳定层和实现层”
 - `request`、`response`、`properties`、`dto`、`item` 这类纯数据载体，默认直接使用 Lombok，不再重复手写 getter / setter / equals / hashCode / toString
 - 纯可变载体默认优先使用 `@Data`；只有需要限制方法暴露范围、定制只读行为，或存在明确业务逻辑时，才退回 `@Getter` / `@Setter` 或手写方法
 - 带有显式拷贝、防御性赋值、参数归一化的 setter 可以保留手写实现，但其余访问器仍应交给 Lombok 生成
+- 使用 Lombok 的纯载体类，不要求为 Lombok 生成的 getter / setter 重复补方法注释；由类注释和字段注释承担语义说明
 - 模块一旦使用 Lombok 注解，模块 `pom.xml` 里必须显式声明 `org.projectlombok:lombok` 的 `provided` 依赖，避免 IDE 和 Maven 表现不一致
 
 ## 4. 依赖方向
@@ -266,4 +268,5 @@ mvn -q -Dmaven.repo.local=.m2 -pl <module> -am test
 
 - 模块地图：`docs/MODULE_MAP.md`
 - 包结构规则：`docs/DDD_PACKAGE_RULES.md`
+- 风格治理清单：`docs/MODULE_STYLE_CHECKLIST.md`
 - 路线图：`docs/TODO.md`

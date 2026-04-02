@@ -19,8 +19,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * 分页请求测试。
+ *
+ * @author qiheng
+ */
 class PagingRequestTest {
 
+    /**
+     * 验证分页请求默认值。
+     */
     @Test
     void shouldUseDefaultPagingValues() {
         PagingRequest request = new PagingRequest();

@@ -27,6 +27,9 @@ import java.io.Serializable;
  */
 @Data
 public class PagingRequest implements Serializable {
+    /**
+     * 序列化版本号。
+     */
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -34,6 +37,7 @@ public class PagingRequest implements Serializable {
      * 当前页
      */
     private int currentPage = 1;
+
     /**
      * 每页结果数
      */

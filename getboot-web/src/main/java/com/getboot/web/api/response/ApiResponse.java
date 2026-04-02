@@ -40,6 +40,9 @@ import java.time.format.DateTimeFormatter;
 @Accessors(chain = true)
 @ToString
 public class ApiResponse<T> implements Serializable {
+    /**
+     * 序列化版本号。
+     */
     @Serial
     private static final long serialVersionUID = 1L;
 
@@ -63,7 +66,9 @@ public class ApiResponse<T> implements Serializable {
      */
     public static final String DEFAULT_SYSTEM_ERROR_MESSAGE = CommonErrorCode.ERROR.message();
 
-    // DateTimeFormatter 是线程安全的
+    /**
+     * 调试时间格式化器。
+     */
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     /**
@@ -110,6 +115,9 @@ public class ApiResponse<T> implements Serializable {
     @Accessors(chain = true)
     @ToString
     public static class DebugInfo implements Serializable {
+        /**
+         * 序列化版本号。
+         */
         @Serial
         private static final long serialVersionUID = 1L;
 

@@ -38,8 +38,12 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PagingResponse<T> implements Serializable {
+    /**
+     * 序列化版本号。
+     */
     @Serial
     private static final long serialVersionUID = 8545996863226528798L;
+
     /**
      * 查询数据列表
      */
@@ -51,11 +55,13 @@ public class PagingResponse<T> implements Serializable {
      */
     @Builder.Default
     protected long total = 0;
+
     /**
      * 每页显示条数，默认 10
      */
     @Builder.Default
     protected long size = 10;
+
     /**
      * 当前页
      */
@@ -67,5 +73,4 @@ public class PagingResponse<T> implements Serializable {
      */
     @Builder.Default
     protected long pages = 1;
-
 }

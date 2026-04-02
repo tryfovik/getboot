@@ -49,6 +49,12 @@ import java.util.Set;
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class GlobalExceptionHandler {
 
+    /**
+     * 处理业务异常。
+     *
+     * @param businessException 业务异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(BusinessException.class)
     public ApiResponse<Void> handleBusinessException(BusinessException businessException) {
         Integer code = CommonErrorCode.ERROR.code();
@@ -57,7 +63,7 @@ public class GlobalExceptionHandler {
         ErrorCode errorCode = businessException.getErrorCode();
         if (errorCode != null) {
             code = errorCode.code();
-            // Prefer the custom message carried by the business exception.
+            // 优先使用业务异常自身携带的提示信息。
             message = businessException.getMessage();
         }
 
@@ -69,6 +75,12 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(code, message);
     }
 
+    /**
+     * 处理参数校验异常。
+     *
+     * @param ex 参数校验异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ApiResponse<Void> handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         BindingResult bindingResult = ex.getBindingResult();
@@ -93,12 +105,24 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(CommonErrorCode.PARAM_ERROR.code(), errorMessage);
     }
 
+    /**
+     * 处理资源不存在异常。
+     *
+     * @param ex 资源不存在异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(NoResourceFoundException.class)
     public ApiResponse<Void> handleNoResourceFoundException(NoResourceFoundException ex) {
         log.warn("Resource not found: {}", ex.getMessage());
         return ApiResponse.fail(CommonErrorCode.NOT_FOUND.code(), CommonErrorCode.NOT_FOUND.message());
     }
 
+    /**
+     * 处理请求头缺失异常。
+     *
+     * @param ex 请求头缺失异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ApiResponse<Void> handleMissingRequestHeaderException(MissingRequestHeaderException ex) {
         String customMessage = CommonErrorCode.REQUEST_HEADER_ERROR.message() + " Missing header: " + ex.getHeaderName();
@@ -106,18 +130,37 @@ public class GlobalExceptionHandler {
         return ApiResponse.fail(CommonErrorCode.REQUEST_HEADER_ERROR.code(), customMessage);
     }
 
+    /**
+     * 处理不支持的媒体类型异常。
+     *
+     * @param ex 媒体类型异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
     public ApiResponse<Void> handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException ex) {
         log.warn("Unsupported media type: {}", ex.getMessage());
         return ApiResponse.fail(CommonErrorCode.UNSUPPORTED_MEDIA_TYPE.code(), CommonErrorCode.UNSUPPORTED_MEDIA_TYPE.message());
     }
 
+    /**
+     * 处理不支持的请求方法异常。
+     *
+     * @param ex 请求方法异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     public ApiResponse<Void> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException ex) {
         log.warn("HTTP method not allowed: {}", ex.getMessage());
         return ApiResponse.fail(CommonErrorCode.METHOD_NOT_ALLOWED.code(), CommonErrorCode.METHOD_NOT_ALLOWED.message());
     }
 
+    /**
+     * 处理兜底系统异常。
+     *
+     * @param request 当前请求
+     * @param ex 系统异常
+     * @return 标准失败响应
+     */
     @ExceptionHandler(Exception.class)
     public ApiResponse<Void> handleException(HttpServletRequest request, Exception ex) {
         log.error("Unhandled exception. path={}, message={}", request.getRequestURI(), ex.getMessage(), ex);
