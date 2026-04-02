@@ -20,7 +20,7 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Import;
 
 /**
- * Storage module auto-configuration entry.
+ * 对象存储模块自动配置入口。
  *
  * @author qiheng
  */

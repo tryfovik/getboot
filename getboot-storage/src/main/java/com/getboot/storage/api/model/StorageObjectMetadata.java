@@ -15,82 +15,59 @@
  */
 package com.getboot.storage.api.model;
 
+import lombok.Data;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Object metadata descriptor.
+ * 对象元数据描述。
  *
  * @author qiheng
  */
+@Data
 public class StorageObjectMetadata {
 
+    /**
+     * 所属存储桶。
+     */
     private String bucket;
 
+    /**
+     * 对象键。
+     */
     private String objectKey;
 
+    /**
+     * 内容长度。
+     */
     private long contentLength;
 
+    /**
+     * 内容类型。
+     */
     private String contentType;
 
+    /**
+     * ETag。
+     */
     private String etag;
 
+    /**
+     * 版本号。
+     */
     private String versionId;
 
+    /**
+     * 用户元数据。
+     */
     private Map<String, String> metadata = new LinkedHashMap<>();
 
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public long getContentLength() {
-        return contentLength;
-    }
-
-    public void setContentLength(long contentLength) {
-        this.contentLength = contentLength;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public String getEtag() {
-        return etag;
-    }
-
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public void setVersionId(String versionId) {
-        this.versionId = versionId;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
+    /**
+     * 设置用户元数据。
+     *
+     * @param metadata 用户元数据
+     */
     public void setMetadata(Map<String, String> metadata) {
         this.metadata = metadata == null ? new LinkedHashMap<>() : new LinkedHashMap<>(metadata);
     }

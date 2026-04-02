@@ -16,11 +16,19 @@
 package com.getboot.storage.spi;
 
 /**
- * Object key generator SPI.
+ * 对象键生成扩展点。
  *
  * @author qiheng
  */
 public interface StorageObjectKeyGenerator {
 
+    /**
+     * 生成最终对象键。
+     *
+     * @param scene 业务场景
+     * @param requestedObjectKey 显式指定的对象键
+     * @param originalFilename 原始文件名
+     * @return 最终对象键
+     */
     String generateKey(String scene, String requestedObjectKey, String originalFilename);
 }

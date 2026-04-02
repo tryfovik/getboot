@@ -23,12 +23,20 @@ import java.util.Locale;
 import java.util.UUID;
 
 /**
- * Default object key generator.
+ * 默认对象键生成器。
  *
  * @author qiheng
  */
 public class DefaultStorageObjectKeyGenerator implements StorageObjectKeyGenerator {
 
+    /**
+     * 生成对象键。
+     *
+     * @param scene 业务场景
+     * @param requestedObjectKey 显式指定的对象键
+     * @param originalFilename 原始文件名
+     * @return 最终对象键
+     */
     @Override
     public String generateKey(String scene, String requestedObjectKey, String originalFilename) {
         if (StringUtils.hasText(requestedObjectKey)) {
@@ -50,6 +58,12 @@ public class DefaultStorageObjectKeyGenerator implements StorageObjectKeyGenerat
                 + extension;
     }
 
+    /**
+     * 规整场景片段。
+     *
+     * @param scene 业务场景
+     * @return 规整后的场景片段
+     */
     private String normalizeSegment(String scene) {
         if (!StringUtils.hasText(scene)) {
             return "default";
@@ -61,6 +75,12 @@ public class DefaultStorageObjectKeyGenerator implements StorageObjectKeyGenerat
         return StringUtils.hasText(normalized) ? normalized : "default";
     }
 
+    /**
+     * 提取文件扩展名。
+     *
+     * @param originalFilename 原始文件名
+     * @return 规整后的扩展名
+     */
     private String extractExtension(String originalFilename) {
         if (!StringUtils.hasText(originalFilename)) {
             return "";

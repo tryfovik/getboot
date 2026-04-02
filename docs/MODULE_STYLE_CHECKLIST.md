@@ -43,7 +43,7 @@
 - [ ] `getboot-cache`
 - [ ] `getboot-coordination`
 - [ ] `getboot-database`
-- [ ] `getboot-storage`
+- [x] `getboot-storage`
 - [x] `getboot-sms`
 - [ ] `getboot-observability`
 

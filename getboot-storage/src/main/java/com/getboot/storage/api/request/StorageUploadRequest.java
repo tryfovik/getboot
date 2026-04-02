@@ -15,93 +15,65 @@
  */
 package com.getboot.storage.api.request;
 
+import lombok.Data;
+
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Object upload request.
+ * 对象上传请求。
  *
  * @author qiheng
  */
+@Data
 public class StorageUploadRequest {
 
+    /**
+     * 业务场景。
+     */
     private String scene;
 
+    /**
+     * 指定存储桶。
+     */
     private String bucket;
 
+    /**
+     * 对象键。
+     */
     private String objectKey;
 
+    /**
+     * 原始文件名。
+     */
     private String originalFilename;
 
+    /**
+     * 内容类型。
+     */
     private String contentType;
 
+    /**
+     * 内容长度。
+     */
     private long contentLength = -1L;
 
+    /**
+     * 输入流。
+     */
     private InputStream inputStream;
 
+    /**
+     * 用户自定义元数据。
+     */
     private Map<String, String> metadata = new LinkedHashMap<>();
 
-    public String getScene() {
-        return scene;
-    }
-
-    public void setScene(String scene) {
-        this.scene = scene;
-    }
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public String getOriginalFilename() {
-        return originalFilename;
-    }
-
-    public void setOriginalFilename(String originalFilename) {
-        this.originalFilename = originalFilename;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public long getContentLength() {
-        return contentLength;
-    }
-
-    public void setContentLength(long contentLength) {
-        this.contentLength = contentLength;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
-    public void setInputStream(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
+    /**
+     * 设置用户自定义元数据。
+     *
+     * @param metadata 用户自定义元数据
+     */
     public void setMetadata(Map<String, String> metadata) {
         this.metadata = metadata == null ? new LinkedHashMap<>() : new LinkedHashMap<>(metadata);
     }

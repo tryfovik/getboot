@@ -18,16 +18,25 @@ package com.getboot.storage.api.constant;
 import java.time.Duration;
 
 /**
- * Storage constants.
+ * 对象存储模块常量。
  *
  * @author qiheng
  */
 public final class StorageConstants {
 
+    /**
+     * 工具类私有构造器。
+     */
     private StorageConstants() {
     }
 
+    /**
+     * MinIO 存储类型标识。
+     */
     public static final String STORAGE_TYPE_MINIO = "minio";
 
+    /**
+     * 默认预签名 URL 有效期。
+     */
     public static final Duration DEFAULT_PRESIGNED_URL_TTL = Duration.ofMinutes(15);
 }

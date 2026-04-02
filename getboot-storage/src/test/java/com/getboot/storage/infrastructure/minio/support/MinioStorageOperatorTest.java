@@ -61,8 +61,18 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+/**
+ * MinIO 对象存储门面测试。
+ *
+ * @author qiheng
+ */
 class MinioStorageOperatorTest {
 
+    /**
+     * 验证上传对象时自动创建存储桶并返回元数据。
+     *
+     * @throws Exception 测试过程中可能抛出的异常
+     */
     @Test
     void shouldUploadObjectAndCreateBucketWhenMissing() throws Exception {
         MinioClient minioClient = mock(MinioClient.class);
@@ -118,6 +128,11 @@ class MinioStorageOperatorTest {
         assertEquals(Map.of("tenant", "acme", "traceid", "trace-001"), metadata.getMetadata());
     }
 
+    /**
+     * 验证下载对象时映射元数据与文件内容。
+     *
+     * @throws Exception 测试过程中可能抛出的异常
+     */
     @Test
     void shouldMapDownloadMetadataAndPayload() throws Exception {
         MinioClient minioClient = mock(MinioClient.class);
@@ -174,6 +189,11 @@ class MinioStorageOperatorTest {
         assertEquals("invoice/ready.pdf", getObjectArgs.getValue().object());
     }
 
+    /**
+     * 验证删除对象时使用解析后的存储桶。
+     *
+     * @throws Exception 测试过程中可能抛出的异常
+     */
     @Test
     void shouldRemoveObjectFromResolvedBucket() throws Exception {
         MinioClient minioClient = mock(MinioClient.class);
@@ -195,6 +215,11 @@ class MinioStorageOperatorTest {
         assertEquals("invoice/obsolete.pdf", removeObjectArgs.getValue().object());
     }
 
+    /**
+     * 验证上传预签名地址使用公共域名。
+     *
+     * @throws Exception 测试过程中可能抛出的异常
+     */
     @Test
     void shouldGenerateUploadPresignedUrlWithPublicEndpoint() throws Exception {
         MinioClient minioClient = mock(MinioClient.class);
@@ -236,6 +261,11 @@ class MinioStorageOperatorTest {
         );
     }
 
+    /**
+     * 验证下载预签名地址使用默认有效期。
+     *
+     * @throws Exception 测试过程中可能抛出的异常
+     */
     @Test
     void shouldGenerateDownloadPresignedUrlWithDefaultTtl() throws Exception {
         MinioClient minioClient = mock(MinioClient.class);
@@ -272,6 +302,15 @@ class MinioStorageOperatorTest {
         );
     }
 
+    /**
+     * 构造 MinIO 对象存储门面。
+     *
+     * @param minioClient MinIO 客户端
+     * @param properties 对象存储配置
+     * @param objectKeyGenerator 对象键生成器
+     * @param customizers 元数据定制器集合
+     * @return MinIO 对象存储门面
+     */
     private MinioStorageOperator newOperator(MinioClient minioClient,
                                              StorageProperties properties,
                                              StorageObjectKeyGenerator objectKeyGenerator,
@@ -280,6 +319,11 @@ class MinioStorageOperatorTest {
         return new MinioStorageOperator(minioClient, bucketRouter, objectKeyGenerator, customizers, properties);
     }
 
+    /**
+     * 构造测试用对象存储配置。
+     *
+     * @return 对象存储配置
+     */
     private StorageProperties storageProperties() {
         StorageProperties properties = new StorageProperties();
         properties.setDefaultBucket("default-bucket");
@@ -291,10 +335,27 @@ class MinioStorageOperatorTest {
         return properties;
     }
 
+    /**
+     * 构造空响应头。
+     *
+     * @return 空响应头
+     */
     private Headers emptyHeaders() {
         return new Headers.Builder().build();
     }
 
+    /**
+     * 构造对象元数据响应。
+     *
+     * @param bucket 存储桶
+     * @param objectKey 对象键
+     * @param contentLength 内容长度
+     * @param contentType 内容类型
+     * @param etag ETag
+     * @param versionId 版本号
+     * @param metadata 用户元数据
+     * @return MinIO 元数据响应
+     */
     private StatObjectResponse statObjectResponse(String bucket,
                                                   String objectKey,
                                                   long contentLength,

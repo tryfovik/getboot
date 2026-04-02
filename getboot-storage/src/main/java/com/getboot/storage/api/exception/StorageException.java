@@ -16,16 +16,27 @@
 package com.getboot.storage.api.exception;
 
 /**
- * Storage exception.
+ * 对象存储模块异常。
  *
  * @author qiheng
  */
 public class StorageException extends RuntimeException {
 
+    /**
+     * 使用错误信息构造对象存储异常。
+     *
+     * @param message 错误信息
+     */
     public StorageException(String message) {
         super(message);
     }
 
+    /**
+     * 使用错误信息和根因构造对象存储异常。
+     *
+     * @param message 错误信息
+     * @param cause 根因异常
+     */
     public StorageException(String message, Throwable cause) {
         super(message, cause);
     }

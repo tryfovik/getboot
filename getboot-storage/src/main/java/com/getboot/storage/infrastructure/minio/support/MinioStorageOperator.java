@@ -50,22 +50,56 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * MinIO-backed storage operator.
+ * 基于 MinIO 的对象存储门面实现。
  *
  * @author qiheng
  */
 public class MinioStorageOperator implements StorageOperator {
 
+    /**
+     * 未知大小上传时使用的分片大小。
+     */
     private static final long UNKNOWN_SIZE_PART_SIZE = 10 * 1024 * 1024L;
 
+    /**
+     * MinIO 允许的最大预签名有效期。
+     */
     private static final Duration MAX_PRESIGNED_TTL = Duration.ofDays(7);
 
+    /**
+     * MinIO 客户端。
+     */
     private final MinioClient minioClient;
+
+    /**
+     * 存储桶路由器。
+     */
     private final StorageBucketRouter storageBucketRouter;
+
+    /**
+     * 对象键生成器。
+     */
     private final StorageObjectKeyGenerator storageObjectKeyGenerator;
+
+    /**
+     * 元数据定制器集合。
+     */
     private final List<StorageMetadataCustomizer> metadataCustomizers;
+
+    /**
+     * 对象存储模块配置。
+     */
     private final StorageProperties properties;
 
+    /**
+     * 构造 MinIO 对象存储门面。
+     *
+     * @param minioClient MinIO 客户端
+     * @param storageBucketRouter 存储桶路由器
+     * @param storageObjectKeyGenerator 对象键生成器
+     * @param metadataCustomizers 元数据定制器集合
+     * @param properties 对象存储模块配置
+     */
     public MinioStorageOperator(MinioClient minioClient,
                                 StorageBucketRouter storageBucketRouter,
                                 StorageObjectKeyGenerator storageObjectKeyGenerator,
@@ -78,6 +112,12 @@ public class MinioStorageOperator implements StorageOperator {
         this.properties = properties;
     }
 
+    /**
+     * 上传对象。
+     *
+     * @param request 上传请求
+     * @return 对象元数据
+     */
     @Override
     public StorageObjectMetadata upload(StorageUploadRequest request) {
         if (request == null || request.getInputStream() == null) {
@@ -130,6 +170,12 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 下载对象。
+     *
+     * @param request 查询请求
+     * @return 下载响应
+     */
     @Override
     public StorageDownloadResponse download(StorageObjectRequest request) {
         String bucket = StorageSupport.resolveBucket(
@@ -164,6 +210,12 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 查询对象元数据。
+     *
+     * @param request 查询请求
+     * @return 对象元数据
+     */
     @Override
     public StorageObjectMetadata stat(StorageObjectRequest request) {
         String bucket = StorageSupport.resolveBucket(
@@ -185,6 +237,12 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 生成预签名 URL。
+     *
+     * @param request 预签名请求
+     * @return 预签名响应
+     */
     @Override
     public StoragePresignResponse generatePresignedUrl(StoragePresignRequest request) {
         if (request == null || request.getMethod() == null) {
@@ -238,6 +296,11 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 删除对象。
+     *
+     * @param request 删除请求
+     */
     @Override
     public void delete(StorageObjectRequest request) {
         String bucket = StorageSupport.resolveBucket(
@@ -256,6 +319,11 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 在需要时确保存储桶存在。
+     *
+     * @param bucket 存储桶名称
+     */
     private void ensureBucketExistsIfNecessary(String bucket) {
         if (!properties.getMinio().isCreateBucketIfMissing()) {
             return;
@@ -275,10 +343,24 @@ public class MinioStorageOperator implements StorageOperator {
         }
     }
 
+    /**
+     * 将预签名方法转换为 MinIO HTTP 方法。
+     *
+     * @param method 预签名方法
+     * @return MinIO HTTP 方法
+     */
     private Method toMethod(StoragePresignMethod method) {
         return method == StoragePresignMethod.UPLOAD ? Method.PUT : Method.GET;
     }
 
+    /**
+     * 将 MinIO 元数据响应转换为统一元数据对象。
+     *
+     * @param bucket 存储桶名称
+     * @param objectKey 对象键
+     * @param response MinIO 元数据响应
+     * @return 统一元数据对象
+     */
     private StorageObjectMetadata toMetadata(String bucket,
                                              String objectKey,
                                              StatObjectResponse response) {
@@ -293,6 +375,12 @@ public class MinioStorageOperator implements StorageOperator {
         return metadata;
     }
 
+    /**
+     * 在配置了公共地址时重写预签名 URL 前缀。
+     *
+     * @param generatedUrl MinIO 生成的预签名 URL
+     * @return 重写后的预签名 URL
+     */
     private String rewriteEndpointIfNecessary(String generatedUrl) {
         String publicEndpoint = properties.getMinio().getPublicEndpoint();
         String endpoint = properties.getMinio().getEndpoint();

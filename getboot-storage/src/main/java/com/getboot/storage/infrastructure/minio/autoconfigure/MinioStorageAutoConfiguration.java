@@ -35,7 +35,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 /**
- * MinIO storage auto-configuration.
+ * MinIO 对象存储自动配置。
  *
  * @author qiheng
  */
@@ -45,6 +45,12 @@ import java.util.List;
 @ConditionalOnExpression("'${getboot.storage.type:minio}' == 'minio' and '${getboot.storage.minio.enabled:true}' == 'true'")
 public class MinioStorageAutoConfiguration {
 
+    /**
+     * 注册 MinIO 客户端。
+     *
+     * @param properties 对象存储模块配置
+     * @return MinIO 客户端
+     */
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "getboot.storage.minio", name = {"endpoint", "access-key", "secret-key"})
@@ -59,6 +65,16 @@ public class MinioStorageAutoConfiguration {
         return builder.build();
     }
 
+    /**
+     * 注册默认对象存储门面。
+     *
+     * @param minioClient MinIO 客户端
+     * @param storageBucketRouter 存储桶路由器
+     * @param storageObjectKeyGenerator 对象键生成器
+     * @param metadataCustomizers 元数据定制器提供器
+     * @param properties 对象存储模块配置
+     * @return 对象存储门面
+     */
     @Bean
     @ConditionalOnBean(MinioClient.class)
     @ConditionalOnMissingBean(StorageOperator.class)

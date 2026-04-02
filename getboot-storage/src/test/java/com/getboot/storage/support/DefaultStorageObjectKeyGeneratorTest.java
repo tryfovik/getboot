@@ -22,10 +22,21 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * 默认对象键生成器测试。
+ *
+ * @author qiheng
+ */
 class DefaultStorageObjectKeyGeneratorTest {
 
+    /**
+     * 默认对象键生成器。
+     */
     private final DefaultStorageObjectKeyGenerator generator = new DefaultStorageObjectKeyGenerator();
 
+    /**
+     * 验证显式对象键优先返回。
+     */
     @Test
     void shouldKeepExplicitObjectKey() {
         String key = generator.generateKey("invoice", "  invoice/custom-file.pdf  ", "ignored.pdf");
@@ -33,6 +44,9 @@ class DefaultStorageObjectKeyGeneratorTest {
         assertEquals("invoice/custom-file.pdf", key);
     }
 
+    /**
+     * 验证按场景和日期生成对象键并保留扩展名。
+     */
     @Test
     void shouldGenerateSceneDateBasedKeyAndPreserveExtension() {
         LocalDate today = LocalDate.now();

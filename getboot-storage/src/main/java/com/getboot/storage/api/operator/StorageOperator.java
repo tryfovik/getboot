@@ -23,19 +23,48 @@ import com.getboot.storage.api.response.StorageDownloadResponse;
 import com.getboot.storage.api.response.StoragePresignResponse;
 
 /**
- * Object storage operator.
+ * 对象存储门面。
  *
  * @author qiheng
  */
 public interface StorageOperator {
 
+    /**
+     * 上传对象。
+     *
+     * @param request 上传请求
+     * @return 对象元数据
+     */
     StorageObjectMetadata upload(StorageUploadRequest request);
 
+    /**
+     * 下载对象。
+     *
+     * @param request 查询请求
+     * @return 下载响应
+     */
     StorageDownloadResponse download(StorageObjectRequest request);
 
+    /**
+     * 查询对象元数据。
+     *
+     * @param request 查询请求
+     * @return 对象元数据
+     */
     StorageObjectMetadata stat(StorageObjectRequest request);
 
+    /**
+     * 生成预签名 URL。
+     *
+     * @param request 预签名请求
+     * @return 预签名响应
+     */
     StoragePresignResponse generatePresignedUrl(StoragePresignRequest request);
 
+    /**
+     * 删除对象。
+     *
+     * @param request 删除请求
+     */
     void delete(StorageObjectRequest request);
 }

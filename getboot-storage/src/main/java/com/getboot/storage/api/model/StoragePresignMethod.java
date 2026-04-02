@@ -16,13 +16,19 @@
 package com.getboot.storage.api.model;
 
 /**
- * Presigned URL method.
+ * 预签名 URL 请求方法。
  *
  * @author qiheng
  */
 public enum StoragePresignMethod {
 
+    /**
+     * 下载预签名。
+     */
     DOWNLOAD,
 
+    /**
+     * 上传预签名。
+     */
     UPLOAD
 }

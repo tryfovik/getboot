@@ -30,15 +30,26 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Shared storage helper methods.
+ * 对象存储通用辅助方法。
  *
  * @author qiheng
  */
 public final class StorageSupport {
 
+    /**
+     * 工具类私有构造器。
+     */
     private StorageSupport() {
     }
 
+    /**
+     * 解析最终存储桶。
+     *
+     * @param scene 业务场景
+     * @param requestedBucket 显式指定的存储桶
+     * @param bucketRouter 存储桶路由器
+     * @return 最终存储桶
+     */
     public static String resolveBucket(String scene,
                                        String requestedBucket,
                                        StorageBucketRouter bucketRouter) {
@@ -49,6 +60,15 @@ public final class StorageSupport {
         return bucket;
     }
 
+    /**
+     * 解析最终对象键。
+     *
+     * @param scene 业务场景
+     * @param requestedObjectKey 显式指定的对象键
+     * @param originalFilename 原始文件名
+     * @param objectKeyGenerator 对象键生成器
+     * @return 最终对象键
+     */
     public static String resolveObjectKey(String scene,
                                           String requestedObjectKey,
                                           String originalFilename,
@@ -60,6 +80,12 @@ public final class StorageSupport {
         return objectKey;
     }
 
+    /**
+     * 校验对象键。
+     *
+     * @param objectKey 对象键
+     * @return 规整后的对象键
+     */
     public static String requireObjectKey(String objectKey) {
         if (!StringUtils.hasText(objectKey)) {
             throw new StorageException("Storage object key must not be empty.");
@@ -67,6 +93,14 @@ public final class StorageSupport {
         return objectKey.trim();
     }
 
+    /**
+     * 解析预签名有效期。
+     *
+     * @param requestedTtl 显式指定的有效期
+     * @param method 预签名方法
+     * @param properties 对象存储模块配置
+     * @return 最终有效期
+     */
     public static Duration resolvePresignTtl(Duration requestedTtl,
                                              StoragePresignMethod method,
                                              StorageProperties properties) {
@@ -77,6 +111,13 @@ public final class StorageSupport {
         return ttl;
     }
 
+    /**
+     * 合并上传元数据。
+     *
+     * @param request 上传请求
+     * @param metadataCustomizers 元数据定制器
+     * @return 合并后的元数据
+     */
     public static Map<String, String> mergeMetadata(StorageUploadRequest request,
                                                     List<StorageMetadataCustomizer> metadataCustomizers) {
         Map<String, String> metadata = request.getMetadata() == null

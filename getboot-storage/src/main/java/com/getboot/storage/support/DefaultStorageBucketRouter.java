@@ -20,18 +20,33 @@ import com.getboot.storage.spi.StorageBucketRouter;
 import org.springframework.util.StringUtils;
 
 /**
- * Default bucket router.
+ * 默认存储桶路由器。
  *
  * @author qiheng
  */
 public class DefaultStorageBucketRouter implements StorageBucketRouter {
 
+    /**
+     * 对象存储模块配置。
+     */
     private final StorageProperties properties;
 
+    /**
+     * 构造默认存储桶路由器。
+     *
+     * @param properties 对象存储模块配置
+     */
     public DefaultStorageBucketRouter(StorageProperties properties) {
         this.properties = properties;
     }
 
+    /**
+     * 解析最终存储桶。
+     *
+     * @param scene 业务场景
+     * @param requestedBucket 显式指定的存储桶
+     * @return 最终存储桶
+     */
     @Override
     public String resolveBucket(String scene, String requestedBucket) {
         if (StringUtils.hasText(requestedBucket)) {

@@ -15,40 +15,28 @@
  */
 package com.getboot.storage.api.request;
 
+import lombok.Data;
+
 /**
- * Object lookup request.
+ * 对象查询请求。
  *
  * @author qiheng
  */
+@Data
 public class StorageObjectRequest {
 
+    /**
+     * 业务场景。
+     */
     private String scene;
 
+    /**
+     * 指定存储桶。
+     */
     private String bucket;
 
+    /**
+     * 对象键。
+     */
     private String objectKey;
-
-    public String getScene() {
-        return scene;
-    }
-
-    public void setScene(String scene) {
-        this.scene = scene;
-    }
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
 }

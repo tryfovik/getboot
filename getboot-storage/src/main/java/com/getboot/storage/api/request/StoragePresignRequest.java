@@ -16,83 +16,50 @@
 package com.getboot.storage.api.request;
 
 import com.getboot.storage.api.model.StoragePresignMethod;
+import lombok.Data;
 
 import java.time.Duration;
 
 /**
- * Presigned URL request.
+ * 预签名 URL 请求。
  *
  * @author qiheng
  */
+@Data
 public class StoragePresignRequest {
 
+    /**
+     * 预签名请求方法。
+     */
     private StoragePresignMethod method = StoragePresignMethod.DOWNLOAD;
 
+    /**
+     * 业务场景。
+     */
     private String scene;
 
+    /**
+     * 指定存储桶。
+     */
     private String bucket;
 
+    /**
+     * 对象键。
+     */
     private String objectKey;
 
+    /**
+     * 原始文件名。
+     */
     private String originalFilename;
 
+    /**
+     * 内容类型。
+     */
     private String contentType;
 
+    /**
+     * 预签名有效期。
+     */
     private Duration ttl;
-
-    public StoragePresignMethod getMethod() {
-        return method;
-    }
-
-    public void setMethod(StoragePresignMethod method) {
-        this.method = method;
-    }
-
-    public String getScene() {
-        return scene;
-    }
-
-    public void setScene(String scene) {
-        this.scene = scene;
-    }
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public String getOriginalFilename() {
-        return originalFilename;
-    }
-
-    public void setOriginalFilename(String originalFilename) {
-        this.originalFilename = originalFilename;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public Duration getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(Duration ttl) {
-        this.ttl = ttl;
-    }
 }

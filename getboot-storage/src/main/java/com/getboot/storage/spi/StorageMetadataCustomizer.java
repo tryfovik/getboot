@@ -20,11 +20,17 @@ import com.getboot.storage.api.request.StorageUploadRequest;
 import java.util.Map;
 
 /**
- * Upload metadata customizer SPI.
+ * 上传元数据定制扩展点。
  *
  * @author qiheng
  */
 public interface StorageMetadataCustomizer {
 
+    /**
+     * 定制上传元数据。
+     *
+     * @param request 上传请求
+     * @param metadata 元数据
+     */
     void customize(StorageUploadRequest request, Map<String, String> metadata);
 }

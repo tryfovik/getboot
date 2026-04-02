@@ -27,7 +27,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * Storage core auto-configuration.
+ * 对象存储核心自动配置。
  *
  * @author qiheng
  */
@@ -36,12 +36,23 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(StorageProperties.class)
 public class StorageCoreAutoConfiguration {
 
+    /**
+     * 注册默认存储桶路由器。
+     *
+     * @param properties 对象存储模块配置
+     * @return 存储桶路由器
+     */
     @Bean
     @ConditionalOnMissingBean
     public StorageBucketRouter storageBucketRouter(StorageProperties properties) {
         return new DefaultStorageBucketRouter(properties);
     }
 
+    /**
+     * 注册默认对象键生成器。
+     *
+     * @return 对象键生成器
+     */
     @Bean
     @ConditionalOnMissingBean
     public StorageObjectKeyGenerator storageObjectKeyGenerator() {

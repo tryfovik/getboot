@@ -15,27 +15,73 @@
  */
 package com.getboot.storage.api.response;
 
+import lombok.Getter;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Object download response.
+ * 对象下载响应。
  *
  * @author qiheng
  */
+@Getter
 public class StorageDownloadResponse implements AutoCloseable {
 
+    /**
+     * 所属存储桶。
+     */
     private final String bucket;
+
+    /**
+     * 对象键。
+     */
     private final String objectKey;
+
+    /**
+     * 内容长度。
+     */
     private final long contentLength;
+
+    /**
+     * 内容类型。
+     */
     private final String contentType;
+
+    /**
+     * ETag。
+     */
     private final String etag;
+
+    /**
+     * 版本号。
+     */
     private final String versionId;
+
+    /**
+     * 用户元数据。
+     */
     private final Map<String, String> metadata;
+
+    /**
+     * 下载输入流。
+     */
     private final InputStream inputStream;
 
+    /**
+     * 构造对象下载响应。
+     *
+     * @param bucket 所属存储桶
+     * @param objectKey 对象键
+     * @param contentLength 内容长度
+     * @param contentType 内容类型
+     * @param etag ETag
+     * @param versionId 版本号
+     * @param metadata 用户元数据
+     * @param inputStream 下载输入流
+     */
     public StorageDownloadResponse(String bucket,
                                    String objectKey,
                                    long contentLength,
@@ -54,38 +100,11 @@ public class StorageDownloadResponse implements AutoCloseable {
         this.inputStream = inputStream;
     }
 
-    public String getBucket() {
-        return bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public long getContentLength() {
-        return contentLength;
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public String getEtag() {
-        return etag;
-    }
-
-    public String getVersionId() {
-        return versionId;
-    }
-
-    public Map<String, String> getMetadata() {
-        return metadata;
-    }
-
-    public InputStream getInputStream() {
-        return inputStream;
-    }
-
+    /**
+     * 关闭下载输入流。
+     *
+     * @throws IOException 关闭输入流时的异常
+     */
     @Override
     public void close() throws IOException {
         inputStream.close();

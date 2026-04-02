@@ -29,11 +29,22 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * MinIO 自动配置测试。
+ *
+ * @author qiheng
+ */
 class MinioStorageAutoConfigurationTest {
 
+    /**
+     * 应用上下文运行器。
+     */
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(StorageAutoConfiguration.class));
 
+    /**
+     * 验证配置完整时注册 MinIO 客户端与对象存储门面。
+     */
     @Test
     void shouldRegisterMinioClientAndStorageOperatorWhenConfigured() {
         contextRunner
@@ -57,6 +68,9 @@ class MinioStorageAutoConfigurationTest {
                 });
     }
 
+    /**
+     * 验证禁用对象存储能力时跳过相关 Bean。
+     */
     @Test
     void shouldSkipStorageBeansWhenDisabled() {
         contextRunner
@@ -74,6 +88,9 @@ class MinioStorageAutoConfigurationTest {
                 });
     }
 
+    /**
+     * 验证缺少 MinIO 凭证时不注册客户端与对象存储门面。
+     */
     @Test
     void shouldSkipMinioBeansWhenCredentialsAreMissing() {
         contextRunner

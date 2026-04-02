@@ -16,11 +16,18 @@
 package com.getboot.storage.spi;
 
 /**
- * Bucket router SPI.
+ * 存储桶路由扩展点。
  *
  * @author qiheng
  */
 public interface StorageBucketRouter {
 
+    /**
+     * 解析最终存储桶。
+     *
+     * @param scene 业务场景
+     * @param requestedBucket 显式指定的存储桶
+     * @return 最终存储桶
+     */
     String resolveBucket(String scene, String requestedBucket);
 }

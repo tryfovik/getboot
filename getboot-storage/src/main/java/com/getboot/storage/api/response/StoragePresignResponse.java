@@ -16,63 +16,40 @@
 package com.getboot.storage.api.response;
 
 import com.getboot.storage.api.model.StoragePresignMethod;
+import lombok.Data;
 
 import java.time.Duration;
 
 /**
- * Presigned URL response.
+ * 预签名 URL 响应。
  *
  * @author qiheng
  */
+@Data
 public class StoragePresignResponse {
 
+    /**
+     * 所属存储桶。
+     */
     private String bucket;
 
+    /**
+     * 对象键。
+     */
     private String objectKey;
 
+    /**
+     * 预签名请求方法。
+     */
     private StoragePresignMethod method;
 
+    /**
+     * 有效期。
+     */
     private Duration ttl;
 
+    /**
+     * 预签名 URL。
+     */
     private String url;
-
-    public String getBucket() {
-        return bucket;
-    }
-
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
-    }
-
-    public String getObjectKey() {
-        return objectKey;
-    }
-
-    public void setObjectKey(String objectKey) {
-        this.objectKey = objectKey;
-    }
-
-    public StoragePresignMethod getMethod() {
-        return method;
-    }
-
-    public void setMethod(StoragePresignMethod method) {
-        this.method = method;
-    }
-
-    public Duration getTtl() {
-        return ttl;
-    }
-
-    public void setTtl(Duration ttl) {
-        this.ttl = ttl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
 }
