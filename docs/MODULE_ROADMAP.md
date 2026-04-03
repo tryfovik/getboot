@@ -9,13 +9,11 @@
 - 每个模块只解决一类长期稳定的问题，不把临时业务诉求揉进公共层
 - 文档先行，避免后续实现时又退回到“按 SDK 堆 starter”
 
-## 建议落地顺序
+## 当前落地顺序
 
-1. `getboot-idempotency`
-2. `getboot-storage`
-3. `getboot-sms`
-4. `getboot-search`
-5. `getboot-ai`
+- 已完成首版：`getboot-idempotency`、`getboot-storage`、`getboot-sms`、`getboot-search`
+- 当前优先：`getboot-ai`
+- 下一批候选能力仍以这里为准，后续如新增模块再继续补充
 
 补充：
 
@@ -82,7 +80,7 @@
 - `getboot-storage`
   先做对象上传/删除/预签名 URL，不先抽分片上传编排
 - `getboot-search`
-  先做索引写入、基础查询和分页，不先抽 DSL 全量覆盖
+  首版已按索引写入、基础查询和分页落地，未扩展 DSL 全量覆盖
 - `getboot-ai`
   先做 Chat / Embedding / Rerank 三条稳定入口，不先做多 Agent
 - `getboot-sms`

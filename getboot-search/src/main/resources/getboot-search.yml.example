@@ -1,0 +1,22 @@
+getboot:
+  search:
+    enabled: true
+    type: elasticsearch
+    default-index-prefix: demo
+    default-page-size: 20
+    max-page-size: 100
+    index-aliases:
+      article: article_v1
+      order: order_current
+    elasticsearch:
+      enabled: true
+      uris:
+        - http://127.0.0.1:9200
+      path-prefix:
+      username:
+      password:
+      api-key:
+      connect-timeout: 2s
+      socket-timeout: 5s
+      default-headers:
+        X-Request-Source: getboot

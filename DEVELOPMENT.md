@@ -16,9 +16,10 @@
 
 1. 根 `README.md`
 2. `docs/MODULE_MAP.md`
-3. `docs/DDD_PACKAGE_RULES.md`
-4. 目标模块自己的 `README.md`
-5. `docs/TODO.md`
+3. `docs/MODULE_ROADMAP.md`
+4. `docs/DDD_PACKAGE_RULES.md`
+5. 目标模块自己的 `README.md`
+6. `docs/TODO.md`
 
 ## 2. 仓库定位
 

@@ -11,6 +11,7 @@
 - 手写方法注释使用中文
 - 日志、异常消息、技术性对外错误描述使用英文
 - 纯数据载体默认统一使用 Lombok，不再混用手写 getter / setter
+- Lombok 配置统一跟随根目录 `lombok.config`，不在模块内各自漂移
 - 模块 README 与代码实现一致
 - 模块级 Maven 验证通过
 
@@ -28,7 +29,8 @@
 1. `getboot-web`
 2. `getboot-sms`
 3. `getboot-storage`
-4. 其余模块按模块地图顺序推进
+4. `getboot-search`
+5. 其余模块按模块地图顺序推进
 
 ## 模块清单
 
@@ -45,6 +47,7 @@
 - [x] `getboot-database`
 - [x] `getboot-storage`
 - [x] `getboot-sms`
+- [x] `getboot-search`
 - [x] `getboot-observability`
 
 ### Cross-Cutting Capability

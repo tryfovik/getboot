@@ -2,6 +2,11 @@
 
 这份清单只保留当前还没落地的仓库级尾项；已经完成的核心桥接实现、事务兼容说明、新模块边界规划和常用能力评估，不再回写这里。
 
+当前模块推进入口：
+
+- 统一看 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md)
+- 当前优先模块：`getboot-ai`
+
 已收敛到文档的内容：
 
 - 新模块规划：[`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md)
