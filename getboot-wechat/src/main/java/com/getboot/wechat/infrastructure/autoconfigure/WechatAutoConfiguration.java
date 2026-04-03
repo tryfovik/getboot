@@ -46,12 +46,26 @@ import java.util.Map;
 @EnableConfigurationProperties(WechatProperties.class)
 public class WechatAutoConfiguration {
 
+    /**
+     * 微信能力配置。
+     */
     private final WechatProperties wechatProperties;
 
+    /**
+     * 创建微信自动配置。
+     *
+     * @param wechatProperties 微信能力配置
+     */
     public WechatAutoConfiguration(WechatProperties wechatProperties) {
         this.wechatProperties = wechatProperties;
     }
 
+    /**
+     * 注册微信 Redis 存储适配器。
+     *
+     * @param redisTemplate Redis 字符串模板
+     * @return Redis 操作适配器
+     */
     @Bean
     @ConditionalOnBean(StringRedisTemplate.class)
     @ConditionalOnMissingBean
@@ -59,12 +73,22 @@ public class WechatAutoConfiguration {
         return new RedisTemplateWxRedisOps(redisTemplate);
     }
 
+    /**
+     * 注册小程序服务工厂。
+     *
+     * @return 小程序服务工厂
+     */
     @Bean
     @ConditionalOnMissingBean
     public WechatMiniProgramServiceFactory wechatMiniProgramServiceFactory() {
         return new WechatMiniProgramServiceFactory();
     }
 
+    /**
+     * 注册服务号服务工厂。
+     *
+     * @return 服务号服务工厂
+     */
     @Bean
     @ConditionalOnMissingBean
     public WechatOfficialAccountServiceFactory wechatOfficialAccountServiceFactory() {
@@ -74,6 +98,7 @@ public class WechatAutoConfiguration {
     /**
      * 初始化微信小程序服务。
      *
+     * @param serviceFactory 小程序服务工厂
      * @return 小程序服务映射，key 为 appId
      */
     @Bean
@@ -82,6 +107,12 @@ public class WechatAutoConfiguration {
         return serviceFactory.createServices(wechatProperties.getMiniProgram());
     }
 
+    /**
+     * 注册微信小程序原生服务门面。
+     *
+     * @param wxMaServices 小程序服务映射
+     * @return 小程序原生服务门面
+     */
     @Bean
     @ConditionalOnMissingBean
     public WechatMiniProgramNativeServices wechatMiniProgramServices(Map<String, WxMaService> wxMaServices) {
@@ -94,6 +125,7 @@ public class WechatAutoConfiguration {
      * <p>优先使用 Redis 存储 token；如果业务方未提供 Redis，则回退到内存存储。</p>
      *
      * @param redisOpsProvider Redis 操作适配器提供方
+     * @param serviceFactory 服务号服务工厂
      * @return 服务号服务映射，key 为 appId
      */
     @Bean
@@ -107,6 +139,12 @@ public class WechatAutoConfiguration {
         );
     }
 
+    /**
+     * 注册微信服务号原生服务门面。
+     *
+     * @param wxMpServices 服务号服务映射
+     * @return 服务号原生服务门面
+     */
     @Bean
     @ConditionalOnMissingBean
     public WechatOfficialAccountNativeServices wechatOfficialAccountServices(Map<String, WxMpService> wxMpServices) {

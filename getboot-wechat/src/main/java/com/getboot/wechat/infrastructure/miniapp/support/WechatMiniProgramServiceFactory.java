@@ -47,6 +47,13 @@ public class WechatMiniProgramServiceFactory {
         return services;
     }
 
+    /**
+     * 创建单个小程序原生服务。
+     *
+     * @param appId 小程序 appId
+     * @param appSecret 小程序 appSecret
+     * @return 小程序原生服务
+     */
     private WxMaService createService(String appId, String appSecret) {
         WxMaService miniProgramService = new WxMaServiceImpl();
         WxMaDefaultConfigImpl config = new WxMaDefaultConfigImpl();

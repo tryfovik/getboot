@@ -34,6 +34,9 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class WechatOfficialAccountServiceFactory {
 
+    /**
+     * 服务号 token 在 Redis 中的 key 前缀。
+     */
     private static final String OFFICIAL_ACCOUNT_TOKEN_PREFIX = "official_account:";
 
     /**
@@ -54,6 +57,14 @@ public class WechatOfficialAccountServiceFactory {
         return services;
     }
 
+    /**
+     * 创建单个服务号原生服务。
+     *
+     * @param appId 服务号 appId
+     * @param appSecret 服务号 appSecret
+     * @param redisOps Redis 操作适配器
+     * @return 服务号原生服务
+     */
     private WxMpService createService(String appId, String appSecret, RedisTemplateWxRedisOps redisOps) {
         WxMpService officialAccountService = new WxMpServiceImpl();
         if (redisOps != null) {

@@ -33,22 +33,47 @@ import java.util.Set;
  */
 public class DefaultWechatOfficialAccountServices implements WechatOfficialAccountNativeServices {
 
+    /**
+     * 按 appId 索引的服务号服务映射。
+     */
     private final Map<String, WxMpService> services;
 
+    /**
+     * 创建默认服务号服务门面。
+     *
+     * @param services 服务号服务映射
+     */
     public DefaultWechatOfficialAccountServices(Map<String, WxMpService> services) {
         this.services = Collections.unmodifiableMap(new LinkedHashMap<>(services));
     }
 
+    /**
+     * 判断指定 appId 是否存在对应服务。
+     *
+     * @param appId 服务号 appId
+     * @return 是否存在对应服务
+     */
     @Override
     public boolean contains(String appId) {
         return services.containsKey(appId);
     }
 
+    /**
+     * 获取当前全部已注册的服务号 appId。
+     *
+     * @return 服务号 appId 集合
+     */
     @Override
     public Set<String> appIds() {
         return services.keySet();
     }
 
+    /**
+     * 获取指定 appId 的服务号原生服务，不存在时抛出异常。
+     *
+     * @param appId 服务号 appId
+     * @return 服务号原生服务
+     */
     @Override
     public WxMpService getNativeRequired(String appId) {
         WxMpService service = services.get(appId);
@@ -56,6 +81,11 @@ public class DefaultWechatOfficialAccountServices implements WechatOfficialAccou
         return service;
     }
 
+    /**
+     * 获取只读的服务号原生服务映射。
+     *
+     * @return 服务号原生服务映射
+     */
     @Override
     public Map<String, WxMpService> asNativeMap() {
         return services;

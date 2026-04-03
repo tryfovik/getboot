@@ -66,5 +66,5 @@
 
 ### Ecosystem
 
-- [ ] `getboot-wechat`
+- [x] `getboot-wechat`
 - [ ] `getboot-payment`
