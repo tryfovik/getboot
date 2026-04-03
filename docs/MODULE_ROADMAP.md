@@ -11,14 +11,14 @@
 
 ## 当前落地顺序
 
-- 已完成首版：`getboot-idempotency`、`getboot-storage`、`getboot-sms`、`getboot-search`、`getboot-ai`
+- 已完成首版：`getboot-idempotency`、`getboot-storage`、`getboot-sms`、`getboot-search`、`getboot-ai`、`getboot-mail`
 - 当前没有新的 P1 模块；后续候选能力仍以这里为准，继续按边界和复用价值评估
-- 如果后续继续扩展，优先回看 `getboot-mail` 等候选模块是否值得进入下一轮
+- 如果后续继续扩展，优先回看第三方登录、验证码、消息治理增强等候选方向是否值得进入下一轮
 
 补充：
 
 - 消息重试、延迟消息、死信治理优先在 `getboot-mq` 模块内增强，不单拆新模块
-- 邮件发送能力可作为 `getboot-mail` 后续候选模块，但优先级低于 `getboot-sms`
+- 邮件发送能力已以 `getboot-mail` 首版落地，后续优先在模块内补供应商实现与边界评估
 
 排序原则很简单：越接近高频基础能力、越容易形成统一抽象的模块，优先级越高；模型编排、检索增强这类变化更快的能力，放在后面落地。
 
@@ -33,6 +33,7 @@
 | `getboot-search` | 搜索索引写入、查询请求构建、分页/高亮结果模型、索引模板初始化 | `elasticsearch` / `opensearch` | 无强制依赖 | `getboot.search.*` | 不把推荐、向量检索、RAG 编排混入传统搜索模块 |
 | `getboot-ai` | 模型调用门面、提示词模板、Embedding / Rerank 接口、工具编排入口 | `openai` / `qwen` / `doubao` / `zhipu` / `embedding-store` | 可选依赖 `getboot-search` / `getboot-storage` | `getboot.ai.*` | 不在第一阶段直接做完整 Agent 平台或工作流系统 |
 | `getboot-sms` | 短信模板发送、签名/模板路由、验证码短信、供应商降级 | `aliyun` / `tencent` / `huawei` | 无强制依赖 | `getboot.sms.*` | 不把邮件、站内信、Push 混成一个消息中心 |
+| `getboot-mail` | SMTP 发送门面、主题/正文模板渲染、附件组装、默认发件人收口 | `smtp` | 无强制依赖 | `getboot.mail.*` | 不把短信、站内信、回执/退信处理和营销编排混成一个消息中心 |
 
 ## 每个模块最少应包含什么
 
@@ -73,6 +74,13 @@
 - `support`：验证码场景模板、失败重试策略
 - `infrastructure.aliyun` / `infrastructure.tencent` / `infrastructure.huawei`
 
+### `getboot-mail`
+
+- `api`：`MailOperator`、发送请求、发送响应、附件模型、配置模型
+- `spi`：模板渲染器
+- `support`：默认模板渲染、地址归一化和参数校验
+- `infrastructure.smtp`：SMTP 自动配置、JavaMail 适配和附件组装
+
 ## 建议的第一阶段实现边界
 
 - `getboot-idempotency`
@@ -85,6 +93,8 @@
   首版已按 Chat / Embedding / Rerank 三条稳定入口落地，当前 Rerank 基于 Embedding 相似度完成
 - `getboot-sms`
   先做单发、批量发送、验证码模板，不先做营销短信编排
+- `getboot-mail`
+  首版已按 SMTP + 模板变量 + 附件落地，不先做云厂商适配和回执/退信编排
 
 ## 后续执行建议
 

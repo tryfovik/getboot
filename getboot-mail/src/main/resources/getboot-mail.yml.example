@@ -1,0 +1,21 @@
+getboot:
+  mail:
+    enabled: true
+    type: smtp
+    default-from: no-reply@example.com
+    default-content-type: text/html;charset=UTF-8
+    smtp:
+      enabled: true
+      host: smtp.example.com
+      port: 465
+      username: no-reply@example.com
+      password: your-password
+      protocol: smtp
+      auth: true
+      starttls-enabled: false
+      ssl-enabled: true
+      connection-timeout: 5000
+      timeout: 5000
+      write-timeout: 5000
+      properties:
+        mail.debug: false
