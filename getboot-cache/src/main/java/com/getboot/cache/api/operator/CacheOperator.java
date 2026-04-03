@@ -27,29 +27,117 @@ import java.util.Collection;
  */
 public interface CacheOperator {
 
+    /**
+     * 写入对象值。
+     *
+     * @param key 缓存键
+     * @param value 缓存值
+     */
     void set(String key, Object value);
 
+    /**
+     * 写入对象值并设置过期时间。
+     *
+     * @param key 缓存键
+     * @param value 缓存值
+     * @param ttl 过期时间
+     */
     void set(String key, Object value, Duration ttl);
 
+    /**
+     * 读取对象值。
+     *
+     * @param key 缓存键
+     * @param valueType 目标类型
+     * @param <T> 返回值类型
+     * @return 反序列化后的缓存值
+     */
     <T> T get(String key, Class<T> valueType);
 
+    /**
+     * 写入字符串值。
+     *
+     * @param key 缓存键
+     * @param value 字符串值
+     */
     void setString(String key, String value);
 
+    /**
+     * 写入字符串值并设置过期时间。
+     *
+     * @param key 缓存键
+     * @param value 字符串值
+     * @param ttl 过期时间
+     */
     void setString(String key, String value, Duration ttl);
 
+    /**
+     * 读取字符串值。
+     *
+     * @param key 缓存键
+     * @return 字符串值
+     */
     String getString(String key);
 
+    /**
+     * 执行自增操作。
+     *
+     * @param key 缓存键
+     * @param delta 自增步长
+     * @return 自增后的结果
+     */
     Long increment(String key, long delta);
 
+    /**
+     * 删除单个缓存键。
+     *
+     * @param key 缓存键
+     * @return 是否删除成功
+     */
     Boolean delete(String key);
 
+    /**
+     * 批量删除缓存键。
+     *
+     * @param keys 缓存键集合
+     * @return 删除数量
+     */
     Long delete(Collection<String> keys);
 
+    /**
+     * 判断缓存键是否存在。
+     *
+     * @param key 缓存键
+     * @return 是否存在
+     */
     Boolean hasKey(String key);
 
+    /**
+     * 设置缓存键过期时间。
+     *
+     * @param key 缓存键
+     * @param ttl 过期时间
+     * @return 是否设置成功
+     */
     Boolean expire(String key, Duration ttl);
 
+    /**
+     * 写入 Hash 字段值。
+     *
+     * @param key 缓存键
+     * @param hashKey Hash 字段键
+     * @param value 字段值
+     */
     void putHash(String key, String hashKey, Object value);
 
+    /**
+     * 读取 Hash 字段值。
+     *
+     * @param key 缓存键
+     * @param hashKey Hash 字段键
+     * @param valueType 目标类型
+     * @param <T> 返回值类型
+     * @return 反序列化后的字段值
+     */
     <T> T getHash(String key, String hashKey, Class<T> valueType);
 }

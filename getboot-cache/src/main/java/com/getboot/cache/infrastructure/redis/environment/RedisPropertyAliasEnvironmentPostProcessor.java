@@ -29,11 +29,22 @@ import java.util.Map;
  */
 public class RedisPropertyAliasEnvironmentPostProcessor extends PropertyAliasEnvironmentPostProcessorSupport {
 
+    /**
+     * 返回 Redis 别名属性源名称。
+     *
+     * @return 属性源名称
+     */
     @Override
     protected String aliasedPropertySourceName() {
         return "getbootCacheRedisAliasedProperties";
     }
 
+    /**
+     * 注册 GetBoot Redis 前缀到 Spring Data Redis 原生前缀的映射。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 别名属性容器
+     */
     @Override
     protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
         aliasPrefix(environment, aliasedProperties, "getboot.cache.redis.", "spring.data.redis.");

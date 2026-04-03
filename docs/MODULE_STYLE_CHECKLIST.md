@@ -40,7 +40,7 @@
 
 ### Infrastructure Capability
 
-- [ ] `getboot-cache`
+- [x] `getboot-cache`
 - [ ] `getboot-coordination`
 - [ ] `getboot-database`
 - [x] `getboot-storage`

@@ -119,6 +119,13 @@ public class RedisAutoConfiguration {
         );
     }
 
+    /**
+     * 创建 Redis 专用 ObjectMapper。
+     *
+     * @param sourceObjectMapper 源 ObjectMapper
+     * @param objectMapperCustomizers ObjectMapper 定制器
+     * @return Redis 专用 ObjectMapper
+     */
     private ObjectMapper createRedisObjectMapper(
             @Nullable ObjectMapper sourceObjectMapper,
             ObjectProvider<RedisObjectMapperCustomizer> objectMapperCustomizers) {

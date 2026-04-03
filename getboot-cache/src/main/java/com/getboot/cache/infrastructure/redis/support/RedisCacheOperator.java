@@ -33,10 +33,28 @@ import java.util.Collection;
  */
 public class RedisCacheOperator implements CacheOperator {
 
+    /**
+     * 对象 RedisTemplate。
+     */
     private final RedisTemplate<String, Object> redisTemplate;
+
+    /**
+     * 字符串 RedisTemplate。
+     */
     private final StringRedisTemplate stringRedisTemplate;
+
+    /**
+     * 对象转换器。
+     */
     private final ObjectMapper objectMapper;
 
+    /**
+     * 创建 Redis 缓存操作器。
+     *
+     * @param redisTemplate 对象 RedisTemplate
+     * @param stringRedisTemplate 字符串 RedisTemplate
+     * @param objectMapper 对象转换器
+     */
     public RedisCacheOperator(
             RedisTemplate<String, Object> redisTemplate,
             StringRedisTemplate stringRedisTemplate,
@@ -219,15 +237,33 @@ public class RedisCacheOperator implements CacheOperator {
         return convertValue(redisTemplate.opsForHash().get(key, hashKey), valueType);
     }
 
+    /**
+     * 校验缓存键不能为空白。
+     *
+     * @param key 缓存键
+     */
     private void assertKey(String key) {
         Assert.hasText(key, "Redis key must not be blank.");
     }
 
+    /**
+     * 校验过期时间必须大于零。
+     *
+     * @param ttl 过期时间
+     */
     private void assertDuration(Duration ttl) {
         Assert.notNull(ttl, "Redis ttl must not be null.");
         Assert.isTrue(!ttl.isNegative() && !ttl.isZero(), "Redis ttl must be greater than 0.");
     }
 
+    /**
+     * 将读取结果转换为目标类型。
+     *
+     * @param source 原始值
+     * @param valueType 目标类型
+     * @param <T> 返回值类型
+     * @return 转换后的值
+     */
     private <T> T convertValue(Object source, Class<T> valueType) {
         if (source == null) {
             return null;
