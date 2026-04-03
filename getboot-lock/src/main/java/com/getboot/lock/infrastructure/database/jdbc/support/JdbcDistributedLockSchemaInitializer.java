@@ -25,9 +25,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
  */
 public class JdbcDistributedLockSchemaInitializer implements InitializingBean {
 
+    /**
+     * JDBC 模板。
+     */
     private final JdbcTemplate jdbcTemplate;
+
+    /**
+     * 建表 DDL。
+     */
     private final String ddl;
 
+    /**
+     * 创建 JDBC 锁表初始化器。
+     *
+     * @param jdbcTemplate JDBC 模板
+     * @param tableName 锁表名
+     */
     public JdbcDistributedLockSchemaInitializer(JdbcTemplate jdbcTemplate, String tableName) {
         this.jdbcTemplate = jdbcTemplate;
         String resolvedTableName = JdbcDistributedLockRepository.validateTableName(tableName);
@@ -40,6 +53,9 @@ public class JdbcDistributedLockSchemaInitializer implements InitializingBean {
                 + ")";
     }
 
+    /**
+     * 在 Bean 初始化后执行建表逻辑。
+     */
     @Override
     public void afterPropertiesSet() {
         jdbcTemplate.execute(ddl);

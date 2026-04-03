@@ -34,9 +34,24 @@ import java.lang.reflect.Method;
  */
 public class SpelDistributedLockKeyResolver implements DistributedLockKeyResolver {
 
+    /**
+     * SpEL 解析器。
+     */
     private static final ExpressionParser PARSER = new SpelExpressionParser();
+
+    /**
+     * 方法参数名发现器。
+     */
     private static final DefaultParameterNameDiscoverer PARAMETER_NAME_DISCOVERER = new DefaultParameterNameDiscoverer();
 
+    /**
+     * 基于固定 key 或 SpEL 表达式解析业务锁 key。
+     *
+     * @param joinPoint 切点对象
+     * @param method 目标方法
+     * @param distributedLock 锁注解
+     * @return 解析后的业务锁 key
+     */
     @Override
     public String resolve(ProceedingJoinPoint joinPoint, Method method, DistributedLock distributedLock) {
         String key = distributedLock.key();

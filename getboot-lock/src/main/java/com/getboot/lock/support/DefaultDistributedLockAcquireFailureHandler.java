@@ -26,8 +26,17 @@ import com.getboot.lock.spi.DistributedLockAcquireFailureHandler;
  */
 public class DefaultDistributedLockAcquireFailureHandler implements DistributedLockAcquireFailureHandler {
 
+    /**
+     * 默认异常消息。
+     */
     private static final String DEFAULT_MESSAGE = "Failed to acquire distributed lock.";
 
+    /**
+     * 抛出默认的获取失败异常。
+     *
+     * @param lockKey 完整锁 key
+     * @param distributedLock 锁注解
+     */
     @Override
     public void onFailure(String lockKey, DistributedLock distributedLock) {
         throw new DistributedLockException(DEFAULT_MESSAGE + " key=" + lockKey);

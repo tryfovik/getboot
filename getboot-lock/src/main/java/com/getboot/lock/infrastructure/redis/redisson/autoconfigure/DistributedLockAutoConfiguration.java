@@ -44,18 +44,37 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(LockProperties.class)
 public class DistributedLockAutoConfiguration {
 
+    /**
+     * 注册默认锁 key 解析器。
+     *
+     * @return 锁 key 解析器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockKeyResolver distributedLockKeyResolver() {
         return new SpelDistributedLockKeyResolver();
     }
 
+    /**
+     * 注册默认锁获取失败处理器。
+     *
+     * @return 锁获取失败处理器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler() {
         return new DefaultDistributedLockAcquireFailureHandler();
     }
 
+    /**
+     * 注册 Redis 分布式锁切面。
+     *
+     * @param redisson Redisson 客户端
+     * @param distributedLockKeyResolver 锁 key 解析器
+     * @param distributedLockAcquireFailureHandler 锁获取失败处理器
+     * @param properties 锁配置属性
+     * @return Redis 分布式锁切面
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockAspect distributedLockAspect(

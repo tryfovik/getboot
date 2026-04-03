@@ -42,13 +42,39 @@ import java.util.UUID;
 @Order(Integer.MIN_VALUE + 1)
 public class JdbcDistributedLockAspect {
 
+    /**
+     * 日志记录器。
+     */
     private static final Logger LOG = LoggerFactory.getLogger(JdbcDistributedLockAspect.class);
 
+    /**
+     * JDBC 锁仓储。
+     */
     private final JdbcDistributedLockRepository repository;
+
+    /**
+     * 锁 key 解析器。
+     */
     private final DistributedLockKeyResolver distributedLockKeyResolver;
+
+    /**
+     * 锁获取失败处理器。
+     */
     private final DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler;
+
+    /**
+     * 锁配置属性。
+     */
     private final LockProperties properties;
 
+    /**
+     * 创建 JDBC 分布式锁切面。
+     *
+     * @param repository JDBC 锁仓储
+     * @param distributedLockKeyResolver 锁 key 解析器
+     * @param distributedLockAcquireFailureHandler 锁获取失败处理器
+     * @param properties 锁配置属性
+     */
     public JdbcDistributedLockAspect(JdbcDistributedLockRepository repository,
                                      DistributedLockKeyResolver distributedLockKeyResolver,
                                      DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler,
@@ -59,6 +85,14 @@ public class JdbcDistributedLockAspect {
         this.properties = properties;
     }
 
+    /**
+     * 在目标方法执行前后织入 JDBC 分布式锁。
+     *
+     * @param joinPoint 切点对象
+     * @param distributedLock 锁注解
+     * @return 目标方法返回值
+     * @throws Throwable 目标方法异常
+     */
     @Around("@annotation(distributedLock)")
     public Object process(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         String lockKey = DistributedLockSupport.resolveFullLockKey(

@@ -41,13 +41,39 @@ import java.util.concurrent.TimeUnit;
 @Order(Integer.MIN_VALUE + 1)
 public class DistributedLockAspect {
 
+    /**
+     * 日志记录器。
+     */
     private static final Logger LOG = LoggerFactory.getLogger(DistributedLockAspect.class);
 
+    /**
+     * Redisson 客户端。
+     */
     private final RedissonClient redissonClient;
+
+    /**
+     * 锁 key 解析器。
+     */
     private final DistributedLockKeyResolver distributedLockKeyResolver;
+
+    /**
+     * 锁获取失败处理器。
+     */
     private final DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler;
+
+    /**
+     * 锁配置属性。
+     */
     private final LockProperties properties;
 
+    /**
+     * 创建 Redis 分布式锁切面。
+     *
+     * @param redissonClient Redisson 客户端
+     * @param distributedLockKeyResolver 锁 key 解析器
+     * @param distributedLockAcquireFailureHandler 锁获取失败处理器
+     * @param properties 锁配置属性
+     */
     public DistributedLockAspect(RedissonClient redissonClient,
                                  DistributedLockKeyResolver distributedLockKeyResolver,
                                  DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler,
@@ -58,6 +84,14 @@ public class DistributedLockAspect {
         this.properties = properties;
     }
 
+    /**
+     * 在目标方法执行前后织入 Redis 分布式锁。
+     *
+     * @param pjp 切点对象
+     * @param distributedLock 锁注解
+     * @return 目标方法返回值
+     * @throws Throwable 目标方法异常
+     */
     @Around("@annotation(distributedLock)")
     public Object process(ProceedingJoinPoint pjp, DistributedLock distributedLock) throws Throwable {
         String lockKey = DistributedLockSupport.resolveFullLockKey(

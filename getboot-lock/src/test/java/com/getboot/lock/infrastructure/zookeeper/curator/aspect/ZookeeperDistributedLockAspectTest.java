@@ -42,8 +42,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * ZooKeeper 分布式锁切面测试。
+ */
 class ZookeeperDistributedLockAspectTest {
 
+    /**
+     * 验证同一 key 的第二次并发调用会被拒绝。
+     *
+     * @throws Exception 测试异常
+     */
     @Test
     void shouldRejectSecondConcurrentInvocationForSameKey() throws Exception {
         try (TestingServer server = new TestingServer()) {
@@ -87,6 +95,11 @@ class ZookeeperDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 验证失败处理器正常返回时业务方法不会继续执行。
+     *
+     * @throws Exception 测试异常
+     */
     @Test
     void shouldNotProceedWhenFailureHandlerReturnsNormally() throws Exception {
         try (TestingServer server = new TestingServer()) {
@@ -124,6 +137,11 @@ class ZookeeperDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 验证 ZooKeeper 锁不接受显式过期时间。
+     *
+     * @throws Exception 测试异常
+     */
     @Test
     void shouldRejectExplicitExpireTimeForZookeeperLock() throws Exception {
         try (TestingServer server = new TestingServer()) {
@@ -152,6 +170,13 @@ class ZookeeperDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 创建并连接 Curator 客户端。
+     *
+     * @param server 测试用 ZooKeeper 服务
+     * @return Curator 客户端
+     * @throws Exception 连接异常
+     */
     private CuratorFramework createCuratorFramework(TestingServer server) throws Exception {
         CuratorFramework curatorFramework = CuratorFrameworkFactory.newClient(
                 server.getConnectString(),
@@ -162,6 +187,11 @@ class ZookeeperDistributedLockAspectTest {
         return curatorFramework;
     }
 
+    /**
+     * 创建 ZooKeeper 锁测试配置。
+     *
+     * @return 锁配置
+     */
     private LockProperties createZookeeperLockProperties() {
         LockProperties properties = new LockProperties();
         properties.setType(DistributedLockConstants.LOCK_TYPE_ZOOKEEPER);
@@ -170,17 +200,43 @@ class ZookeeperDistributedLockAspectTest {
         return properties;
     }
 
+    /**
+     * 用于阻塞执行过程的订单服务。
+     */
     static class BlockingOrderService {
 
+        /**
+         * 标记进入业务方法的门闩。
+         */
         private final CountDownLatch entered;
+
+        /**
+         * 控制释放业务方法的门闩。
+         */
         private final CountDownLatch release;
+
+        /**
+         * 执行次数统计。
+         */
         private final AtomicInteger executions = new AtomicInteger();
 
+        /**
+         * 创建阻塞订单服务。
+         *
+         * @param entered 进入门闩
+         * @param release 释放门闩
+         */
         BlockingOrderService(CountDownLatch entered, CountDownLatch release) {
             this.entered = entered;
             this.release = release;
         }
 
+        /**
+         * 执行订单处理并在测试中保持阻塞。
+         *
+         * @param orderNo 订单号
+         * @return 订单号
+         */
         @DistributedLock(scene = "order", keyExpression = "#orderNo", waitTime = 0)
         public String process(String orderNo) {
             executions.incrementAndGet();
@@ -195,10 +251,22 @@ class ZookeeperDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 用于验证失败场景的简单订单服务。
+     */
     static class SimpleOrderService {
 
+        /**
+         * 执行次数统计。
+         */
         private final AtomicInteger executions = new AtomicInteger();
 
+        /**
+         * 执行订单处理。
+         *
+         * @param orderNo 订单号
+         * @return 订单号
+         */
         @DistributedLock(scene = "order", keyExpression = "#orderNo", waitTime = 0)
         public String process(String orderNo) {
             executions.incrementAndGet();
@@ -206,10 +274,22 @@ class ZookeeperDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 用于验证显式过期时间配置的订单服务。
+     */
     static class ExpiringOrderService {
 
+        /**
+         * 执行次数统计。
+         */
         private final AtomicInteger executions = new AtomicInteger();
 
+        /**
+         * 执行订单处理。
+         *
+         * @param orderNo 订单号
+         * @return 订单号
+         */
         @DistributedLock(scene = "order", keyExpression = "#orderNo", waitTime = 0, expireTime = 500)
         public String process(String orderNo) {
             executions.incrementAndGet();

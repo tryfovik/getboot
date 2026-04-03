@@ -48,18 +48,35 @@ import javax.sql.DataSource;
 @EnableConfigurationProperties(LockProperties.class)
 public class JdbcDistributedLockAutoConfiguration {
 
+    /**
+     * 注册默认锁 key 解析器。
+     *
+     * @return 锁 key 解析器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockKeyResolver distributedLockKeyResolver() {
         return new SpelDistributedLockKeyResolver();
     }
 
+    /**
+     * 注册默认锁获取失败处理器。
+     *
+     * @return 锁获取失败处理器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler() {
         return new DefaultDistributedLockAcquireFailureHandler();
     }
 
+    /**
+     * 注册 JDBC 锁仓储。
+     *
+     * @param dataSource 数据源
+     * @param properties 锁配置属性
+     * @return JDBC 锁仓储
+     */
     @Bean
     @ConditionalOnMissingBean
     public JdbcDistributedLockRepository jdbcDistributedLockRepository(
@@ -71,6 +88,15 @@ public class JdbcDistributedLockAutoConfiguration {
         );
     }
 
+    /**
+     * 注册 JDBC 分布式锁切面。
+     *
+     * @param jdbcDistributedLockRepository JDBC 锁仓储
+     * @param distributedLockKeyResolver 锁 key 解析器
+     * @param distributedLockAcquireFailureHandler 锁获取失败处理器
+     * @param properties 锁配置属性
+     * @return JDBC 分布式锁切面
+     */
     @Bean
     @ConditionalOnMissingBean
     public JdbcDistributedLockAspect distributedLockAspect(
@@ -86,6 +112,13 @@ public class JdbcDistributedLockAutoConfiguration {
         );
     }
 
+    /**
+     * 注册 JDBC 锁表初始化器。
+     *
+     * @param dataSource 数据源
+     * @param properties 锁配置属性
+     * @return JDBC 锁表初始化器
+     */
     @Bean
     @ConditionalOnProperty(prefix = "getboot.lock.database", name = "initialize-schema", havingValue = "true")
     @ConditionalOnMissingBean

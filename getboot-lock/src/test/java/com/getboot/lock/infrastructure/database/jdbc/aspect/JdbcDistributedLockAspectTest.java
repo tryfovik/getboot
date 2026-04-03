@@ -43,8 +43,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * JDBC 分布式锁切面测试。
+ */
 class JdbcDistributedLockAspectTest {
 
+    /**
+     * 验证同一 key 的第二次并发调用会被拒绝。
+     *
+     * @throws Exception 测试异常
+     */
     @Test
     void shouldRejectSecondConcurrentInvocationForSameKey() throws Exception {
         JdbcTemplate jdbcTemplate = createJdbcTemplate();
@@ -85,6 +93,9 @@ class JdbcDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 验证失败处理器正常返回时业务方法不会继续执行。
+     */
     @Test
     void shouldNotProceedWhenFailureHandlerReturnsNormally() {
         JdbcTemplate jdbcTemplate = createJdbcTemplate();
@@ -118,6 +129,11 @@ class JdbcDistributedLockAspectTest {
         assertEquals(0, target.executions.get());
     }
 
+    /**
+     * 创建测试用内存数据库模板。
+     *
+     * @return JDBC 模板
+     */
     private JdbcTemplate createJdbcTemplate() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setDriverClassName("org.h2.Driver");
@@ -138,6 +154,11 @@ class JdbcDistributedLockAspectTest {
         return jdbcTemplate;
     }
 
+    /**
+     * 创建数据库锁测试配置。
+     *
+     * @return 锁配置
+     */
     private LockProperties createDatabaseLockProperties() {
         LockProperties properties = new LockProperties();
         properties.setType(DistributedLockConstants.LOCK_TYPE_DATABASE);
@@ -147,17 +168,43 @@ class JdbcDistributedLockAspectTest {
         return properties;
     }
 
+    /**
+     * 用于阻塞执行过程的订单服务。
+     */
     static class BlockingOrderService {
 
+        /**
+         * 标记进入业务方法的门闩。
+         */
         private final CountDownLatch entered;
+
+        /**
+         * 控制释放业务方法的门闩。
+         */
         private final CountDownLatch release;
+
+        /**
+         * 执行次数统计。
+         */
         private final AtomicInteger executions = new AtomicInteger();
 
+        /**
+         * 创建阻塞订单服务。
+         *
+         * @param entered 进入门闩
+         * @param release 释放门闩
+         */
         BlockingOrderService(CountDownLatch entered, CountDownLatch release) {
             this.entered = entered;
             this.release = release;
         }
 
+        /**
+         * 执行订单处理并在测试中保持阻塞。
+         *
+         * @param orderNo 订单号
+         * @return 订单号
+         */
         @DistributedLock(scene = "order", keyExpression = "#orderNo", waitTime = 0, expireTime = 500)
         public String process(String orderNo) {
             executions.incrementAndGet();
@@ -172,10 +219,22 @@ class JdbcDistributedLockAspectTest {
         }
     }
 
+    /**
+     * 用于验证失败场景的简单订单服务。
+     */
     static class SimpleOrderService {
 
+        /**
+         * 执行次数统计。
+         */
         private final AtomicInteger executions = new AtomicInteger();
 
+        /**
+         * 执行订单处理。
+         *
+         * @param orderNo 订单号
+         * @return 订单号
+         */
         @DistributedLock(scene = "order", keyExpression = "#orderNo", waitTime = 0, expireTime = 500)
         public String process(String orderNo) {
             executions.incrementAndGet();

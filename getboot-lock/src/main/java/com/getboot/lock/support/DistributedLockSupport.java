@@ -29,15 +29,27 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
- * Shared distributed lock helper methods.
+ * 分布式锁公共辅助方法。
  *
  * @author qiheng
  */
 public final class DistributedLockSupport {
 
+    /**
+     * 工具类私有构造方法。
+     */
     private DistributedLockSupport() {
     }
 
+    /**
+     * 解析完整锁 key。
+     *
+     * @param joinPoint 切点对象
+     * @param distributedLock 锁注解
+     * @param keyResolver 锁 key 解析器
+     * @param keyPrefix 锁 key 前缀
+     * @return 完整锁 key
+     */
     public static String resolveFullLockKey(ProceedingJoinPoint joinPoint,
                                             DistributedLock distributedLock,
                                             DistributedLockKeyResolver keyResolver,
@@ -47,6 +59,14 @@ public final class DistributedLockSupport {
         return buildFullLockKey(keyPrefix, distributedLock.scene(), resolvedKey);
     }
 
+    /**
+     * 拼接完整锁 key。
+     *
+     * @param keyPrefix 锁 key 前缀
+     * @param scene 业务场景
+     * @param resolvedKey 已解析的业务 key
+     * @return 完整锁 key
+     */
     public static String buildFullLockKey(String keyPrefix, String scene, String resolvedKey) {
         if (!StringUtils.hasText(keyPrefix)) {
             throw new DistributedLockException("Distributed lock key prefix must not be empty.");
@@ -60,6 +80,13 @@ public final class DistributedLockSupport {
         return keyPrefix + ":" + scene + "#" + resolvedKey;
     }
 
+    /**
+     * 解析锁租约时长。
+     *
+     * @param distributedLock 锁注解
+     * @param defaultLeaseMs 默认租约时长
+     * @return 最终租约时长
+     */
     public static long resolveLeaseMs(DistributedLock distributedLock, long defaultLeaseMs) {
         int expireTime = distributedLock.expireTime();
         if (expireTime == DistributedLockConstants.DEFAULT_EXPIRE_TIME) {
@@ -74,6 +101,12 @@ public final class DistributedLockSupport {
         return expireTime;
     }
 
+    /**
+     * 解析等待时长。
+     *
+     * @param distributedLock 锁注解
+     * @return 等待时长
+     */
     public static long resolveWaitTimeMs(DistributedLock distributedLock) {
         int waitTime = distributedLock.waitTime();
         if (waitTime == DistributedLockConstants.DEFAULT_WAIT_TIME) {
@@ -85,6 +118,13 @@ public final class DistributedLockSupport {
         return waitTime;
     }
 
+    /**
+     * 处理锁获取失败场景。
+     *
+     * @param lockKey 完整锁 key
+     * @param distributedLock 锁注解
+     * @param failureHandler 失败处理器
+     */
     public static void handleAcquireFailure(String lockKey,
                                             DistributedLock distributedLock,
                                             DistributedLockAcquireFailureHandler failureHandler) {
@@ -94,6 +134,12 @@ public final class DistributedLockSupport {
         );
     }
 
+    /**
+     * 校验 ZooKeeper 锁租约配置。
+     *
+     * @param distributedLock 锁注解
+     * @return 默认占位值
+     */
     public static long resolveZookeeperLeaseMs(DistributedLock distributedLock) {
         if (distributedLock.expireTime() != DistributedLockConstants.DEFAULT_EXPIRE_TIME) {
             throw new DistributedLockException(
@@ -104,6 +150,13 @@ public final class DistributedLockSupport {
         return DistributedLockConstants.DEFAULT_EXPIRE_TIME;
     }
 
+    /**
+     * 构建 ZooKeeper 锁路径。
+     *
+     * @param basePath 根路径
+     * @param lockKey 完整锁 key
+     * @return 锁节点路径
+     */
     public static String buildZookeeperLockPath(String basePath, String lockKey) {
         if (!StringUtils.hasText(basePath)) {
             throw new DistributedLockException("ZooKeeper basePath must not be empty.");
@@ -119,6 +172,12 @@ public final class DistributedLockSupport {
         return normalizedBasePath + "/" + encodedLockKey;
     }
 
+    /**
+     * 规范化 ZooKeeper 根路径。
+     *
+     * @param basePath 原始根路径
+     * @return 规范化后的根路径
+     */
     private static String normalizeZookeeperBasePath(String basePath) {
         String normalized = basePath.trim();
         if (!normalized.startsWith("/")) {

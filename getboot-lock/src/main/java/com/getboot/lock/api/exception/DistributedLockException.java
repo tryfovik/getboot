@@ -22,10 +22,21 @@ package com.getboot.lock.api.exception;
  */
 public class DistributedLockException extends RuntimeException {
 
+    /**
+     * 使用异常消息创建异常。
+     *
+     * @param message 异常消息
+     */
     public DistributedLockException(String message) {
         super(message);
     }
 
+    /**
+     * 使用异常消息和根因创建异常。
+     *
+     * @param message 异常消息
+     * @param cause 根因
+     */
     public DistributedLockException(String message, Throwable cause) {
         super(message, cause);
     }

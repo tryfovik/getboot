@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 
 /**
- * ZooKeeper distributed lock auto configuration.
+ * ZooKeeper 分布式锁自动配置。
  *
  * @author qiheng
  */
@@ -46,18 +46,37 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(LockProperties.class)
 public class ZookeeperDistributedLockAutoConfiguration {
 
+    /**
+     * 注册默认锁 key 解析器。
+     *
+     * @return 锁 key 解析器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockKeyResolver distributedLockKeyResolver() {
         return new SpelDistributedLockKeyResolver();
     }
 
+    /**
+     * 注册默认锁获取失败处理器。
+     *
+     * @return 锁获取失败处理器
+     */
     @Bean
     @ConditionalOnMissingBean
     public DistributedLockAcquireFailureHandler distributedLockAcquireFailureHandler() {
         return new DefaultDistributedLockAcquireFailureHandler();
     }
 
+    /**
+     * 注册 ZooKeeper 分布式锁切面。
+     *
+     * @param curatorFramework Curator 客户端
+     * @param distributedLockKeyResolver 锁 key 解析器
+     * @param distributedLockAcquireFailureHandler 锁获取失败处理器
+     * @param properties 锁配置属性
+     * @return ZooKeeper 分布式锁切面
+     */
     @Bean
     @ConditionalOnMissingBean
     public ZookeeperDistributedLockAspect distributedLockAspect(

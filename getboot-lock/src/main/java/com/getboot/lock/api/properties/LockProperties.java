@@ -16,171 +16,116 @@
 package com.getboot.lock.api.properties;
 
 import com.getboot.lock.api.constant.DistributedLockConstants;
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * Distributed lock configuration properties.
+ * 分布式锁配置属性。
  *
  * @author qiheng
  */
+@Data
 @ConfigurationProperties(prefix = "getboot.lock")
 public class LockProperties {
 
+    /**
+     * 是否启用分布式锁能力。
+     */
     private boolean enabled = true;
 
+    /**
+     * 当前启用的锁实现类型。
+     */
     private String type = DistributedLockConstants.LOCK_TYPE_REDIS;
 
+    /**
+     * Redis 锁配置。
+     */
     private Redis redis = new Redis();
 
+    /**
+     * 数据库锁配置。
+     */
     private Database database = new Database();
 
+    /**
+     * ZooKeeper 锁配置。
+     */
     private Zookeeper zookeeper = new Zookeeper();
 
+    /**
+     * Redis 锁配置项。
+     */
+    @Data
     public static class Redis {
+
+        /**
+         * 是否启用 Redis 锁实现。
+         */
         private boolean enabled = true;
+
+        /**
+         * Redis 锁 key 前缀。
+         */
         private String keyPrefix = "distributed_lock";
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getKeyPrefix() {
-            return keyPrefix;
-        }
-
-        public void setKeyPrefix(String keyPrefix) {
-            this.keyPrefix = keyPrefix;
-        }
     }
 
+    /**
+     * 数据库锁配置项。
+     */
+    @Data
     public static class Database {
+
+        /**
+         * 是否启用数据库锁实现。
+         */
         private boolean enabled = false;
+
+        /**
+         * 数据库锁 key 前缀。
+         */
         private String keyPrefix = "distributed_lock";
+
+        /**
+         * 锁表名称。
+         */
         private String tableName = "distributed_lock";
+
+        /**
+         * 默认锁租约时长，单位毫秒。
+         */
         private long leaseMs = 30000;
+
+        /**
+         * 获取锁失败后的重试间隔，单位毫秒。
+         */
         private long retryIntervalMs = 100;
+
+        /**
+         * 是否在启动时自动初始化锁表。
+         */
         private boolean initializeSchema = false;
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getKeyPrefix() {
-            return keyPrefix;
-        }
-
-        public void setKeyPrefix(String keyPrefix) {
-            this.keyPrefix = keyPrefix;
-        }
-
-        public String getTableName() {
-            return tableName;
-        }
-
-        public void setTableName(String tableName) {
-            this.tableName = tableName;
-        }
-
-        public long getLeaseMs() {
-            return leaseMs;
-        }
-
-        public void setLeaseMs(long leaseMs) {
-            this.leaseMs = leaseMs;
-        }
-
-        public long getRetryIntervalMs() {
-            return retryIntervalMs;
-        }
-
-        public void setRetryIntervalMs(long retryIntervalMs) {
-            this.retryIntervalMs = retryIntervalMs;
-        }
-
-        public boolean isInitializeSchema() {
-            return initializeSchema;
-        }
-
-        public void setInitializeSchema(boolean initializeSchema) {
-            this.initializeSchema = initializeSchema;
-        }
     }
 
+    /**
+     * ZooKeeper 锁配置项。
+     */
+    @Data
     public static class Zookeeper {
+
+        /**
+         * 是否启用 ZooKeeper 锁实现。
+         */
         private boolean enabled = false;
+
+        /**
+         * ZooKeeper 锁 key 前缀。
+         */
         private String keyPrefix = "distributed_lock";
+
+        /**
+         * ZooKeeper 锁节点根路径。
+         */
         private String basePath = "/getboot/lock";
-
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getKeyPrefix() {
-            return keyPrefix;
-        }
-
-        public void setKeyPrefix(String keyPrefix) {
-            this.keyPrefix = keyPrefix;
-        }
-
-        public String getBasePath() {
-            return basePath;
-        }
-
-        public void setBasePath(String basePath) {
-            this.basePath = basePath;
-        }
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Redis getRedis() {
-        return redis;
-    }
-
-    public void setRedis(Redis redis) {
-        this.redis = redis;
-    }
-
-    public Database getDatabase() {
-        return database;
-    }
-
-    public void setDatabase(Database database) {
-        this.database = database;
-    }
-
-    public Zookeeper getZookeeper() {
-        return zookeeper;
-    }
-
-    public void setZookeeper(Zookeeper zookeeper) {
-        this.zookeeper = zookeeper;
     }
 }

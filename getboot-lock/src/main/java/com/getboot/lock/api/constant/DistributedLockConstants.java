@@ -16,24 +16,45 @@
 package com.getboot.lock.api.constant;
 
 /**
- * Distributed lock constants.
+ * 分布式锁常量定义。
  *
  * @author qiheng
  */
 public final class DistributedLockConstants {
 
+    /**
+     * 工具类私有构造方法。
+     */
     private DistributedLockConstants() {
     }
 
+    /**
+     * 表示未显式指定 key 的占位值。
+     */
     public static final String NONE_KEY = "NONE";
 
+    /**
+     * 默认过期时间占位值。
+     */
     public static final int DEFAULT_EXPIRE_TIME = -1;
 
+    /**
+     * 默认等待时间占位值。
+     */
     public static final int DEFAULT_WAIT_TIME = Integer.MAX_VALUE;
 
+    /**
+     * Redis 锁实现类型。
+     */
     public static final String LOCK_TYPE_REDIS = "redis";
 
+    /**
+     * 数据库锁实现类型。
+     */
     public static final String LOCK_TYPE_DATABASE = "database";
 
+    /**
+     * ZooKeeper 锁实现类型。
+     */
     public static final String LOCK_TYPE_ZOOKEEPER = "zookeeper";
 }
