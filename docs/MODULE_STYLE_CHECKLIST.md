@@ -54,7 +54,7 @@
 - [x] `getboot-lock`
 - [x] `getboot-idempotency`
 - [x] `getboot-governance`
-- [ ] `getboot-transaction`
+- [x] `getboot-transaction`
 - [ ] `getboot-webhook`
 
 ### Communication

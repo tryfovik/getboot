@@ -29,14 +29,32 @@ import java.util.Map;
  */
 public class SeataPropertyAliasEnvironmentPostProcessor extends PropertyAliasEnvironmentPostProcessorSupport {
 
+    /**
+     * GetBoot 事务总开关配置项。
+     */
     private static final String TRANSACTION_ENABLED_PROPERTY = "getboot.transaction.enabled";
+
+    /**
+     * Seata 原生启用开关配置项。
+     */
     private static final String SEATA_ENABLED_PROPERTY = "seata.enabled";
 
+    /**
+     * 返回桥接属性源名称。
+     *
+     * @return 桥接属性源名称
+     */
     @Override
     protected String aliasedPropertySourceName() {
         return "getbootTransactionSeataAliasedProperties";
     }
 
+    /**
+     * 将 GetBoot 事务配置桥接为 Seata 原生配置。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 待写入的别名属性集合
+     */
     @Override
     protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
         if (!environment.getProperty(TRANSACTION_ENABLED_PROPERTY, Boolean.class, true)

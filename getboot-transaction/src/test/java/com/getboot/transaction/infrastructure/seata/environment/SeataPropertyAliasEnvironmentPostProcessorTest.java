@@ -26,8 +26,16 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+/**
+ * {@link SeataPropertyAliasEnvironmentPostProcessor} 测试。
+ *
+ * @author qiheng
+ */
 class SeataPropertyAliasEnvironmentPostProcessorTest {
 
+    /**
+     * 验证 Seata 配置前缀桥接生效且 mode 不透传到底层。
+     */
     @Test
     void shouldAliasSeataPropertiesAndSkipMode() {
         ConfigurableEnvironment environment = new StandardEnvironment();
@@ -47,6 +55,9 @@ class SeataPropertyAliasEnvironmentPostProcessorTest {
         assertFalse(environment.containsProperty("seata.mode"));
     }
 
+    /**
+     * 验证关闭事务模块时同步压低 Seata 原生开关。
+     */
     @Test
     void shouldDisableNativeSeataWhenGetbootTransactionIsDisabled() {
         ConfigurableEnvironment environment = new StandardEnvironment();
@@ -61,6 +72,9 @@ class SeataPropertyAliasEnvironmentPostProcessorTest {
         assertEquals("false", environment.getProperty("seata.enabled"));
     }
 
+    /**
+     * 验证已显式声明的 Seata 原生开关不会被覆盖。
+     */
     @Test
     void shouldNotOverrideExistingNativeSeataEnabledFlag() {
         ConfigurableEnvironment environment = new StandardEnvironment();

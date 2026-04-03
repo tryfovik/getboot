@@ -35,20 +35,39 @@ import java.util.Locale;
 @Slf4j
 public class SeataShardingCompatibilityVerifier implements InitializingBean {
 
+    /**
+     * 用于识别分库分表启用状态的配置前缀集合。
+     */
     private static final String[] SHARDING_PROPERTY_PREFIXES = {
             "getboot.database.sharding.rules.",
             "spring.shardingsphere.rules.sharding."
     };
 
+    /**
+     * 当前应用环境。
+     */
     private final Environment environment;
+
+    /**
+     * 分布式事务配置。
+     */
     private final DistributedTransactionProperties properties;
 
+    /**
+     * 创建兼容性校验器。
+     *
+     * @param environment 当前应用环境
+     * @param properties 分布式事务配置
+     */
     public SeataShardingCompatibilityVerifier(Environment environment,
                                               DistributedTransactionProperties properties) {
         this.environment = environment;
         this.properties = properties;
     }
 
+    /**
+     * 在 Bean 初始化后检查 Seata 与分库分表的组合是否符合约束。
+     */
     @Override
     public void afterPropertiesSet() {
         if (!properties.isEnabled() || !properties.getSeata().isEnabled()) {
@@ -88,6 +107,11 @@ public class SeataShardingCompatibilityVerifier implements InitializingBean {
         log.warn(message);
     }
 
+    /**
+     * 判断当前环境是否已经启用分库分表配置。
+     *
+     * @return 已启用分库分表时返回 {@code true}
+     */
     private boolean isShardingEnabled() {
         if (environment.getProperty("getboot.database.sharding.enabled", Boolean.class, false)) {
             return true;

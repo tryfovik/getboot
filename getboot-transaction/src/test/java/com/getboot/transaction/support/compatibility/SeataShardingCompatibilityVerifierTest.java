@@ -25,8 +25,16 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * {@link SeataShardingCompatibilityVerifier} 测试。
+ *
+ * @author qiheng
+ */
 class SeataShardingCompatibilityVerifierTest {
 
+    /**
+     * 验证检测到原生分片规则时默认快速失败。
+     */
     @Test
     void shouldFailFastWhenNativeShardingRulesArePresent() {
         StandardEnvironment environment = new StandardEnvironment();
@@ -42,6 +50,9 @@ class SeataShardingCompatibilityVerifierTest {
         assertThrows(IllegalStateException.class, verifier::afterPropertiesSet);
     }
 
+    /**
+     * 验证显式允许混用且事务类型匹配时可以继续启动。
+     */
     @Test
     void shouldAllowHybridModeWhenTransactionTypeMatches() {
         StandardEnvironment environment = new StandardEnvironment();
@@ -58,6 +69,9 @@ class SeataShardingCompatibilityVerifierTest {
         assertDoesNotThrow(verifier::afterPropertiesSet);
     }
 
+    /**
+     * 验证未启用分库分表时跳过兼容性检查。
+     */
     @Test
     void shouldIgnoreCompatibilityCheckWhenShardingIsNotConfigured() {
         StandardEnvironment environment = new StandardEnvironment();

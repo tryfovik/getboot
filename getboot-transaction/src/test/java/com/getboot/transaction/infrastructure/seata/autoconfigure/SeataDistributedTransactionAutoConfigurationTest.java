@@ -23,11 +23,22 @@ import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * {@link SeataDistributedTransactionAutoConfiguration} 测试。
+ *
+ * @author qiheng
+ */
 class SeataDistributedTransactionAutoConfigurationTest {
 
+    /**
+     * 自动配置上下文运行器。
+     */
     private final ApplicationContextRunner contextRunner = new ApplicationContextRunner()
             .withConfiguration(AutoConfigurations.of(SeataDistributedTransactionAutoConfiguration.class));
 
+    /**
+     * 验证事务模块启用时会注册兼容性校验器。
+     */
     @Test
     void shouldRegisterCompatibilityVerifierWhenTransactionEnabled() {
         contextRunner
@@ -41,6 +52,9 @@ class SeataDistributedTransactionAutoConfigurationTest {
                 });
     }
 
+    /**
+     * 验证事务模块关闭时不会注册兼容性校验器。
+     */
     @Test
     void shouldSkipCompatibilityVerifierWhenTransactionDisabled() {
         contextRunner

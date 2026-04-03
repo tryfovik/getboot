@@ -44,8 +44,14 @@ public class DistributedTransactionProperties {
      */
     private final Compatibility compatibility = new Compatibility();
 
+    /**
+     * Seata 实现细分配置。
+     *
+     * @author qiheng
+     */
     @Data
     public static class Seata {
+
         /**
          * 是否启用 Seata 实现。
          */
@@ -67,8 +73,14 @@ public class DistributedTransactionProperties {
         private String txServiceGroup = "default_tx_group";
     }
 
+    /**
+     * Seata 与其他基础设施组合时的兼容性配置。
+     *
+     * @author qiheng
+     */
     @Data
     public static class Compatibility {
+
         /**
          * 冲突时是否直接中断启动。
          */
