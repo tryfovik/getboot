@@ -134,9 +134,16 @@ public class ArticleAiService {
 
 - `openai`
 
+## 最小示例
+
+更多示例见：
+
+- [docs/OPENAI_MINIMAL_INTEGRATION.md](docs/OPENAI_MINIMAL_INTEGRATION.md)
+
 ## 边界 / 补充文档
 
 - 当前第一版只覆盖 Chat、Embedding 和基于 Embedding 相似度的 Rerank，不承接工具调用、工作流、多 Agent 和完整知识库编排
 - 当前 Chat 接口基于 OpenAI `Responses API`，Embedding 接口基于 `Embeddings API`
 - 当前 Rerank 没有引入厂商专有 rerank endpoint，而是统一走 Embedding 相似度，保证能力层接口稳定
 - 配置示例可直接参考 [`getboot-ai.yml.example`](./src/main/resources/getboot-ai.yml.example)
+- OpenAI 最小接入示例见 [`docs/OPENAI_MINIMAL_INTEGRATION.md`](./docs/OPENAI_MINIMAL_INTEGRATION.md)

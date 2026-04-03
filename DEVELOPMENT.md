@@ -86,6 +86,22 @@ Foundation 模块允许更轻量，但也必须保证“稳定层和实现层”
 - 使用 Lombok 的纯载体类，不要求为 Lombok 生成的 getter / setter 重复补方法注释；由类注释和字段注释承担语义说明
 - 模块一旦使用 Lombok 注解，模块 `pom.xml` 里必须显式声明 `org.projectlombok:lombok` 的 `provided` 依赖，避免 IDE 和 Maven 表现不一致
 
+### 3.6 本地环境约定
+
+- 仓库统一以 `Java 17+` 为编译基线；`pom.xml` 已显式使用 `release 17`
+- 不只看 `java -version`，还要看 `mvn -version` 实际绑定的 JDK，因为 Maven 走的是 `JAVA_HOME`
+- 如果 Maven 仍然挂在 JDK 8，模块测试会直接报 `invalid target release: 17`
+- PowerShell 下临时切换 JDK 时，优先在当前命令前显式设置 `JAVA_HOME` 和 `Path`，不要靠系统里多个 Java 安装碰运气
+
+PowerShell 示例：
+
+```powershell
+$env:JAVA_HOME='C:\Program Files\Java\jdk-21.0.10'
+$env:Path='C:\Program Files\Java\jdk-21.0.10\bin;' + $env:Path
+mvn -version
+mvn "-Dmaven.repo.local=D:\project\getboot\.m2-repo" -pl <module> -am test
+```
+
 ## 4. 依赖方向
 
 总体依赖方向固定为：
@@ -241,6 +257,8 @@ Foundation 模块允许更轻量，但也必须保证“稳定层和实现层”
 mvn -q -o -pl <module> -am compile
 mvn -q -Dmaven.repo.local=.m2 -pl <module> -am test
 ```
+
+如果本机装了多个 JDK，先执行 `mvn -version`，确认 Maven 绑定的是 `Java 17+`。
 
 默认策略：
 
