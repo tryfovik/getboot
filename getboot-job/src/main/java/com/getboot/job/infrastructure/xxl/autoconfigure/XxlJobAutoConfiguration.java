@@ -33,6 +33,8 @@ import org.springframework.context.annotation.Bean;
 /**
  * XXL-JOB 自动配置。
  *
+ * <p>负责注册 XXL-JOB 执行器与管理端客户端，并向业务方暴露可定制入口。</p>
+ *
  * @author qiheng
  */
 @AutoConfiguration
@@ -42,8 +44,16 @@ import org.springframework.context.annotation.Bean;
 @Slf4j
 public class XxlJobAutoConfiguration {
 
+    /**
+     * 任务调度配置。
+     */
     private final JobProperties jobProperties;
 
+    /**
+     * 创建 XXL-JOB 自动配置。
+     *
+     * @param jobProperties 任务调度配置
+     */
     public XxlJobAutoConfiguration(JobProperties jobProperties) {
         this.jobProperties = jobProperties;
     }
@@ -51,6 +61,7 @@ public class XxlJobAutoConfiguration {
     /**
      * 注册 XXL-JOB 执行器。
      *
+     * @param executorCustomizers 执行器定制器集合
      * @return XXL-JOB Spring 执行器
      */
     @Bean
@@ -74,6 +85,7 @@ public class XxlJobAutoConfiguration {
     /**
      * 注册 XXL-JOB 管理端客户端。
      *
+     * @param adminClientConfigurers 管理端客户端配置定制器集合
      * @return XXL-JOB 管理端客户端
      */
     @Bean

@@ -50,19 +50,52 @@ import java.util.Map;
 @Slf4j
 public class XxlJobAdminClient {
 
+    /**
+     * XXL-JOB 管理端基础地址。
+     */
     private String adminUrl;
+
+    /**
+     * 管理端登录用户名。
+     */
     private String username;
+
+    /**
+     * 管理端登录密码。
+     */
     private String password;
+
+    /**
+     * 执行器应用名称。
+     */
     private String appName;
+
+    /**
+     * 登录成功后缓存的 Cookie。
+     */
     private String cookie;
 
-    public void initConfig(String adminUrl, String username, String password,String appName) {
+    /**
+     * 初始化管理端客户端配置。
+     *
+     * @param adminUrl 管理端地址
+     * @param username 管理端登录用户名
+     * @param password 管理端登录密码
+     * @param appName 执行器应用名称
+     */
+    public void initConfig(String adminUrl, String username, String password, String appName) {
         this.adminUrl = resolvePrimaryAdminUrl(adminUrl);
         this.username = username;
         this.password = password;
         this.appName = appName;
     }
 
+    /**
+     * 从地址列表中解析主管理端地址。
+     *
+     * @param adminUrls 管理端地址列表
+     * @return 主管理端地址
+     */
     static String resolvePrimaryAdminUrl(String adminUrls) {
         if (adminUrls == null) {
             return null;
@@ -75,6 +108,12 @@ public class XxlJobAdminClient {
                 .orElseGet(() -> stripTrailingSlash(adminUrls.trim()));
     }
 
+    /**
+     * 去掉地址末尾的斜杠。
+     *
+     * @param url 原始地址
+     * @return 去掉末尾斜杠后的地址
+     */
     private static String stripTrailingSlash(String url) {
         if (url == null || url.isEmpty()) {
             return url;
@@ -83,9 +122,9 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 登录XXL-JOB管理后台（使用全局配置）
+     * 登录 XXL-JOB 管理后台。
      */
-    public void login()  {
+    public void login() {
         try {
             checkConfig();
             String loginUrl = adminUrl + "/login";
@@ -93,25 +132,25 @@ public class XxlJobAdminClient {
             try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
                 HttpPost httpPost = new HttpPost(loginUrl);
 
-                // 设置表单参数
+                // 构建登录表单参数。
                 List<NameValuePair> params = new ArrayList<>();
                 params.add(new BasicNameValuePair("userName", username));
                 params.add(new BasicNameValuePair("password", password));
                 httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
 
-                // 执行请求
+                // 执行登录请求。
                 HttpResponse response = httpClient.execute(httpPost);
 
-                // 处理响应
+                // 处理登录响应。
                 if (response.getStatusLine().getStatusCode() == 200) {
                     log.info("XXL-JOB login succeeded. response={}", response);
-                    // 专门获取 XXL_JOB_LOGIN_IDENTITY cookie
+                    // 提取 XXL_JOB_LOGIN_IDENTITY 登录凭证。
                     Header[] cookieHeaders = response.getHeaders("Set-Cookie");
                     String loginCookie = null;
 
                     for (Header header : cookieHeaders) {
                         if (header.getValue().contains("XXL_JOB_LOGIN_IDENTITY")) {
-                            // 提取完整的 cookie 字符串
+                            // 提取完整 Cookie 字符串。
                             loginCookie = header.getValue().split(";")[0];
                             break;
                         }
@@ -136,60 +175,82 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 新增任务（使用全局adminUrl）
+     * 新增任务。
+     *
+     * @param requestInfo 任务请求参数
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     public JSONObject addJob(JSONObject requestInfo) throws IOException {
         return doFormPost("/jobinfo/add", requestInfo);
     }
 
     /**
-     * 更新任务（使用全局adminUrl）
+     * 更新任务。
+     *
+     * @param requestInfo 任务请求参数
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     public JSONObject updateJob(JSONObject requestInfo) throws IOException {
         return doFormPost("/jobinfo/update", requestInfo);
     }
 
     /**
-     * 删除任务（使用全局adminUrl）
+     * 删除任务。
+     *
+     * @param id 任务 ID
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     public JSONObject deleteJob(int id) throws IOException {
         return doGet("/jobinfo/delete?id=" + id);
     }
 
     /**
-     * 开始任务（使用全局adminUrl）
+     * 启动任务。
+     *
+     * @param id 任务 ID
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     public JSONObject startJob(int id) throws IOException {
         return doGet("/jobinfo/start?id=" + id);
     }
 
     /**
-     * 停止任务（使用全局adminUrl）
+     * 停止任务。
+     *
+     * @param id 任务 ID
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     public JSONObject stopJob(int id) throws IOException {
         return doGet("/jobinfo/stop?id=" + id);
     }
 
     /**
-     * 根据执行器名称获取执行器ID
+     * 根据执行器应用名获取执行器分组 ID。
+     *
+     * @param appname 执行器应用名
+     * @return 执行器分组 ID
+     * @throws IOException 请求失败时抛出
      */
-    public  Long getJobGroupIdByAppname(String appname) throws IOException {
+    public Long getJobGroupIdByAppname(String appname) throws IOException {
         checkConfig();
 
-        // 构建查询参数
+        // 构建查询参数。
         String encodedAppname = URLEncoder.encode(appname, StandardCharsets.UTF_8);
         String path = "/jobgroup/pageList?appname=" + encodedAppname + "&start=0&length=100000";
 
         JSONObject result = doGet(path);
 
         if (result.getInteger("code") == 200) {
-            // 获取分页数据
+            // 读取分页响应中的执行器列表。
             JSONObject pageData = result.getJSONObject("data");
             if (pageData != null) {
-                // 获取执行器列表
                 JSONArray records = pageData.getJSONArray("data");
                 if (records != null && !records.isEmpty()) {
-                    // 获取第一个执行器对象
                     JSONObject executor = records.getJSONObject(0);
                     return executor.getLong("id");
                 }
@@ -201,7 +262,12 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 使用 Form Data 发送 POST 请求（支持 JSONObject 参数）
+     * 以 Form Data 方式发送 POST 请求。
+     *
+     * @param path 请求路径
+     * @param formData 表单数据
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     private JSONObject doFormPost(String path, JSONObject formData) throws IOException {
         checkConfig();
@@ -210,17 +276,17 @@ public class XxlJobAdminClient {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             HttpPost httpPost = new HttpPost(adminUrl + path);
 
-            // 设置 Form Data 格式
+            // 设置 Form Data 格式。
             httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
             httpPost.setHeader("Cookie", cookie);
 
-            // 构建 Form Data 参数
+            // 构建表单参数。
             List<NameValuePair> params = new ArrayList<>();
             for (Map.Entry<String, Object> entry : formData.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
 
-                // 处理不同类型的值
+                // 统一将参数转换为字符串。
                 if (value != null) {
                     params.add(new BasicNameValuePair(key, value.toString()));
                 } else {
@@ -228,19 +294,20 @@ public class XxlJobAdminClient {
                 }
             }
 
-            // 设置请求体
+            // 设置请求体并执行请求。
             httpPost.setEntity(new UrlEncodedFormEntity(params, StandardCharsets.UTF_8));
-
-            // 执行请求
             HttpResponse response = httpClient.execute(httpPost);
             return parseResponse(response);
         }
     }
 
-
-
     /**
-     * 执行POST请求（使用全局adminUrl和cookie）
+     * 以 JSON 方式发送 POST 请求。
+     *
+     * @param path 请求路径
+     * @param requestInfo 请求体
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     private JSONObject doPost(String path, JSONObject requestInfo) throws IOException {
         checkConfig();
@@ -260,7 +327,11 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 执行GET请求（使用全局adminUrl和cookie）
+     * 发送 GET 请求。
+     *
+     * @param path 请求路径
+     * @return 管理端响应
+     * @throws IOException 请求失败时抛出
      */
     private JSONObject doGet(String path) throws IOException {
         checkConfig();
@@ -275,7 +346,11 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 解析HTTP响应
+     * 解析 HTTP 响应。
+     *
+     * @param response HTTP 响应
+     * @return 解析后的 JSON 响应
+     * @throws IOException 读取响应失败时抛出
      */
     private JSONObject parseResponse(HttpResponse response) throws IOException {
         JSONObject result = new JSONObject();
@@ -302,7 +377,7 @@ public class XxlJobAdminClient {
     }
 
     /**
-     * 检查配置是否初始化
+     * 检查客户端配置是否已初始化。
      */
     private void checkConfig() {
         if (isBlank(adminUrl) || isBlank(username) || isBlank(password) || isBlank(appName)) {
@@ -310,12 +385,21 @@ public class XxlJobAdminClient {
         }
     }
 
+    /**
+     * 确保当前已经完成登录。
+     */
     private void ensureLogin() {
         if (isBlank(cookie)) {
             login();
         }
     }
 
+    /**
+     * 判断字符串是否为空白。
+     *
+     * @param value 待判断字符串
+     * @return 空白时返回 {@code true}
+     */
     private boolean isBlank(String value) {
         return value == null || value.isBlank();
     }

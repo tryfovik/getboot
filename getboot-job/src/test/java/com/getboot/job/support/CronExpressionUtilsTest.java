@@ -25,13 +25,24 @@ import java.util.Date;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+/**
+ * {@link CronExpressionUtils} 测试。
+ *
+ * @author qiheng
+ */
 class CronExpressionUtilsTest {
 
+    /**
+     * 验证传入空日期时返回空结果。
+     */
     @Test
     void shouldReturnNullWhenDateIsNull() {
         assertNull(CronExpressionUtils.fromDate(null));
     }
 
+    /**
+     * 验证可以根据日期对象生成 Cron 表达式。
+     */
     @Test
     void shouldBuildCronExpressionFromDate() {
         Date date = Date.from(Instant.parse("2026-03-29T12:34:56Z"));
@@ -41,6 +52,9 @@ class CronExpressionUtilsTest {
         assertEquals(expected, CronExpressionUtils.fromDate(date));
     }
 
+    /**
+     * 验证可以根据调度片段拼接不同形式的 Cron 表达式。
+     */
     @Test
     void shouldBuildCronExpressionFromSegments() {
         assertEquals("30 15 10 5 8 MON 2026",

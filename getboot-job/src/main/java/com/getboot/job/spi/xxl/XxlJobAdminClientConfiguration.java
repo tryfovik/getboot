@@ -15,6 +15,8 @@
  */
 package com.getboot.job.spi.xxl;
 
+import lombok.Data;
+
 /**
  * XXL-JOB 管理端客户端可定制配置。
  *
@@ -22,6 +24,7 @@ package com.getboot.job.spi.xxl;
  *
  * @author qiheng
  */
+@Data
 public class XxlJobAdminClientConfiguration {
 
     /**
@@ -43,36 +46,4 @@ public class XxlJobAdminClientConfiguration {
      * 对应执行器应用名。
      */
     private String appName;
-
-    public String getAddresses() {
-        return addresses;
-    }
-
-    public void setAddresses(String addresses) {
-        this.addresses = addresses;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getAppName() {
-        return appName;
-    }
-
-    public void setAppName(String appName) {
-        this.appName = appName;
-    }
 }
