@@ -111,17 +111,15 @@
 
 ## 对路线图的影响
 
-- `getboot-storage` 继续保持高优先级
+- 路线图首批模块 `getboot-idempotency / getboot-storage / getboot-sms / getboot-search / getboot-ai` 已完成首版落地
 - `getboot-mq` 后续增强优先在模块内扩展，不新增独立消息治理模块
-- 可把 `getboot-mail` 记为低于 `getboot-sms` 的后续候选模块
-- 第三方登录与验证码相关能力，先保留方向，不抢占当前高优先级模块位
+- `getboot-mail` 仍可作为下一批候选模块，但优先级低于已完成的首批模块
+- 第三方登录与验证码相关能力，继续保留方向，不抢占下一轮高优先级模块位
 
-## 当前建议的落地顺序补充
+## 当前路线补充
 
-在 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md) 现有顺序之外，再补一个仓库级判断：
+在 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md) 现有状态之外，再补一个仓库级判断：
 
-1. 先完成 `getboot-idempotency`
-2. 再推进 `getboot-storage`
-3. 再看 `getboot-sms`
-4. `getboot-mq` 内部增强按需穿插推进
-5. `getboot-mail`、第三方登录、验证码相关能力放在后续阶段评估
+1. 首批高频基础能力模块已经完成首版落地
+2. 下一轮优先考虑 `getboot-mq` 模块内增强，而不是额外拆消息治理新模块
+3. `getboot-mail`、第三方登录、验证码相关能力继续按复用价值和边界稳定性评估
