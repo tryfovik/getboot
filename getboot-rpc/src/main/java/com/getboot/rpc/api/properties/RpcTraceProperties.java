@@ -15,6 +15,7 @@
  */
 package com.getboot.rpc.api.properties;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -24,6 +25,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @author qiheng
  */
+@Data
 @ConfigurationProperties(prefix = "getboot.rpc.trace")
 public class RpcTraceProperties {
 
@@ -36,20 +38,4 @@ public class RpcTraceProperties {
      * 日志 MDC 中使用的键名。
      */
     private String mdcKey = "traceId";
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getMdcKey() {
-        return mdcKey;
-    }
-
-    public void setMdcKey(String mdcKey) {
-        this.mdcKey = mdcKey;
-    }
 }

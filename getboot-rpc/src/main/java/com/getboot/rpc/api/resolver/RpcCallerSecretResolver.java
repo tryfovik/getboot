@@ -26,5 +26,11 @@ import java.util.Optional;
  */
 public interface RpcCallerSecretResolver {
 
+    /**
+     * 根据调用方应用标识解析签名密钥。
+     *
+     * @param callerAppId 调用方应用标识
+     * @return 调用方签名密钥
+     */
     Optional<String> resolve(String callerAppId);
 }

@@ -48,10 +48,29 @@ import java.util.Map;
 @Activate(group = CommonConstants.CONSUMER, order = -10_000)
 public class RpcConsumerAuthenticationFilter implements Filter {
 
+    /**
+     * RPC 安全配置。
+     */
     private RpcSecurityProperties rpcSecurityProperties;
+
+    /**
+     * RPC Trace 配置。
+     */
     private RpcTraceProperties rpcTraceProperties;
+
+    /**
+     * RPC 认证签名器。
+     */
     private RpcAuthenticationSigner rpcAuthenticationSigner;
 
+    /**
+     * 在消费端发起调用前补充认证附件与 Trace 附件。
+     *
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     * @return 调用结果
+     * @throws RpcException RPC 调用异常
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         RpcSecurityProperties resolvedProperties = resolveRpcSecurityProperties();
@@ -89,6 +108,13 @@ public class RpcConsumerAuthenticationFilter implements Filter {
         return invoker.invoke(invocation);
     }
 
+    /**
+     * 判断当前调用是否需要跳过认证处理。
+     *
+     * @param invocation 调用信息
+     * @param resolvedProperties RPC 安全配置
+     * @return 跳过认证时返回 {@code true}
+     */
     private boolean shouldSkipAuthentication(Invocation invocation, RpcSecurityProperties resolvedProperties) {
         if (!resolvedProperties.getAuthentication().isEnabled()) {
             return true;
@@ -102,10 +128,20 @@ public class RpcConsumerAuthenticationFilter implements Filter {
                 .anyMatch(serviceName::startsWith);
     }
 
+    /**
+     * 解析 RPC 安全配置。
+     *
+     * @return RPC 安全配置
+     */
     private RpcSecurityProperties resolveRpcSecurityProperties() {
         return rpcSecurityProperties != null ? rpcSecurityProperties : SpringContextHolder.getBeanIfAvailable(RpcSecurityProperties.class);
     }
 
+    /**
+     * 解析 RPC 认证签名器。
+     *
+     * @return RPC 认证签名器
+     */
     private RpcAuthenticationSigner resolveRpcAuthenticationSigner() {
         if (rpcAuthenticationSigner == null) {
             rpcAuthenticationSigner = SpringContextHolder.getBeanIfAvailable(RpcAuthenticationSigner.class);
@@ -116,6 +152,11 @@ public class RpcConsumerAuthenticationFilter implements Filter {
         return rpcAuthenticationSigner;
     }
 
+    /**
+     * 判断当前是否启用 Trace 透传。
+     *
+     * @return 启用 Trace 透传时返回 {@code true}
+     */
     private boolean isTraceEnabled() {
         if (rpcTraceProperties == null) {
             rpcTraceProperties = SpringContextHolder.getBeanIfAvailable(RpcTraceProperties.class);
@@ -123,6 +164,11 @@ public class RpcConsumerAuthenticationFilter implements Filter {
         return rpcTraceProperties == null || rpcTraceProperties.isEnabled();
     }
 
+    /**
+     * 获取按顺序排序后的认证附件定制器集合。
+     *
+     * @return 认证附件定制器集合
+     */
     private List<RpcAuthenticationAttachmentCustomizer> getAttachmentCustomizers() {
         List<RpcAuthenticationAttachmentCustomizer> customizers = new ArrayList<>(
                 SpringContextHolder.getBeansOfType(RpcAuthenticationAttachmentCustomizer.class).values()
@@ -131,10 +177,20 @@ public class RpcConsumerAuthenticationFilter implements Filter {
         return customizers;
     }
 
+    /**
+     * 注入 RPC 安全配置。
+     *
+     * @param rpcSecurityProperties RPC 安全配置
+     */
     public void setRpcSecurityProperties(RpcSecurityProperties rpcSecurityProperties) {
         this.rpcSecurityProperties = rpcSecurityProperties;
     }
 
+    /**
+     * 注入 RPC 认证签名器。
+     *
+     * @param rpcAuthenticationSigner RPC 认证签名器
+     */
     public void setRpcAuthenticationSigner(RpcAuthenticationSigner rpcAuthenticationSigner) {
         this.rpcAuthenticationSigner = rpcAuthenticationSigner;
     }

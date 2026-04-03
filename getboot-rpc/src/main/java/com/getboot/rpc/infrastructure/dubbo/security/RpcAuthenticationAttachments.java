@@ -24,12 +24,24 @@ package com.getboot.rpc.infrastructure.dubbo.security;
  */
 public final class RpcAuthenticationAttachments {
 
+    /**
+     * 调用方应用标识附件键。
+     */
     public static final String APP_ID = "getboot-rpc-app-id";
 
+    /**
+     * 请求时间戳附件键。
+     */
     public static final String TIMESTAMP = "getboot-rpc-timestamp";
 
+    /**
+     * 请求签名附件键。
+     */
     public static final String SIGNATURE = "getboot-rpc-signature";
 
+    /**
+     * 工具类不允许实例化。
+     */
     private RpcAuthenticationAttachments() {
     }
 }

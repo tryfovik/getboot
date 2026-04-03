@@ -24,8 +24,14 @@ package com.getboot.rpc.infrastructure.dubbo.security;
  */
 public final class RpcTraceAttachments {
 
+    /**
+     * TraceId 附件键。
+     */
     public static final String TRACE_ID = "getboot-trace-id";
 
+    /**
+     * 工具类不允许实例化。
+     */
     private RpcTraceAttachments() {
     }
 }

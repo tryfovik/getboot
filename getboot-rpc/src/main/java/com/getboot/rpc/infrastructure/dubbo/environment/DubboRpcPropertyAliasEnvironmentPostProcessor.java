@@ -29,11 +29,22 @@ import java.util.Map;
  */
 public class DubboRpcPropertyAliasEnvironmentPostProcessor extends PropertyAliasEnvironmentPostProcessorSupport {
 
+    /**
+     * 返回 Dubbo 配置桥接属性源名称。
+     *
+     * @return Dubbo 配置桥接属性源名称
+     */
     @Override
     protected String aliasedPropertySourceName() {
         return "getbootRpcDubboAliasedProperties";
     }
 
+    /**
+     * 将 GetBoot 风格的 Dubbo 配置桥接为原生 Dubbo 配置。
+     *
+     * @param environment 当前环境
+     * @param aliasedProperties 待写入的别名属性集合
+     */
     @Override
     protected void contributeAliases(ConfigurableEnvironment environment, Map<String, Object> aliasedProperties) {
         aliasPrefix(environment, aliasedProperties, "getboot.rpc.dubbo.", "dubbo.");

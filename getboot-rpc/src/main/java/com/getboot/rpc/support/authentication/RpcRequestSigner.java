@@ -31,13 +31,32 @@ import java.security.MessageDigest;
  */
 public final class RpcRequestSigner {
 
+    /**
+     * HMAC-SHA256 算法标识。
+     */
     private static final String HMAC_SHA_256 = "HmacSHA256";
 
+    /**
+     * 十六进制字符表。
+     */
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+    /**
+     * 工具类不允许实例化。
+     */
     private RpcRequestSigner() {
     }
 
+    /**
+     * 为 RPC 请求生成签名。
+     *
+     * @param appId 应用标识
+     * @param appSecret 应用密钥
+     * @param serviceName 服务名
+     * @param methodName 方法名
+     * @param timestamp 时间戳
+     * @return 请求签名
+     */
     public static String sign(String appId, String appSecret, String serviceName, String methodName, long timestamp) {
         String canonicalRequest = canonicalRequest(appId, serviceName, methodName, timestamp);
         try {
@@ -49,6 +68,13 @@ public final class RpcRequestSigner {
         }
     }
 
+    /**
+     * 比较两个签名是否一致。
+     *
+     * @param expectedSignature 期望签名
+     * @param actualSignature 实际签名
+     * @return 签名一致时返回 {@code true}
+     */
     public static boolean matches(String expectedSignature, String actualSignature) {
         if (!StringUtils.hasText(expectedSignature) || !StringUtils.hasText(actualSignature)) {
             return false;
@@ -59,12 +85,27 @@ public final class RpcRequestSigner {
         );
     }
 
+    /**
+     * 构建参与签名的规范化请求文本。
+     *
+     * @param appId 应用标识
+     * @param serviceName 服务名
+     * @param methodName 方法名
+     * @param timestamp 时间戳
+     * @return 规范化请求文本
+     */
     private static String canonicalRequest(String appId, String serviceName, String methodName, long timestamp) {
         String resolvedServiceName = StringUtils.hasText(serviceName) ? serviceName : "";
         String resolvedMethodName = StringUtils.hasText(methodName) ? methodName : "";
         return appId + '\n' + resolvedServiceName + '\n' + resolvedMethodName + '\n' + timestamp;
     }
 
+    /**
+     * 将字节数组转换为十六进制字符串。
+     *
+     * @param bytes 待转换字节数组
+     * @return 十六进制字符串
+     */
     private static String toHex(byte[] bytes) {
         StringBuilder builder = new StringBuilder(bytes.length * 2);
         for (byte value : bytes) {

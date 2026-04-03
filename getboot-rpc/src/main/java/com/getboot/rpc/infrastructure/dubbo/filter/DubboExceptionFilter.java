@@ -41,27 +41,58 @@ import static org.apache.dubbo.common.constants.LoggerCodeConstants.CONFIG_FILTE
  */
 @Activate(group = CommonConstants.PROVIDER)
 public class DubboExceptionFilter implements Filter, Filter.Listener {
+
+    /**
+     * 服务名日志片段。
+     */
     public static final String SERVICE = ". service: ";
+
+    /**
+     * 方法名日志片段。
+     */
     public static final String METHOD = ", method: ";
+
+    /**
+     * 异常日志片段。
+     */
     public static final String EXCEPTION = ", exception: ";
+
+    /**
+     * Dubbo 错误类型日志器。
+     */
     private ErrorTypeAwareLogger logger = LoggerFactory.getErrorTypeAwareLogger(ExceptionFilter.class);
 
+    /**
+     * 直接继续执行 Dubbo 调用链。
+     *
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     * @return 调用结果
+     * @throws RpcException RPC 调用异常
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         return invoker.invoke(invocation);
     }
 
+    /**
+     * 在响应返回后按 Dubbo 默认语义处理异常，同时保留业务异常透传。
+     *
+     * @param appResponse 调用结果
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     */
     @Override
     public void onResponse(Result appResponse, Invoker<?> invoker, Invocation invocation) {
         if (appResponse.hasException() && GenericService.class != invoker.getInterface()) {
             try {
                 Throwable exception = appResponse.getException();
 
-                // directly throw if it's checked exception
+                // 受检异常直接透传。
                 if (!(exception instanceof RuntimeException) && (exception instanceof Exception)) {
                     return;
                 }
-                // directly throw if the exception appears in the signature
+                // 方法签名中已声明的异常直接透传。
                 try {
                     Method method = invoker.getInterface()
                             .getMethod(RpcUtils.getMethodName(invocation), invocation.getParameterTypes());
@@ -75,7 +106,7 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                     return;
                 }
 
-                // for the exception not found in method's signature, print ERROR message in server's log.
+                // 对于方法签名中未声明的异常，先记录服务端错误日志。
                 logger.error(
                         CONFIG_FILTER_VALIDATION_EXCEPTION,
                         "",
@@ -87,30 +118,30 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                                 + exception.getClass().getName() + ": " + exception.getMessage(),
                         exception);
 
-                // directly throw if exception class and interface class are in the same jar file.
+                // 如果异常类与接口类来自同一 jar，则直接透传。
                 String serviceFile = ReflectUtils.getCodeBase(invoker.getInterface());
                 String exceptionFile = ReflectUtils.getCodeBase(exception.getClass());
                 if (serviceFile == null || exceptionFile == null || serviceFile.equals(exceptionFile)) {
                     return;
                 }
-                // directly throw if it's JDK exception
+                // JDK 异常直接透传。
                 String className = exception.getClass().getName();
                 if (className.startsWith("java.")
                         || className.startsWith("javax.")
                         || className.startsWith("jakarta.")) {
                     return;
                 }
-                // directly throw if it's dubbo exception
+                // Dubbo 自身异常直接透传。
                 if (exception instanceof RpcException) {
                     return;
                 }
 
-                // Keep business exceptions transparent to consumers.
+                // 业务异常继续保持透明透传。
                 if (exception instanceof BusinessException) {
                     return;
                 }
 
-                // otherwise, wrap with RuntimeException and throw back to the client
+                // 其他未声明异常统一包装为 RuntimeException 返回给客户端。
                 appResponse.setException(new RuntimeException(StringUtils.toString(exception)));
             } catch (Throwable e) {
                 logger.warn(
@@ -127,6 +158,13 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
         }
     }
 
+    /**
+     * 在调用链发生错误时记录未声明异常。
+     *
+     * @param e 异常对象
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     */
     @Override
     public void onError(Throwable e, Invoker<?> invoker, Invocation invocation) {
         logger.error(
@@ -141,7 +179,11 @@ public class DubboExceptionFilter implements Filter, Filter.Listener {
                 e);
     }
 
-    // For test purpose
+    /**
+     * 为测试场景注入日志器。
+     *
+     * @param logger 错误类型日志器
+     */
     @DisableInject
     public void mockLogger(ErrorTypeAwareLogger logger) {
         this.logger = logger;

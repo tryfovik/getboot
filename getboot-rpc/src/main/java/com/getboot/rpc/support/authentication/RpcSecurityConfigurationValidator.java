@@ -27,12 +27,23 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class RpcSecurityConfigurationValidator implements InitializingBean {
 
+    /**
+     * RPC 安全配置。
+     */
     private final RpcSecurityProperties rpcSecurityProperties;
 
+    /**
+     * 创建 RPC 安全配置校验器。
+     *
+     * @param rpcSecurityProperties RPC 安全配置
+     */
     public RpcSecurityConfigurationValidator(RpcSecurityProperties rpcSecurityProperties) {
         this.rpcSecurityProperties = rpcSecurityProperties;
     }
 
+    /**
+     * 在 Bean 初始化完成后校验 RPC 安全配置。
+     */
     @Override
     public void afterPropertiesSet() {
         RpcSecurityProperties.Authentication authentication = rpcSecurityProperties.getAuthentication();

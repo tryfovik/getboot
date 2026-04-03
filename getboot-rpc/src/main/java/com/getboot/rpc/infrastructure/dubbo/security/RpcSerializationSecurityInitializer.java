@@ -33,12 +33,23 @@ import java.util.Locale;
  */
 public class RpcSerializationSecurityInitializer implements InitializingBean {
 
+    /**
+     * RPC 安全配置。
+     */
     private final RpcSecurityProperties rpcSecurityProperties;
 
+    /**
+     * 创建 RPC 序列化安全初始化器。
+     *
+     * @param rpcSecurityProperties RPC 安全配置
+     */
     public RpcSerializationSecurityInitializer(RpcSecurityProperties rpcSecurityProperties) {
         this.rpcSecurityProperties = rpcSecurityProperties;
     }
 
+    /**
+     * 在 Bean 初始化完成后应用 Dubbo 序列化安全配置。
+     */
     @Override
     public void afterPropertiesSet() {
         RpcSecurityProperties.Serialization serialization = rpcSecurityProperties.getSerialization();

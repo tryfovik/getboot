@@ -15,6 +15,9 @@
  */
 package com.getboot.rpc.api.properties;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +34,8 @@ import java.util.Map;
  *
  * @author qiheng
  */
+@Getter
+@Setter
 @ConfigurationProperties(prefix = "getboot.rpc.security")
 public class RpcSecurityProperties {
 
@@ -44,25 +49,13 @@ public class RpcSecurityProperties {
      */
     private Serialization serialization = new Serialization();
 
-    public Authentication getAuthentication() {
-        return authentication;
-    }
-
-    public void setAuthentication(Authentication authentication) {
-        this.authentication = authentication;
-    }
-
-    public Serialization getSerialization() {
-        return serialization;
-    }
-
-    public void setSerialization(Serialization serialization) {
-        this.serialization = serialization;
-    }
-
     /**
      * RPC 鉴权配置。
+     *
+     * @author qiheng
      */
+    @Getter
+    @Setter
     public static class Authentication {
 
         /**
@@ -88,44 +81,14 @@ public class RpcSecurityProperties {
         /**
          * 不参与鉴权的服务名前缀。
          */
+        @Setter(AccessLevel.NONE)
         private List<String> excludedServicePrefixes = new ArrayList<>(List.of("org.apache.dubbo."));
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public long getAllowedClockSkewSeconds() {
-            return allowedClockSkewSeconds;
-        }
-
-        public void setAllowedClockSkewSeconds(long allowedClockSkewSeconds) {
-            this.allowedClockSkewSeconds = allowedClockSkewSeconds;
-        }
-
-        public Consumer getConsumer() {
-            return consumer;
-        }
-
-        public void setConsumer(Consumer consumer) {
-            this.consumer = consumer;
-        }
-
-        public Provider getProvider() {
-            return provider;
-        }
-
-        public void setProvider(Provider provider) {
-            this.provider = provider;
-        }
-
-        public List<String> getExcludedServicePrefixes() {
-            return excludedServicePrefixes;
-        }
-
+        /**
+         * 设置不参与鉴权的服务名前缀列表，并复制入参内容。
+         *
+         * @param excludedServicePrefixes 服务名前缀列表
+         */
         public void setExcludedServicePrefixes(List<String> excludedServicePrefixes) {
             this.excludedServicePrefixes = excludedServicePrefixes != null
                     ? new ArrayList<>(excludedServicePrefixes)
@@ -135,28 +98,22 @@ public class RpcSecurityProperties {
 
     /**
      * RPC 消费方凭证配置。
+     *
+     * @author qiheng
      */
+    @Getter
+    @Setter
     public static class Consumer {
 
+        /**
+         * 消费方应用标识。
+         */
         private String appId;
 
+        /**
+         * 消费方签名密钥。
+         */
         private String appSecret;
-
-        public String getAppId() {
-            return appId;
-        }
-
-        public void setAppId(String appId) {
-            this.appId = appId;
-        }
-
-        public String getAppSecret() {
-            return appSecret;
-        }
-
-        public void setAppSecret(String appSecret) {
-            this.appSecret = appSecret;
-        }
 
         /**
          * 判断消费方凭证是否已完整配置。
@@ -179,25 +136,29 @@ public class RpcSecurityProperties {
 
     /**
      * RPC 提供方鉴权配置。
+     *
+     * @author qiheng
      */
+    @Getter
+    @Setter
     public static class Provider {
 
+        /**
+         * 是否强制要求提供方校验认证信息。
+         */
         private boolean required = false;
 
+        /**
+         * 调用方应用标识与签名密钥映射。
+         */
+        @Setter(AccessLevel.NONE)
         private Map<String, String> credentials = new LinkedHashMap<>();
 
-        public boolean isRequired() {
-            return required;
-        }
-
-        public void setRequired(boolean required) {
-            this.required = required;
-        }
-
-        public Map<String, String> getCredentials() {
-            return credentials;
-        }
-
+        /**
+         * 设置调用方凭证映射，并复制入参内容。
+         *
+         * @param credentials 调用方凭证映射
+         */
         public void setCredentials(Map<String, String> credentials) {
             this.credentials = credentials != null ? new LinkedHashMap<>(credentials) : new LinkedHashMap<>();
         }
@@ -205,45 +166,39 @@ public class RpcSecurityProperties {
 
     /**
      * Dubbo 序列化安全配置。
+     *
+     * @author qiheng
      */
+    @Getter
+    @Setter
     public static class Serialization {
 
+        /**
+         * 是否启用序列化安全校验。
+         */
         private boolean enabled = true;
 
+        /**
+         * 序列化安全校验级别。
+         */
         private String checkStatus = "STRICT";
 
+        /**
+         * 是否要求对象实现 Serializable。
+         */
         private boolean checkSerializable = true;
 
+        /**
+         * 永远允许反序列化的包前缀列表。
+         */
+        @Setter(AccessLevel.NONE)
         private List<String> allowedPrefixes = new ArrayList<>(List.of("com.getboot"));
 
-        public boolean isEnabled() {
-            return enabled;
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-
-        public String getCheckStatus() {
-            return checkStatus;
-        }
-
-        public void setCheckStatus(String checkStatus) {
-            this.checkStatus = checkStatus;
-        }
-
-        public boolean isCheckSerializable() {
-            return checkSerializable;
-        }
-
-        public void setCheckSerializable(boolean checkSerializable) {
-            this.checkSerializable = checkSerializable;
-        }
-
-        public List<String> getAllowedPrefixes() {
-            return allowedPrefixes;
-        }
-
+        /**
+         * 设置永远允许反序列化的包前缀列表，并复制入参内容。
+         *
+         * @param allowedPrefixes 包前缀列表
+         */
         public void setAllowedPrefixes(List<String> allowedPrefixes) {
             this.allowedPrefixes = allowedPrefixes != null
                     ? new ArrayList<>(allowedPrefixes)

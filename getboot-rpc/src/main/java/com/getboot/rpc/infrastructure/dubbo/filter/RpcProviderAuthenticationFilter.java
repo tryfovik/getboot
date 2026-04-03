@@ -51,14 +51,38 @@ import java.util.Optional;
 @Activate(group = CommonConstants.PROVIDER, order = -10_000)
 public class RpcProviderAuthenticationFilter implements Filter {
 
+    /**
+     * 默认写入 MDC 的 Trace 键名。
+     */
     private static final String DEFAULT_TRACE_MDC_KEY = "traceId";
 
+    /**
+     * RPC 安全配置。
+     */
     private RpcSecurityProperties rpcSecurityProperties;
 
+    /**
+     * 调用方密钥解析器。
+     */
     private RpcCallerSecretResolver rpcCallerSecretResolver;
+
+    /**
+     * RPC 认证签名器。
+     */
     private RpcAuthenticationSigner rpcAuthenticationSigner;
+
+    /**
+     * RPC Trace 配置。
+     */
     private RpcTraceProperties rpcTraceProperties;
 
+    /**
+     * 在服务端调用链路中完成 Trace 恢复与认证校验。
+     *
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     * @return 调用结果
+     */
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) {
         String incomingTraceId = trimToNull(invocation.getAttachment(RpcTraceAttachments.TRACE_ID));
@@ -82,6 +106,13 @@ public class RpcProviderAuthenticationFilter implements Filter {
         }
     }
 
+    /**
+     * 执行实际的服务端认证校验逻辑。
+     *
+     * @param invoker 调用执行器
+     * @param invocation 调用信息
+     * @return 调用结果
+     */
     private Result doInvoke(Invoker<?> invoker, Invocation invocation) {
         RpcSecurityProperties resolvedProperties = resolveRpcSecurityProperties();
         if (resolvedProperties == null || shouldSkipAuthentication(invocation, resolvedProperties)) {
@@ -119,6 +150,11 @@ public class RpcProviderAuthenticationFilter implements Filter {
         return invoker.invoke(invocation);
     }
 
+    /**
+     * 解析用于写入 MDC 的 Trace 键名。
+     *
+     * @return Trace 键名
+     */
     private String resolveTraceMdcKey() {
         if (rpcTraceProperties == null) {
             rpcTraceProperties = SpringContextHolder.getBeanIfAvailable(RpcTraceProperties.class);
@@ -129,6 +165,11 @@ public class RpcProviderAuthenticationFilter implements Filter {
         return rpcTraceProperties.getMdcKey().trim();
     }
 
+    /**
+     * 判断当前是否启用 Trace 恢复与透传。
+     *
+     * @return 启用时返回 {@code true}
+     */
     private boolean isTraceEnabled() {
         if (rpcTraceProperties == null) {
             rpcTraceProperties = SpringContextHolder.getBeanIfAvailable(RpcTraceProperties.class);
@@ -136,6 +177,13 @@ public class RpcProviderAuthenticationFilter implements Filter {
         return rpcTraceProperties == null || rpcTraceProperties.isEnabled();
     }
 
+    /**
+     * 恢复调用前的 TraceContextHolder 与 MDC 状态。
+     *
+     * @param previousTraceId 之前绑定的 TraceId
+     * @param traceMdcKey Trace 的 MDC 键名
+     * @param previousMdcTraceId 之前 MDC 中的 Trace 值
+     */
     private void restoreTraceContext(String previousTraceId, String traceMdcKey, String previousMdcTraceId) {
         TraceContextHolder.restoreTraceId(previousTraceId);
         if (previousMdcTraceId == null) {
@@ -145,6 +193,13 @@ public class RpcProviderAuthenticationFilter implements Filter {
         MDC.put(traceMdcKey, previousMdcTraceId);
     }
 
+    /**
+     * 判断当前调用是否需要跳过认证处理。
+     *
+     * @param invocation 调用信息
+     * @param resolvedProperties RPC 安全配置
+     * @return 跳过认证时返回 {@code true}
+     */
     private boolean shouldSkipAuthentication(Invocation invocation, RpcSecurityProperties resolvedProperties) {
         if (!resolvedProperties.getAuthentication().isEnabled()) {
             return true;
@@ -158,6 +213,12 @@ public class RpcProviderAuthenticationFilter implements Filter {
                 .anyMatch(serviceName::startsWith);
     }
 
+    /**
+     * 解析请求时间戳。
+     *
+     * @param timestampValue 时间戳文本
+     * @return 时间戳数值
+     */
     private long parseTimestamp(String timestampValue) {
         try {
             return Long.parseLong(timestampValue);
@@ -166,6 +227,12 @@ public class RpcProviderAuthenticationFilter implements Filter {
         }
     }
 
+    /**
+     * 校验请求时间戳是否仍在允许范围内。
+     *
+     * @param timestamp 请求时间戳
+     * @param resolvedProperties RPC 安全配置
+     */
     private void validateTimestamp(long timestamp, RpcSecurityProperties resolvedProperties) {
         long now = System.currentTimeMillis() / 1000;
         long allowedClockSkewSeconds = resolvedProperties.getAuthentication().getAllowedClockSkewSeconds();
@@ -174,6 +241,12 @@ public class RpcProviderAuthenticationFilter implements Filter {
         }
     }
 
+    /**
+     * 根据调用方应用标识解析签名密钥。
+     *
+     * @param callerAppId 调用方应用标识
+     * @return 调用方签名密钥
+     */
     private String resolveAppSecret(String callerAppId) {
         return Optional.ofNullable(resolveRpcCallerSecretResolver())
                 .flatMap(resolver -> resolver.resolve(callerAppId))
@@ -181,10 +254,20 @@ public class RpcProviderAuthenticationFilter implements Filter {
                 .orElseThrow(() -> new BusinessException(CommonErrorCode.INVALID_APP_KEY));
     }
 
+    /**
+     * 解析 RPC 安全配置。
+     *
+     * @return RPC 安全配置
+     */
     private RpcSecurityProperties resolveRpcSecurityProperties() {
         return rpcSecurityProperties != null ? rpcSecurityProperties : SpringContextHolder.getBeanIfAvailable(RpcSecurityProperties.class);
     }
 
+    /**
+     * 解析调用方密钥解析器。
+     *
+     * @return 调用方密钥解析器
+     */
     private RpcCallerSecretResolver resolveRpcCallerSecretResolver() {
         if (rpcCallerSecretResolver == null) {
             rpcCallerSecretResolver = SpringContextHolder.getBeanIfAvailable(RpcCallerSecretResolver.class);
@@ -192,6 +275,11 @@ public class RpcProviderAuthenticationFilter implements Filter {
         return rpcCallerSecretResolver;
     }
 
+    /**
+     * 解析 RPC 认证签名器。
+     *
+     * @return RPC 认证签名器
+     */
     private RpcAuthenticationSigner resolveRpcAuthenticationSigner() {
         if (rpcAuthenticationSigner == null) {
             rpcAuthenticationSigner = SpringContextHolder.getBeanIfAvailable(RpcAuthenticationSigner.class);
@@ -202,6 +290,15 @@ public class RpcProviderAuthenticationFilter implements Filter {
         return rpcAuthenticationSigner;
     }
 
+    /**
+     * 执行扩展认证校验钩子。
+     *
+     * @param invocation 调用信息
+     * @param callerAppId 调用方应用标识
+     * @param timestamp 请求时间戳
+     * @param signature 请求签名
+     * @param resolvedProperties RPC 安全配置
+     */
     private void applyValidationHooks(
             Invocation invocation,
             String callerAppId,
@@ -225,18 +322,39 @@ public class RpcProviderAuthenticationFilter implements Filter {
         validationHooks.forEach(hook -> hook.validate(context));
     }
 
+    /**
+     * 将空白字符串规范化为 {@code null}。
+     *
+     * @param value 原始字符串
+     * @return 规范化后的字符串
+     */
     private String trimToNull(String value) {
         return StringUtils.hasText(value) ? value.trim() : null;
     }
 
+    /**
+     * 注入 RPC 安全配置。
+     *
+     * @param rpcSecurityProperties RPC 安全配置
+     */
     public void setRpcSecurityProperties(RpcSecurityProperties rpcSecurityProperties) {
         this.rpcSecurityProperties = rpcSecurityProperties;
     }
 
+    /**
+     * 注入调用方密钥解析器。
+     *
+     * @param rpcCallerSecretResolver 调用方密钥解析器
+     */
     public void setRpcCallerSecretResolver(RpcCallerSecretResolver rpcCallerSecretResolver) {
         this.rpcCallerSecretResolver = rpcCallerSecretResolver;
     }
 
+    /**
+     * 注入 RPC 认证签名器。
+     *
+     * @param rpcAuthenticationSigner RPC 认证签名器
+     */
     public void setRpcAuthenticationSigner(RpcAuthenticationSigner rpcAuthenticationSigner) {
         this.rpcAuthenticationSigner = rpcAuthenticationSigner;
     }

@@ -30,12 +30,26 @@ import java.util.Optional;
  */
 public class PropertiesRpcCallerSecretResolver implements RpcCallerSecretResolver {
 
+    /**
+     * RPC 安全配置。
+     */
     private final RpcSecurityProperties rpcSecurityProperties;
 
+    /**
+     * 创建基于配置的调用方密钥解析器。
+     *
+     * @param rpcSecurityProperties RPC 安全配置
+     */
     public PropertiesRpcCallerSecretResolver(RpcSecurityProperties rpcSecurityProperties) {
         this.rpcSecurityProperties = rpcSecurityProperties;
     }
 
+    /**
+     * 根据调用方应用标识解析签名密钥。
+     *
+     * @param callerAppId 调用方应用标识
+     * @return 调用方签名密钥
+     */
     @Override
     public Optional<String> resolve(String callerAppId) {
         if (!StringUtils.hasText(callerAppId)) {

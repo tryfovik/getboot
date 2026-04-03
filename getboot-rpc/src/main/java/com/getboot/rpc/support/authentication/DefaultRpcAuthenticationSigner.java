@@ -26,11 +26,28 @@ import com.getboot.rpc.spi.RpcAuthenticationSigner;
  */
 public class DefaultRpcAuthenticationSigner implements RpcAuthenticationSigner {
 
+    /**
+     * 生成 RPC 请求签名。
+     *
+     * @param appId 应用标识
+     * @param appSecret 应用密钥
+     * @param serviceName 服务名
+     * @param methodName 方法名
+     * @param timestamp 时间戳
+     * @return 请求签名
+     */
     @Override
     public String sign(String appId, String appSecret, String serviceName, String methodName, long timestamp) {
         return RpcRequestSigner.sign(appId, appSecret, serviceName, methodName, timestamp);
     }
 
+    /**
+     * 比较两个 RPC 请求签名是否一致。
+     *
+     * @param expectedSignature 期望签名
+     * @param actualSignature 实际签名
+     * @return 签名一致时返回 {@code true}
+     */
     @Override
     public boolean matches(String expectedSignature, String actualSignature) {
         return RpcRequestSigner.matches(expectedSignature, actualSignature);
