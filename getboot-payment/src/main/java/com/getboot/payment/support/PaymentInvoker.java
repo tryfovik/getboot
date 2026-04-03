@@ -26,6 +26,9 @@ import com.getboot.exception.api.exception.BusinessException;
  */
 public final class PaymentInvoker {
 
+    /**
+     * 工具类不允许实例化。
+     */
     private PaymentInvoker() {
     }
 
@@ -63,13 +66,34 @@ public final class PaymentInvoker {
         }
     }
 
+    /**
+     * 可抛出受检异常的返回值供应器。
+     *
+     * @param <T> 返回值类型
+     */
     @FunctionalInterface
     public interface CheckedSupplier<T> {
+
+        /**
+         * 获取操作结果。
+         *
+         * @return 操作结果
+         * @throws Exception 执行失败时抛出
+         */
         T get() throws Exception;
     }
 
+    /**
+     * 可抛出受检异常的无返回值操作。
+     */
     @FunctionalInterface
     public interface CheckedRunnable {
+
+        /**
+         * 执行操作。
+         *
+         * @throws Exception 执行失败时抛出
+         */
         void run() throws Exception;
     }
 }

@@ -71,6 +71,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 查询支付宝账单下载地址。
+     *
+     * @param request 账单请求
+     * @return 账单响应
+     */
     @Override
     public AlipayTradeBillResponse downloadBill(AlipayTradeBillRequest request) {
         if (request == null) {
@@ -97,6 +103,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
                 .build();
     }
 
+    /**
+     * 撤销支付宝交易。
+     *
+     * @param request 撤销请求
+     * @return 撤销响应
+     */
     @Override
     public AlipayTradeCancelResponse cancel(AlipayTradeCancelRequest request) {
         if (request == null) {
@@ -123,6 +135,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
                 .build();
     }
 
+    /**
+     * 构建账单下载请求选项。
+     *
+     * @param request 账单请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildBillOptions(AlipayTradeBillRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -131,6 +149,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
         return options;
     }
 
+    /**
+     * 构建交易撤销请求选项。
+     *
+     * @param request 撤销请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildCancelOptions(AlipayTradeCancelRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -139,6 +163,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
         return options;
     }
 
+    /**
+     * 根据元数据创建请求选项。
+     *
+     * @param metadata 元数据
+     * @return 请求选项
+     */
     private AlipayRequestOptions newRequestOptions(Map<String, String> metadata) {
         AlipayRequestOptions options = new AlipayRequestOptions();
         options.setAppAuthToken(AlipayRequestSupport.text(metadata, AlipayRequestSupport.APP_AUTH_TOKEN));
@@ -147,6 +177,12 @@ public class AlipayTradeServiceImpl implements AlipayTradeService {
         return options;
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);

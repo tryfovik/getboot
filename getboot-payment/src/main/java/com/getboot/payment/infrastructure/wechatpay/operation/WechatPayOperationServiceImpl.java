@@ -33,14 +33,49 @@ import com.wechat.pay.java.service.wexinpayscoreparking.WexinPayScoreParkingServ
  */
 public class WechatPayOperationServiceImpl implements WechatPayOperationService {
 
+    /**
+     * 发券能力服务。
+     */
     private final WechatPayCouponService couponService;
+
+    /**
+     * 支付分能力服务。
+     */
     private final WechatPayPayScoreService payScoreService;
+
+    /**
+     * 智慧商圈能力服务。
+     */
     private final WechatPayBusinessCircleService businessCircleService;
+
+    /**
+     * 代金券服务。
+     */
     private final CashCouponsService cashCouponsService;
+
+    /**
+     * 商家券服务。
+     */
     private final MerchantExclusiveCouponService merchantExclusiveCouponService;
+
+    /**
+     * 支付有礼服务。
+     */
     private final GiftActivityService giftActivityService;
+
+    /**
+     * 委托营销服务。
+     */
     private final MarketingBankPackagesService marketingBankPackagesService;
+
+    /**
+     * 委托营销扩展服务。
+     */
     private final MarketingBankPackagesServiceExtension marketingBankPackagesServiceExtension;
+
+    /**
+     * 微信支付分停车服务。
+     */
     private final WexinPayScoreParkingService payScoreParkingService;
 
     /**
@@ -77,46 +112,91 @@ public class WechatPayOperationServiceImpl implements WechatPayOperationService 
         this.payScoreParkingService = payScoreParkingService;
     }
 
+    /**
+     * 获取发券能力服务。
+     *
+     * @return 发券能力服务
+     */
     @Override
     public WechatPayCouponService couponService() {
         return couponService;
     }
 
+    /**
+     * 获取支付分能力服务。
+     *
+     * @return 支付分能力服务
+     */
     @Override
     public WechatPayPayScoreService payScoreService() {
         return payScoreService;
     }
 
+    /**
+     * 获取智慧商圈能力服务。
+     *
+     * @return 智慧商圈能力服务
+     */
     @Override
     public WechatPayBusinessCircleService businessCircleService() {
         return businessCircleService;
     }
 
+    /**
+     * 获取代金券服务。
+     *
+     * @return 代金券服务
+     */
     @Override
     public CashCouponsService cashCouponsService() {
         return cashCouponsService;
     }
 
+    /**
+     * 获取商家券服务。
+     *
+     * @return 商家券服务
+     */
     @Override
     public MerchantExclusiveCouponService merchantExclusiveCouponService() {
         return merchantExclusiveCouponService;
     }
 
+    /**
+     * 获取支付有礼服务。
+     *
+     * @return 支付有礼服务
+     */
     @Override
     public GiftActivityService giftActivityService() {
         return giftActivityService;
     }
 
+    /**
+     * 获取委托营销服务。
+     *
+     * @return 委托营销服务
+     */
     @Override
     public MarketingBankPackagesService marketingBankPackagesService() {
         return marketingBankPackagesService;
     }
 
+    /**
+     * 获取委托营销扩展服务。
+     *
+     * @return 委托营销扩展服务
+     */
     @Override
     public MarketingBankPackagesServiceExtension marketingBankPackagesServiceExtension() {
         return marketingBankPackagesServiceExtension;
     }
 
+    /**
+     * 获取微信支付分停车服务。
+     *
+     * @return 微信支付分停车服务
+     */
     @Override
     public WexinPayScoreParkingService payScoreParkingService() {
         return payScoreParkingService;

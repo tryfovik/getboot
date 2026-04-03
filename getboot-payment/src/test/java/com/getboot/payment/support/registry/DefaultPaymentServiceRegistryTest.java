@@ -39,8 +39,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * 默认支付服务注册表测试。
+ *
+ * @author qiheng
+ */
 class DefaultPaymentServiceRegistryTest {
 
+    /**
+     * 验证已注册渠道能够被正确获取。
+     */
     @Test
     void shouldReturnRegisteredService() {
         PaymentService paymentService = new StubPaymentService(PaymentChannel.ALIPAY);
@@ -50,6 +58,9 @@ class DefaultPaymentServiceRegistryTest {
         assertEquals(paymentService, registry.getRequired(PaymentChannel.ALIPAY));
     }
 
+    /**
+     * 验证重复渠道注册会被拒绝。
+     */
     @Test
     void shouldRejectDuplicateChannelRegistration() {
         assertThrows(IllegalStateException.class, () -> new DefaultPaymentServiceRegistry(List.of(
@@ -58,37 +69,84 @@ class DefaultPaymentServiceRegistryTest {
         )));
     }
 
+    /**
+     * 用于注册表测试的支付服务桩。
+     *
+     * @param channel 支付渠道
+     */
     private record StubPaymentService(PaymentChannel channel) implements PaymentService {
+
+        /**
+         * 返回测试支持的支付模式。
+         *
+         * @return 支持的支付模式
+         */
         @Override
         public Set<PaymentMode> supportedModes() {
             return Set.of(PaymentMode.APP);
         }
 
+        /**
+         * 模拟创建订单。
+         *
+         * @param request 创建请求
+         * @return 空响应
+         */
         @Override
         public PaymentCreateResponse create(PaymentCreateRequest request) {
             return null;
         }
 
+        /**
+         * 模拟退款。
+         *
+         * @param request 退款请求
+         * @return 空响应
+         */
         @Override
         public PaymentRefundResponse refund(PaymentRefundRequest request) {
             return null;
         }
 
+        /**
+         * 模拟订单查询。
+         *
+         * @param request 查询请求
+         * @return 空响应
+         */
         @Override
         public PaymentOrderQueryResponse queryOrder(PaymentOrderQueryRequest request) {
             return null;
         }
 
+        /**
+         * 模拟退款查询。
+         *
+         * @param request 查询请求
+         * @return 空响应
+         */
         @Override
         public PaymentRefundQueryResponse queryRefund(PaymentRefundQueryRequest request) {
             return null;
         }
 
+        /**
+         * 模拟关单。
+         *
+         * @param request 关单请求
+         * @return 空响应
+         */
         @Override
         public PaymentCloseResponse close(PaymentCloseRequest request) {
             return null;
         }
 
+        /**
+         * 模拟通知解析。
+         *
+         * @param request 通知请求
+         * @return 空响应
+         */
         @Override
         public PaymentNotifyResponse parseNotify(PaymentNotifyRequest request) {
             return null;

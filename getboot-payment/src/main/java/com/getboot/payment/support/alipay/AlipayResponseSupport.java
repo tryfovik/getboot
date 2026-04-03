@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public final class AlipayResponseSupport {
 
+    /**
+     * 工具类不允许实例化。
+     */
     private AlipayResponseSupport() {
     }
 
@@ -99,6 +102,12 @@ public final class AlipayResponseSupport {
         return null;
     }
 
+    /**
+     * 将对象转换为字符串。
+     *
+     * @param value 原始值
+     * @return 字符串值
+     */
     private static String stringValue(Object value) {
         return value == null ? null : String.valueOf(value);
     }

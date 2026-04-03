@@ -30,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPayV2SupportTest {
 
+    /**
+     * 验证签名原文与签名值稳定。
+     */
     @Test
     void shouldBuildStableSignSourceAndSignature() {
         WechatPayV2Support support = new WechatPayV2Support("test-key");
@@ -44,6 +47,9 @@ class WechatPayV2SupportTest {
         );
     }
 
+    /**
+     * 验证查询字符串会执行 URL 编码。
+     */
     @Test
     void shouldBuildQueryStringWithUrlEncoding() {
         WechatPayV2Support support = new WechatPayV2Support("test-key");
@@ -54,6 +60,9 @@ class WechatPayV2SupportTest {
         assertEquals("name=test%20user&city=shanghai", support.buildQueryString(args));
     }
 
+    /**
+     * 验证随机串由 32 位字母数字组成。
+     */
     @Test
     void shouldGenerateAlphaNumericNonce() {
         WechatPayV2Support support = new WechatPayV2Support("test-key");

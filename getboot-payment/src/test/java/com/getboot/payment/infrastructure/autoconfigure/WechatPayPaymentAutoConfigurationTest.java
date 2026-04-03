@@ -56,6 +56,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPayPaymentAutoConfigurationTest {
 
+    /**
+     * 验证微信支付自动配置会映射到默认实现。
+     */
     @Test
     void shouldMapWechatPayServiceBeansToDefaultImplementations() {
         WechatPayPaymentAutoConfiguration autoConfiguration = new WechatPayPaymentAutoConfiguration();

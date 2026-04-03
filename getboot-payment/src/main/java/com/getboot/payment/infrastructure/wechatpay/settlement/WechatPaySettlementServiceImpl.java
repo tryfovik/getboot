@@ -27,8 +27,19 @@ import com.wechat.pay.java.service.transferbatch.TransferBatchService;
  */
 public class WechatPaySettlementServiceImpl implements WechatPaySettlementService {
 
+    /**
+     * 商家转账服务。
+     */
     private final TransferBatchService transferBatchService;
+
+    /**
+     * 普通商户分账服务。
+     */
     private final ProfitsharingService profitsharingService;
+
+    /**
+     * 电商分账服务。
+     */
     private final EcommerceProfitSharingService ecommerceProfitSharingService;
 
     /**
@@ -47,16 +58,31 @@ public class WechatPaySettlementServiceImpl implements WechatPaySettlementServic
         this.ecommerceProfitSharingService = ecommerceProfitSharingService;
     }
 
+    /**
+     * 获取商家转账服务。
+     *
+     * @return 商家转账服务
+     */
     @Override
     public TransferBatchService transferBatchService() {
         return transferBatchService;
     }
 
+    /**
+     * 获取普通商户分账服务。
+     *
+     * @return 普通商户分账服务
+     */
     @Override
     public ProfitsharingService profitsharingService() {
         return profitsharingService;
     }
 
+    /**
+     * 获取电商分账服务。
+     *
+     * @return 电商分账服务
+     */
     @Override
     public EcommerceProfitSharingService ecommerceProfitSharingService() {
         return ecommerceProfitSharingService;

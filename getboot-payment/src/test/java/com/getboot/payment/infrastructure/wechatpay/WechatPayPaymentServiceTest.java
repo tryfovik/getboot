@@ -60,12 +60,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPayPaymentServiceTest {
 
+    /**
+     * 验证统一下单请求会应用 SPI 扩展参数。
+     */
     @Test
     void shouldApplySpiCustomizerToUnifiedCreateRequest() {
         RecordingHttpClient httpClient = new RecordingHttpClient();
         JsapiServiceExtension jsapiServiceExtension = newJsapiServiceExtension(new StubConfig(), httpClient);
 
         WechatPayRequestCustomizer customizer = new WechatPayRequestCustomizer() {
+            /**
+             * 为统一下单请求注入测试扩展参数。
+             *
+             * @param request 创建请求
+             * @param options 请求选项
+             */
             @Override
             public void customizeCreate(PaymentCreateRequest request, WechatPayRequestOptions options) {
                 options.setAppId("wx-spi-app");
@@ -106,6 +115,9 @@ class WechatPayPaymentServiceTest {
         assertEquals("wx-spi-app", response.getMetadata().get("appId"));
     }
 
+    /**
+     * 验证显式传入空元数据时仍可下单。
+     */
     @Test
     void shouldCreateOrderWhenMetadataIsExplicitlyNull() {
         RecordingHttpClient httpClient = new RecordingHttpClient();
@@ -137,6 +149,9 @@ class WechatPayPaymentServiceTest {
         assertEquals("wx-prepay-001", response.getPrepayId());
     }
 
+    /**
+     * 验证缺少微信通知请求头时会返回明确错误。
+     */
     @Test
     void shouldReportMissingWechatHeadersWhenHeadersIsNull() {
         WechatPayPaymentService service = new WechatPayPaymentService(
@@ -162,6 +177,11 @@ class WechatPayPaymentServiceTest {
         assertEquals("Missing WeChat Pay notification header: Wechatpay-Serial", exception.getMessage());
     }
 
+    /**
+     * 构造测试使用的支付配置。
+     *
+     * @return 支付配置
+     */
     private PaymentProperties paymentProperties() {
         PaymentProperties properties = new PaymentProperties();
         properties.getWechatpay().setAppId("wx-demo-app");
@@ -170,10 +190,24 @@ class WechatPayPaymentServiceTest {
         return properties;
     }
 
+    /**
+     * 记录统一下单 HTTP 请求的测试客户端。
+     */
     private static final class RecordingHttpClient implements HttpClient {
 
+        /**
+         * 最近一次 HTTP 请求。
+         */
         private HttpRequest lastRequest;
 
+        /**
+         * 模拟执行统一下单请求。
+         *
+         * @param request HTTP 请求
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 模拟响应
+         */
         @Override
         public <T> HttpResponse<T> execute(HttpRequest request, Class<T> responseType) {
             this.lastRequest = request;
@@ -193,12 +227,25 @@ class WechatPayPaymentServiceTest {
             }
         }
 
+        /**
+         * 模拟下载文件。
+         *
+         * @param url 下载地址
+         * @return 空输入流
+         */
         @Override
         public InputStream download(String url) {
             return new ByteArrayInputStream(new byte[0]);
         }
     }
 
+    /**
+     * 通过反射构造 JSAPI 扩展服务。
+     *
+     * @param config 微信配置
+     * @param httpClient HTTP 客户端
+     * @return JSAPI 扩展服务
+     */
     private static JsapiServiceExtension newJsapiServiceExtension(Config config, HttpClient httpClient) {
         try {
             Constructor<JsapiServiceExtension> constructor = JsapiServiceExtension.class.getDeclaredConstructor(
@@ -214,31 +261,67 @@ class WechatPayPaymentServiceTest {
         }
     }
 
+    /**
+     * 提供固定认证与签名能力的测试配置。
+     */
     private static final class StubConfig implements Config {
 
+        /**
+         * 返回空加密器。
+         *
+         * @return 空加密器
+         */
         @Override
         public PrivacyEncryptor createEncryptor() {
             return null;
         }
 
+        /**
+         * 返回空解密器。
+         *
+         * @return 空解密器
+         */
         @Override
         public PrivacyDecryptor createDecryptor() {
             return null;
         }
 
+        /**
+         * 返回固定凭证。
+         *
+         * @return 固定凭证
+         */
         @Override
         public Credential createCredential() {
             return new Credential() {
+                /**
+                 * 返回认证模式。
+                 *
+                 * @return 认证模式
+                 */
                 @Override
                 public String getSchema() {
                     return "WECHATPAY2-SHA256-RSA2048";
                 }
 
+                /**
+                 * 返回商户号。
+                 *
+                 * @return 商户号
+                 */
                 @Override
                 public String getMerchantId() {
                     return "1900001234";
                 }
 
+                /**
+                 * 返回固定授权头。
+                 *
+                 * @param uri 请求地址
+                 * @param httpMethod 请求方法
+                 * @param signBody 签名原文
+                 * @return 固定授权头
+                 */
                 @Override
                 public String getAuthorization(java.net.URI uri, String httpMethod, String signBody) {
                     return "test-authorization";
@@ -246,14 +329,32 @@ class WechatPayPaymentServiceTest {
             };
         }
 
+        /**
+         * 返回固定校验器。
+         *
+         * @return 固定校验器
+         */
         @Override
         public Validator createValidator() {
             return new Validator() {
+                /**
+                 * 固定返回验签通过。
+                 *
+                 * @param headers 响应头
+                 * @param message 验签内容
+                 * @param <T> 泛型占位
+                 * @return 始终为 true
+                 */
                 @Override
                 public <T> boolean validate(HttpHeaders headers, String message) {
                     return true;
                 }
 
+                /**
+                 * 返回固定证书序列号。
+                 *
+                 * @return 序列号
+                 */
                 @Override
                 public String getSerialNumber() {
                     return "serial";
@@ -261,14 +362,30 @@ class WechatPayPaymentServiceTest {
             };
         }
 
+        /**
+         * 返回固定签名器。
+         *
+         * @return 固定签名器
+         */
         @Override
         public Signer createSigner() {
             return new Signer() {
+                /**
+                 * 返回固定签名结果。
+                 *
+                 * @param message 待签名内容
+                 * @return 固定签名结果
+                 */
                 @Override
                 public SignatureResult sign(String message) {
                     return new SignatureResult("signed-value", "serial");
                 }
 
+                /**
+                 * 返回签名算法名称。
+                 *
+                 * @return 算法名称
+                 */
                 @Override
                 public String getAlgorithm() {
                     return "SHA256-RSA";
@@ -277,6 +394,16 @@ class WechatPayPaymentServiceTest {
         }
     }
 
+    /**
+     * 构造测试用 HTTP 响应。
+     *
+     * @param request 原始请求
+     * @param serviceResponse 服务响应
+     * @param body JSON 响应体
+     * @param <T> 响应泛型
+     * @return HTTP 响应
+     * @throws Exception 反射失败
+     */
     @SuppressWarnings("unchecked")
     private static <T> HttpResponse<T> httpResponse(HttpRequest request, T serviceResponse, String body) throws Exception {
         Constructor<?> constructor = HttpResponse.class.getDeclaredConstructors()[0];

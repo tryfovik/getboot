@@ -53,7 +53,14 @@ import org.springframework.util.StringUtils;
 @ConditionalOnProperty(prefix = "getboot.payment.alipay", name = "enabled", havingValue = "true")
 public class AlipayPaymentAutoConfiguration {
 
+    /**
+     * 支付宝默认生产网关域名。
+     */
     private static final String DEFAULT_GATEWAY_HOST = "openapi.alipay.com";
+
+    /**
+     * 支付宝默认沙箱网关域名。
+     */
     private static final String DEFAULT_SANDBOX_GATEWAY_HOST = "openapi-sandbox.dl.alipaydev.com";
 
     /**
@@ -210,6 +217,11 @@ public class AlipayPaymentAutoConfiguration {
         );
     }
 
+    /**
+     * 校验支付宝配置是否完整。
+     *
+     * @param properties 支付宝配置
+     */
     private void validateAlipayProperties(PaymentProperties.Alipay properties) {
         Assert.hasText(properties.getAppId(), "getboot.payment.alipay.app-id must not be blank");
         Assert.hasText(
@@ -231,12 +243,24 @@ public class AlipayPaymentAutoConfiguration {
         }
     }
 
+    /**
+     * 判断是否使用证书模式。
+     *
+     * @param properties 支付宝配置
+     * @return 是否使用证书模式
+     */
     private boolean useCertificateMode(PaymentProperties.Alipay properties) {
         return StringUtils.hasText(properties.getMerchantCertPath())
                 || StringUtils.hasText(properties.getAlipayCertPath())
                 || StringUtils.hasText(properties.getAlipayRootCertPath());
     }
 
+    /**
+     * 解析支付宝网关域名。
+     *
+     * @param properties 支付宝配置
+     * @return 网关域名
+     */
     private String resolveGatewayHost(PaymentProperties.Alipay properties) {
         if (StringUtils.hasText(properties.getGatewayHost())) {
             return properties.getGatewayHost();

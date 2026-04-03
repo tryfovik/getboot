@@ -28,13 +28,30 @@ import java.util.Map;
  */
 public final class WechatPayRequestSupport {
 
+    /**
+     * 工具类不允许实例化。
+     */
     private WechatPayRequestSupport() {
     }
 
+    /**
+     * 读取元数据中的文本值。
+     *
+     * @param metadata 元数据
+     * @param key 键名
+     * @return 文本值
+     */
     public static String text(Map<String, String> metadata, String key) {
         return AlipayRequestSupport.text(metadata, key);
     }
 
+    /**
+     * 读取必填请求头。
+     *
+     * @param headers 请求头
+     * @param name 请求头名称
+     * @return 请求头值
+     */
     public static String requiredHeader(Map<String, String> headers, String name) {
         String value = header(headers, name);
         if (!StringUtils.hasText(value)) {
@@ -43,6 +60,13 @@ public final class WechatPayRequestSupport {
         return value;
     }
 
+    /**
+     * 按名称忽略大小写读取请求头。
+     *
+     * @param headers 请求头
+     * @param name 请求头名称
+     * @return 请求头值
+     */
     public static String header(Map<String, String> headers, String name) {
         if (headers == null || headers.isEmpty() || !StringUtils.hasText(name)) {
             return null;

@@ -25,6 +25,9 @@ import com.getboot.payment.support.wechatpay.WechatPayHttpGateway;
  */
 public class WechatPayApiServiceImpl implements WechatPayApiService {
 
+    /**
+     * 微信支付 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
 
     /**
@@ -36,16 +39,39 @@ public class WechatPayApiServiceImpl implements WechatPayApiService {
         this.httpGateway = httpGateway;
     }
 
+    /**
+     * 发起 GET 请求。
+     *
+     * @param path 接口路径
+     * @param responseType 响应类型
+     * @param <T> 响应泛型
+     * @return 响应对象
+     */
     @Override
     public <T> T get(String path, Class<T> responseType) {
         return httpGateway.get(path, responseType);
     }
 
+    /**
+     * 发起 POST 请求。
+     *
+     * @param path 接口路径
+     * @param requestBody 请求体
+     * @param responseType 响应类型
+     * @param <T> 响应泛型
+     * @return 响应对象
+     */
     @Override
     public <T> T post(String path, Object requestBody, Class<T> responseType) {
         return httpGateway.post(path, requestBody, responseType);
     }
 
+    /**
+     * 发起无需解析响应体的 POST 请求。
+     *
+     * @param path 接口路径
+     * @param requestBody 请求体
+     */
     @Override
     public void postWithoutResponse(String path, Object requestBody) {
         httpGateway.postWithoutResponse(path, requestBody);

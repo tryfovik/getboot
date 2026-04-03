@@ -40,9 +40,19 @@ import java.util.Map;
  */
 public class WechatPayCouponServiceImpl implements WechatPayCouponService {
 
+    /**
+     * H5 领券基础地址。
+     */
     private static final String H5_COUPON_BASE_URL = "https://action.weixin.qq.com/busifavor/getcouponinfo";
+
+    /**
+     * H5 领券地址固定后缀。
+     */
     private static final String H5_COUPON_SUFFIX = "#wechat_pay&wechat_redirect";
 
+    /**
+     * 支付配置。
+     */
     private final PaymentProperties paymentProperties;
 
     /**
@@ -54,6 +64,12 @@ public class WechatPayCouponServiceImpl implements WechatPayCouponService {
         this.paymentProperties = paymentProperties;
     }
 
+    /**
+     * 构建小程序发券插件拉起参数。
+     *
+     * @param request 小程序发券请求
+     * @return 小程序发券响应
+     */
     @Override
     public WechatPayMiniProgramCouponLaunchResponse buildMiniProgramLaunch(
             WechatPayMiniProgramCouponLaunchRequest request) {
@@ -94,6 +110,12 @@ public class WechatPayCouponServiceImpl implements WechatPayCouponService {
                 .build();
     }
 
+    /**
+     * 构建 H5 领券拉起地址。
+     *
+     * @param request H5 发券请求
+     * @return H5 发券响应
+     */
     @Override
     public WechatPayH5CouponLaunchResponse buildH5Launch(WechatPayH5CouponLaunchRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -131,6 +153,12 @@ public class WechatPayCouponServiceImpl implements WechatPayCouponService {
                 .build();
     }
 
+    /**
+     * 解析发券商户号。
+     *
+     * @param sendCouponMerchant 优先商户号
+     * @return 发券商户号
+     */
     private String resolveSendCouponMerchant(String sendCouponMerchant) {
         if (StringUtils.hasText(sendCouponMerchant)) {
             return sendCouponMerchant;
@@ -140,6 +168,11 @@ public class WechatPayCouponServiceImpl implements WechatPayCouponService {
         return merchantId;
     }
 
+    /**
+     * 创建 V2 签名支持工具。
+     *
+     * @return V2 签名支持工具
+     */
     private WechatPayV2Support v2Support() {
         return new WechatPayV2Support(paymentProperties.getWechatpay().getApiV2Key());
     }

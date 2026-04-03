@@ -54,6 +54,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class AlipaySettlementServiceImplTest {
 
+    /**
+     * 验证转账请求会应用 SPI 上下文与扩展参数。
+     */
     @Test
     void shouldTransferWithSpiContext() {
         RecordingGateway gateway = new RecordingGateway();
@@ -70,6 +73,12 @@ class AlipaySettlementServiceImplTest {
         );
 
         AlipayRequestCustomizer customizer = new AlipayRequestCustomizer() {
+            /**
+             * 为转账请求注入测试扩展参数。
+             *
+             * @param request 转账请求
+             * @param options 请求选项
+             */
             @Override
             public void customizeTransfer(AlipayTransferRequest request, AlipayRequestOptions options) {
                 options.setAppAuthToken("app-auth-token");
@@ -95,6 +104,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals("SUCCESS", response.getStatus());
     }
 
+    /**
+     * 验证转账查询结果映射。
+     */
     @Test
     void shouldQueryTransfer() {
         RecordingGateway gateway = new RecordingGateway();
@@ -126,6 +138,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals("settle-001", response.getSettlementSerialNo());
     }
 
+    /**
+     * 验证账户余额查询结果映射。
+     */
     @Test
     void shouldQueryAccountBalance() {
         RecordingGateway gateway = new RecordingGateway();
@@ -150,6 +165,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals(new BigDecimal("12.30"), response.getFreezeAmount());
     }
 
+    /**
+     * 验证转账通知解析与验签透传。
+     */
     @Test
     void shouldParseTransferNotify() {
         RecordingGateway gateway = new RecordingGateway();
@@ -171,6 +189,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals("transfer-003", gateway.lastNotifyParameters.get("out_biz_no"));
     }
 
+    /**
+     * 验证电子回单申请会应用 SPI 上下文。
+     */
     @Test
     void shouldApplyElectronicReceiptWithSpiContext() {
         RecordingGateway gateway = new RecordingGateway();
@@ -208,6 +229,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals("receipt-file-001", response.getFileId());
     }
 
+    /**
+     * 验证电子回单查询结果映射。
+     */
     @Test
     void shouldQueryElectronicReceipt() {
         RecordingGateway gateway = new RecordingGateway();
@@ -232,6 +256,9 @@ class AlipaySettlementServiceImplTest {
         assertEquals("https://download.example.com/receipt-001.pdf", response.getDownloadUrl());
     }
 
+    /**
+     * 验证电子回单未生成完成时的状态处理。
+     */
     @Test
     void shouldQueryElectronicReceiptWithoutDownloadUrl() {
         RecordingGateway gateway = new RecordingGateway();
@@ -254,6 +281,12 @@ class AlipaySettlementServiceImplTest {
         assertEquals("回单生成中", response.getErrorMessage());
     }
 
+    /**
+     * 构造成功的泛化响应。
+     *
+     * @param httpBody 原始响应体
+     * @return 泛化响应
+     */
     private AlipayOpenApiGenericResponse successResponse(String httpBody) {
         AlipayOpenApiGenericResponse response = new AlipayOpenApiGenericResponse();
         response.code = "10000";
@@ -262,16 +295,57 @@ class AlipaySettlementServiceImplTest {
         return response;
     }
 
+    /**
+     * 记录支付宝结算网关调用信息的测试桩。
+     */
     private static final class RecordingGateway implements AlipayGateway {
 
+        /**
+         * 泛化响应。
+         */
         private AlipayOpenApiGenericResponse genericResponse;
+
+        /**
+         * 最近一次调用方法。
+         */
         private String lastMethod;
+
+        /**
+         * 最近一次文本参数。
+         */
         private Map<String, String> lastTextParams = new LinkedHashMap<>();
+
+        /**
+         * 最近一次业务参数。
+         */
         private Map<String, Object> lastBizParams = new LinkedHashMap<>();
+
+        /**
+         * 最近一次请求上下文。
+         */
         private AlipayRequestContext lastRequestContext;
+
+        /**
+         * 验签结果。
+         */
         private boolean verifyNotifyResult;
+
+        /**
+         * 最近一次通知参数。
+         */
         private Map<String, String> lastNotifyParameters = new LinkedHashMap<>();
 
+        /**
+         * 模拟 APP 支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return APP 支付响应
+         */
         @Override
         public AlipayTradeAppPayResponse appPay(
                 String subject,
@@ -283,6 +357,18 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeAppPayResponse();
         }
 
+        /**
+         * 模拟页面支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param returnUrl 返回地址
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 页面支付响应
+         */
         @Override
         public AlipayTradePagePayResponse pagePay(
                 String subject,
@@ -295,6 +381,19 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradePagePayResponse();
         }
 
+        /**
+         * 模拟 WAP 支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param quitUrl 退出地址
+         * @param returnUrl 返回地址
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return WAP 支付响应
+         */
         @Override
         public AlipayTradeWapPayResponse wapPay(
                 String subject,
@@ -308,6 +407,17 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeWapPayResponse();
         }
 
+        /**
+         * 模拟预下单调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 预下单响应
+         */
         @Override
         public AlipayTradePrecreateResponse preCreate(
                 String subject,
@@ -319,6 +429,14 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradePrecreateResponse();
         }
 
+        /**
+         * 模拟订单查询调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 订单查询响应
+         */
         @Override
         public AlipayTradeQueryResponse query(
                 String outTradeNo,
@@ -327,6 +445,16 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeQueryResponse();
         }
 
+        /**
+         * 模拟退款调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param refundAmount 退款金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 退款响应
+         */
         @Override
         public AlipayTradeRefundResponse refund(
                 String outTradeNo,
@@ -337,6 +465,15 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeRefundResponse();
         }
 
+        /**
+         * 模拟退款查询调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param outRequestNo 退款请求号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 退款查询响应
+         */
         @Override
         public AlipayTradeFastpayRefundQueryResponse queryRefund(
                 String outTradeNo,
@@ -346,6 +483,14 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeFastpayRefundQueryResponse();
         }
 
+        /**
+         * 模拟关单调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 关单响应
+         */
         @Override
         public AlipayTradeCloseResponse close(
                 String outTradeNo,
@@ -354,6 +499,14 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeCloseResponse();
         }
 
+        /**
+         * 模拟撤销调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 撤销响应
+         */
         @Override
         public AlipayTradeCancelResponse cancel(
                 String outTradeNo,
@@ -362,6 +515,15 @@ class AlipaySettlementServiceImplTest {
             return new AlipayTradeCancelResponse();
         }
 
+        /**
+         * 模拟账单下载地址查询。
+         *
+         * @param billType 账单类型
+         * @param billDate 账单日期
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 账单响应
+         */
         @Override
         public AlipayDataDataserviceBillDownloadurlQueryResponse downloadBill(
                 String billType,
@@ -371,12 +533,27 @@ class AlipaySettlementServiceImplTest {
             return new AlipayDataDataserviceBillDownloadurlQueryResponse();
         }
 
+        /**
+         * 模拟通知验签。
+         *
+         * @param parameters 通知参数
+         * @return 验签结果
+         */
         @Override
         public boolean verifyNotify(Map<String, String> parameters) {
             this.lastNotifyParameters = new LinkedHashMap<>(parameters);
             return verifyNotifyResult;
         }
 
+        /**
+         * 模拟带上下文的泛化调用。
+         *
+         * @param method 方法名
+         * @param textParams 文本参数
+         * @param bizParams 业务参数
+         * @param requestContext 调用上下文
+         * @return 泛化响应
+         */
         @Override
         public AlipayOpenApiGenericResponse execute(
                 String method,

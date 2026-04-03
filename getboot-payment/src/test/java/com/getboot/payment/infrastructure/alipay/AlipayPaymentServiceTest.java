@@ -56,6 +56,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class AlipayPaymentServiceTest {
 
+    /**
+     * 验证 APP 支付会生成签名订单串。
+     */
     @Test
     void shouldCreateAppOrder() {
         RecordingGateway gateway = new RecordingGateway();
@@ -85,6 +88,9 @@ class AlipayPaymentServiceTest {
         assertEquals("https://demo.example.com/notify", gateway.lastNotifyUrl);
     }
 
+    /**
+     * 验证扫码支付会返回二维码内容。
+     */
     @Test
     void shouldCreateNativeOrder() {
         RecordingGateway gateway = new RecordingGateway();
@@ -107,6 +113,9 @@ class AlipayPaymentServiceTest {
         assertEquals("order-002", response.getMerchantOrderNo());
     }
 
+    /**
+     * 验证订单查询结果映射。
+     */
     @Test
     void shouldQueryOrder() {
         RecordingGateway gateway = new RecordingGateway();
@@ -136,6 +145,9 @@ class AlipayPaymentServiceTest {
         assertEquals("trade-003", gateway.lastOptionalArgs.get("trade_no"));
     }
 
+    /**
+     * 验证退款查询结果映射。
+     */
     @Test
     void shouldQueryRefund() {
         RecordingGateway gateway = new RecordingGateway();
@@ -159,6 +171,9 @@ class AlipayPaymentServiceTest {
         assertEquals(new BigDecimal("8.00"), response.getRefundAmount());
     }
 
+    /**
+     * 验证支付通知解析与验签透传。
+     */
     @Test
     void shouldParsePaymentNotify() {
         RecordingGateway gateway = new RecordingGateway();
@@ -179,6 +194,9 @@ class AlipayPaymentServiceTest {
         assertEquals("2088buyer", gateway.lastNotifyParameters.get("buyer_id"));
     }
 
+    /**
+     * 验证退款请求参数映射。
+     */
     @Test
     void shouldRefundOrder() {
         RecordingGateway gateway = new RecordingGateway();
@@ -204,6 +222,9 @@ class AlipayPaymentServiceTest {
         assertEquals("refund-006", gateway.lastOptionalArgs.get("out_request_no"));
     }
 
+    /**
+     * 验证统一下单会应用 SPI 扩展参数。
+     */
     @Test
     void shouldApplySpiCustomizerToUnifiedCreateRequest() {
         RecordingGateway gateway = new RecordingGateway();
@@ -211,6 +232,12 @@ class AlipayPaymentServiceTest {
         gateway.appPayResponse.body = "spi-order-string";
 
         AlipayRequestCustomizer customizer = new AlipayRequestCustomizer() {
+            /**
+             * 为统一下单请求注入测试扩展参数。
+             *
+             * @param request 创建请求
+             * @param options 请求选项
+             */
             @Override
             public void customizeCreate(PaymentCreateRequest request, AlipayRequestOptions options) {
                 options.setNotifyUrl("https://spi.example.com/notify");
@@ -234,6 +261,11 @@ class AlipayPaymentServiceTest {
         assertEquals("spi-create", gateway.lastOptionalArgs.get("scene_tag"));
     }
 
+    /**
+     * 构造测试使用的支付宝配置。
+     *
+     * @return 支付宝配置
+     */
     private PaymentProperties paymentProperties() {
         PaymentProperties properties = new PaymentProperties();
         PaymentProperties.Alipay alipay = properties.getAlipay();
@@ -245,21 +277,82 @@ class AlipayPaymentServiceTest {
         return properties;
     }
 
+    /**
+     * 记录支付宝网关调用信息的测试桩。
+     */
     private static final class RecordingGateway implements AlipayGateway {
 
+        /**
+         * APP 支付响应。
+         */
         private AlipayTradeAppPayResponse appPayResponse;
+
+        /**
+         * 页面支付响应。
+         */
         private AlipayTradePagePayResponse pagePayResponse;
+
+        /**
+         * WAP 支付响应。
+         */
         private AlipayTradeWapPayResponse wapPayResponse;
+
+        /**
+         * 扫码预下单响应。
+         */
         private AlipayTradePrecreateResponse precreateResponse;
+
+        /**
+         * 订单查询响应。
+         */
         private AlipayTradeQueryResponse queryResponse;
+
+        /**
+         * 退款响应。
+         */
         private AlipayTradeRefundResponse refundResponse;
+
+        /**
+         * 退款查询响应。
+         */
         private AlipayTradeFastpayRefundQueryResponse refundQueryResponse;
+
+        /**
+         * 最近一次可选参数。
+         */
         private Map<String, Object> lastOptionalArgs = new LinkedHashMap<>();
+
+        /**
+         * 最近一次调用上下文。
+         */
         private AlipayRequestContext lastRequestContext;
+
+        /**
+         * 最近一次通知地址。
+         */
         private String lastNotifyUrl;
+
+        /**
+         * 最近一次通知参数。
+         */
         private Map<String, String> lastNotifyParameters = new LinkedHashMap<>();
+
+        /**
+         * 验签结果。
+         */
         private boolean verifyNotifyResult;
 
+        /**
+         * 模拟 APP 支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return APP 支付响应
+         */
         @Override
         public AlipayTradeAppPayResponse appPay(
                 String subject,
@@ -274,6 +367,18 @@ class AlipayPaymentServiceTest {
             return appPayResponse;
         }
 
+        /**
+         * 模拟页面支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param returnUrl 返回地址
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 页面支付响应
+         */
         @Override
         public AlipayTradePagePayResponse pagePay(
                 String subject,
@@ -286,6 +391,19 @@ class AlipayPaymentServiceTest {
             return pagePayResponse;
         }
 
+        /**
+         * 模拟 WAP 支付调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param quitUrl 退出地址
+         * @param returnUrl 返回地址
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return WAP 支付响应
+         */
         @Override
         public AlipayTradeWapPayResponse wapPay(
                 String subject,
@@ -299,6 +417,17 @@ class AlipayPaymentServiceTest {
             return wapPayResponse;
         }
 
+        /**
+         * 模拟扫码预下单调用。
+         *
+         * @param subject 订单标题
+         * @param outTradeNo 商户订单号
+         * @param totalAmount 订单金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 扫码预下单响应
+         */
         @Override
         public AlipayTradePrecreateResponse preCreate(
                 String subject,
@@ -310,6 +439,14 @@ class AlipayPaymentServiceTest {
             return precreateResponse;
         }
 
+        /**
+         * 模拟订单查询调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 订单查询响应
+         */
         @Override
         public AlipayTradeQueryResponse query(
                 String outTradeNo,
@@ -319,6 +456,16 @@ class AlipayPaymentServiceTest {
             return queryResponse;
         }
 
+        /**
+         * 模拟退款调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param refundAmount 退款金额
+         * @param notifyUrl 通知地址
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 退款响应
+         */
         @Override
         public AlipayTradeRefundResponse refund(
                 String outTradeNo,
@@ -330,6 +477,15 @@ class AlipayPaymentServiceTest {
             return refundResponse;
         }
 
+        /**
+         * 模拟退款查询调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param outRequestNo 退款请求号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 退款查询响应
+         */
         @Override
         public AlipayTradeFastpayRefundQueryResponse queryRefund(
                 String outTradeNo,
@@ -339,6 +495,14 @@ class AlipayPaymentServiceTest {
             return refundQueryResponse;
         }
 
+        /**
+         * 模拟关单调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 关单响应
+         */
         @Override
         public AlipayTradeCloseResponse close(
                 String outTradeNo,
@@ -347,6 +511,14 @@ class AlipayPaymentServiceTest {
             return new AlipayTradeCloseResponse();
         }
 
+        /**
+         * 模拟撤销调用。
+         *
+         * @param outTradeNo 商户订单号
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 撤销响应
+         */
         @Override
         public AlipayTradeCancelResponse cancel(
                 String outTradeNo,
@@ -355,6 +527,15 @@ class AlipayPaymentServiceTest {
             return new AlipayTradeCancelResponse();
         }
 
+        /**
+         * 模拟账单下载地址查询。
+         *
+         * @param billType 账单类型
+         * @param billDate 账单日期
+         * @param optionalArgs 可选参数
+         * @param requestContext 调用上下文
+         * @return 账单响应
+         */
         @Override
         public AlipayDataDataserviceBillDownloadurlQueryResponse downloadBill(
                 String billType,
@@ -364,12 +545,26 @@ class AlipayPaymentServiceTest {
             return new AlipayDataDataserviceBillDownloadurlQueryResponse();
         }
 
+        /**
+         * 模拟通知验签。
+         *
+         * @param parameters 通知参数
+         * @return 验签结果
+         */
         @Override
         public boolean verifyNotify(Map<String, String> parameters) {
             this.lastNotifyParameters = new LinkedHashMap<>(parameters);
             return verifyNotifyResult;
         }
 
+        /**
+         * 模拟泛化调用。
+         *
+         * @param method 方法名
+         * @param textParams 文本参数
+         * @param bizParams 业务参数
+         * @return 泛化响应
+         */
         @Override
         public AlipayOpenApiGenericResponse execute(
                 String method,

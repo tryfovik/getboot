@@ -42,11 +42,25 @@ public class WechatPayV2Support {
      */
     public static final String SIGN_TYPE_HMAC_SHA256 = "HMAC-SHA256";
 
+    /**
+     * HMAC-SHA256 算法名称。
+     */
     private static final String HMAC_SHA256 = "HmacSHA256";
+
+    /**
+     * 随机串字符池。
+     */
     private static final char[] NONCE_CHARS =
             "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+
+    /**
+     * 随机串生成器。
+     */
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    /**
+     * 微信支付 API V2 密钥。
+     */
     private final String apiV2Key;
 
     /**
@@ -139,6 +153,13 @@ public class WechatPayV2Support {
         return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
+    /**
+     * 判断参数是否参与签名。
+     *
+     * @param key 参数名
+     * @param value 参数值
+     * @return 是否参与签名
+     */
     private boolean shouldParticipate(String key, Object value) {
         if (value == null) {
             return false;

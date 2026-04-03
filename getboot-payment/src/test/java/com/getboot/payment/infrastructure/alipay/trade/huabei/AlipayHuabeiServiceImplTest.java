@@ -46,6 +46,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class AlipayHuabeiServiceImplTest {
 
+    /**
+     * 验证花呗分期建单参数映射。
+     */
     @Test
     void shouldCreateHuabeiTrade() {
         RecordingGateway gateway = new RecordingGateway();
@@ -74,6 +77,11 @@ class AlipayHuabeiServiceImplTest {
         assertEquals("2088seller", gateway.lastOptionalArgs.get("seller_id"));
     }
 
+    /**
+     * 构造测试使用的支付宝配置。
+     *
+     * @return 支付宝配置
+     */
     private PaymentProperties paymentProperties() {
         PaymentProperties properties = new PaymentProperties();
         PaymentProperties.Alipay alipay = properties.getAlipay();
@@ -84,12 +92,29 @@ class AlipayHuabeiServiceImplTest {
         return properties;
     }
 
+    /**
+     * 记录花呗分期调用信息的测试网关。
+     */
     private static final class RecordingGateway implements AlipayGateway {
 
+        /**
+         * 花呗分期建单响应。
+         */
         private com.alipay.easysdk.payment.huabei.models.AlipayTradeCreateResponse huabeiCreateResponse;
+
+        /**
+         * 最近一次花呗配置。
+         */
         private HuabeiConfig lastHuabeiConfig;
+
+        /**
+         * 最近一次可选参数。
+         */
         private Map<String, Object> lastOptionalArgs = new LinkedHashMap<>();
 
+        /**
+         * 模拟花呗分期建单调用。
+         */
         @Override
         public com.alipay.easysdk.payment.huabei.models.AlipayTradeCreateResponse huabeiCreate(
                 String subject,
@@ -105,6 +130,9 @@ class AlipayHuabeiServiceImplTest {
             return huabeiCreateResponse;
         }
 
+        /**
+         * 模拟 APP 支付调用。
+         */
         @Override
         public AlipayTradeAppPayResponse appPay(
                 String subject,
@@ -116,6 +144,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeAppPayResponse();
         }
 
+        /**
+         * 模拟页面支付调用。
+         */
         @Override
         public AlipayTradePagePayResponse pagePay(
                 String subject,
@@ -128,6 +159,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradePagePayResponse();
         }
 
+        /**
+         * 模拟 WAP 支付调用。
+         */
         @Override
         public AlipayTradeWapPayResponse wapPay(
                 String subject,
@@ -141,6 +175,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeWapPayResponse();
         }
 
+        /**
+         * 模拟预下单调用。
+         */
         @Override
         public AlipayTradePrecreateResponse preCreate(
                 String subject,
@@ -152,6 +189,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradePrecreateResponse();
         }
 
+        /**
+         * 模拟订单查询调用。
+         */
         @Override
         public AlipayTradeQueryResponse query(
                 String outTradeNo,
@@ -160,6 +200,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeQueryResponse();
         }
 
+        /**
+         * 模拟退款调用。
+         */
         @Override
         public AlipayTradeRefundResponse refund(
                 String outTradeNo,
@@ -170,6 +213,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeRefundResponse();
         }
 
+        /**
+         * 模拟退款查询调用。
+         */
         @Override
         public AlipayTradeFastpayRefundQueryResponse queryRefund(
                 String outTradeNo,
@@ -179,6 +225,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeFastpayRefundQueryResponse();
         }
 
+        /**
+         * 模拟关单调用。
+         */
         @Override
         public AlipayTradeCloseResponse close(
                 String outTradeNo,
@@ -187,6 +236,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeCloseResponse();
         }
 
+        /**
+         * 模拟撤销调用。
+         */
         @Override
         public AlipayTradeCancelResponse cancel(
                 String outTradeNo,
@@ -195,6 +247,9 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayTradeCancelResponse();
         }
 
+        /**
+         * 模拟账单下载地址查询。
+         */
         @Override
         public AlipayDataDataserviceBillDownloadurlQueryResponse downloadBill(
                 String billType,
@@ -204,11 +259,17 @@ class AlipayHuabeiServiceImplTest {
             return new AlipayDataDataserviceBillDownloadurlQueryResponse();
         }
 
+        /**
+         * 模拟通知验签。
+         */
         @Override
         public boolean verifyNotify(Map<String, String> parameters) {
             return false;
         }
 
+        /**
+         * 模拟泛化调用。
+         */
         @Override
         public AlipayOpenApiGenericResponse execute(
                 String method,

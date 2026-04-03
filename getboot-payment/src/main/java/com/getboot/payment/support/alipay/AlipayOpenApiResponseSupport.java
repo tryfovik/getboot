@@ -38,6 +38,9 @@ public final class AlipayOpenApiResponseSupport {
      */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    /**
+     * 工具类不允许实例化。
+     */
     private AlipayOpenApiResponseSupport() {
     }
 

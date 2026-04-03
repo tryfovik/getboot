@@ -55,8 +55,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPaySecurityServiceImplTest {
 
+    /**
+     * 测试使用的 API V3 密钥。
+     */
     private static final String API_V3_KEY = "0123456789abcdef0123456789abcdef";
 
+    /**
+     * 测试商户私钥。
+     */
     private static final String TEST_PRIVATE_KEY_PEM = """
             -----BEGIN PRIVATE KEY-----
             MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC7DmvcLsy/3A0H
@@ -88,6 +94,9 @@ class WechatPaySecurityServiceImplTest {
             -----END PRIVATE KEY-----
             """;
 
+    /**
+     * 测试平台证书。
+     */
     private static final String TEST_CERTIFICATE_PEM = """
             -----BEGIN CERTIFICATE-----
             MIIDGTCCAgGgAwIBAgIUYWsXAfPEnbW923OZKFl8acsyuwowDQYJKoZIhvcNAQEL
@@ -110,6 +119,9 @@ class WechatPaySecurityServiceImplTest {
             -----END CERTIFICATE-----
             """;
 
+    /**
+     * 验证敏感字段加密和证书序列号读取。
+     */
     @Test
     void shouldEncryptSensitiveValueAndExposeWechatPaySerialNumber() throws Exception {
         X509Certificate certificate = PemUtil.loadX509FromString(TEST_CERTIFICATE_PEM);
@@ -127,6 +139,9 @@ class WechatPaySecurityServiceImplTest {
         assertSame(certificateService, service.certificateService());
     }
 
+    /**
+     * 验证平台证书下载流程。
+     */
     @Test
     void shouldDownloadPlatformCertificates() throws Exception {
         X509Certificate certificate = PemUtil.loadX509FromString(TEST_CERTIFICATE_PEM);
@@ -143,6 +158,14 @@ class WechatPaySecurityServiceImplTest {
         assertTrue(httpClient.lastRequest.getUrl().toString().endsWith("/v3/certificates"));
     }
 
+    /**
+     * 构造测试用自动更新证书配置。
+     *
+     * @param privateKey 商户私钥
+     * @param certificate 平台证书
+     * @return 自动更新证书配置
+     * @throws Exception 反射失败
+     */
     private static RSAAutoCertificateConfig newConfig(PrivateKey privateKey, X509Certificate certificate) throws Exception {
         RSAAutoCertificateConfig.Builder builder = new RSAAutoCertificateConfig.Builder()
                 .merchantId("1900001234")
@@ -159,6 +182,13 @@ class WechatPaySecurityServiceImplTest {
         return constructor.newInstance(builder);
     }
 
+    /**
+     * 通过反射构造证书服务。
+     *
+     * @param httpClient HTTP 客户端
+     * @return 证书服务
+     * @throws Exception 反射失败
+     */
     private static CertificateService newCertificateService(HttpClient httpClient) throws Exception {
         Constructor<CertificateService> constructor =
                 CertificateService.class.getDeclaredConstructor(HttpClient.class, HostName.class);
@@ -166,6 +196,14 @@ class WechatPaySecurityServiceImplTest {
         return constructor.newInstance(httpClient, HostName.API);
     }
 
+    /**
+     * 使用商户私钥解密密文。
+     *
+     * @param ciphertext 密文
+     * @param privateKey 私钥
+     * @return 明文
+     * @throws Exception 解密失败
+     */
     private static String decrypt(String ciphertext, PrivateKey privateKey) throws Exception {
         Cipher cipher = Cipher.getInstance("RSA/ECB/OAEPWithSHA-1AndMGF1Padding");
         cipher.init(Cipher.DECRYPT_MODE, privateKey);
@@ -173,34 +211,79 @@ class WechatPaySecurityServiceImplTest {
         return new String(decrypted, StandardCharsets.UTF_8);
     }
 
+    /**
+     * 提供固定平台证书的测试证书提供器。
+     */
     private static final class StaticCertificateProvider implements CertificateProvider {
 
+        /**
+         * 平台证书。
+         */
         private final X509Certificate certificate;
 
+        /**
+         * 构造测试证书提供器。
+         *
+         * @param certificate 平台证书
+         */
         private StaticCertificateProvider(X509Certificate certificate) {
             this.certificate = certificate;
         }
 
+        /**
+         * 返回指定序列号对应证书。
+         *
+         * @param serialNumber 证书序列号
+         * @return 平台证书
+         */
         @Override
         public X509Certificate getCertificate(String serialNumber) {
             return certificate;
         }
 
+        /**
+         * 返回可用平台证书。
+         *
+         * @return 平台证书
+         */
         @Override
         public X509Certificate getAvailableCertificate() {
             return certificate;
         }
     }
 
+    /**
+     * 记录证书下载请求的测试 HTTP 客户端。
+     */
     private static final class RecordingCertificateHttpClient implements HttpClient {
 
+        /**
+         * 自动更新证书配置。
+         */
         private final RSAAutoCertificateConfig config;
+
+        /**
+         * 最近一次 HTTP 请求。
+         */
         private HttpRequest lastRequest;
 
+        /**
+         * 构造测试 HTTP 客户端。
+         *
+         * @param config 自动更新证书配置
+         */
         private RecordingCertificateHttpClient(RSAAutoCertificateConfig config) {
             this.config = config;
         }
 
+        /**
+         * 模拟证书下载查询请求。
+         *
+         * @param request HTTP 请求
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 模拟响应
+         */
         @Override
         public <T> HttpResponse<T> execute(HttpRequest request, Class<T> responseType) {
             this.lastRequest = request;
@@ -213,11 +296,23 @@ class WechatPaySecurityServiceImplTest {
             }
         }
 
+        /**
+         * 模拟下载文件。
+         *
+         * @param url 下载地址
+         * @return 空输入流
+         */
         @Override
         public InputStream download(String url) {
             return new ByteArrayInputStream(new byte[0]);
         }
 
+        /**
+         * 构造测试证书响应数据。
+         *
+         * @param config 自动更新证书配置
+         * @return 证书响应数据
+         */
         private static Data newCertificateData(RSAAutoCertificateConfig config) {
             EncryptCertificate encryptCertificate = new EncryptCertificate();
             encryptCertificate.setAlgorithm("AEAD_AES_256_GCM");
@@ -238,6 +333,16 @@ class WechatPaySecurityServiceImplTest {
         }
     }
 
+    /**
+     * 构造测试用 HTTP 响应。
+     *
+     * @param request 原始请求
+     * @param serviceResponse 服务响应
+     * @param body JSON 响应体
+     * @param <T> 响应泛型
+     * @return HTTP 响应
+     * @throws Exception 反射失败
+     */
     @SuppressWarnings("unchecked")
     private static <T> HttpResponse<T> httpResponse(HttpRequest request, T serviceResponse, String body) throws Exception {
         Constructor<?> constructor = HttpResponse.class.getDeclaredConstructors()[0];

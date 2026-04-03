@@ -31,6 +31,9 @@ import java.util.Map;
  */
 public final class AlipayNotifySupport {
 
+    /**
+     * 工具类不允许实例化。
+     */
     private AlipayNotifySupport() {
     }
 
@@ -80,6 +83,12 @@ public final class AlipayNotifySupport {
         return metadata;
     }
 
+    /**
+     * 使用 UTF-8 解码通知字段。
+     *
+     * @param text 编码文本
+     * @return 解码结果
+     */
     private static String urlDecode(String text) {
         return URLDecoder.decode(text, StandardCharsets.UTF_8);
     }

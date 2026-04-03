@@ -15,16 +15,19 @@
  */
 package com.getboot.payment.spi.wechatpay;
 
+import lombok.Data;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * 微信支付请求可变参数。
  *
- * <p>SPI 扩展方可在请求发出前覆盖应用标识、通知地址、付款人标识，以及 Map 形态接口的扩展 JSON 字段。</p>
+ * <p>SPI 扩展方可在请求发出前覆盖应用标识、通知地址、付款人标识，以及 Map 形态请求体中的扩展 JSON 字段。</p>
  *
  * @author qiheng
  */
+@Data
 public class WechatPayRequestOptions {
 
     /**
@@ -68,144 +71,9 @@ public class WechatPayRequestOptions {
     private final Map<String, Object> extraBody = new LinkedHashMap<>();
 
     /**
-     * 获取 AppId。
-     *
-     * @return AppId
-     */
-    public String getAppId() {
-        return appId;
-    }
-
-    /**
-     * 设置 AppId。
-     *
-     * @param appId AppId
-     */
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    /**
-     * 获取通知地址。
-     *
-     * @return 通知地址
-     */
-    public String getNotifyUrl() {
-        return notifyUrl;
-    }
-
-    /**
-     * 设置通知地址。
-     *
-     * @param notifyUrl 通知地址
-     */
-    public void setNotifyUrl(String notifyUrl) {
-        this.notifyUrl = notifyUrl;
-    }
-
-    /**
-     * 获取付款人标识。
-     *
-     * @return 付款人标识
-     */
-    public String getPayerId() {
-        return payerId;
-    }
-
-    /**
-     * 设置付款人标识。
-     *
-     * @param payerId 付款人标识
-     */
-    public void setPayerId(String payerId) {
-        this.payerId = payerId;
-    }
-
-    /**
-     * 获取客户端 IP。
-     *
-     * @return 客户端 IP
-     */
-    public String getClientIp() {
-        return clientIp;
-    }
-
-    /**
-     * 设置客户端 IP。
-     *
-     * @param clientIp 客户端 IP
-     */
-    public void setClientIp(String clientIp) {
-        this.clientIp = clientIp;
-    }
-
-    /**
-     * 获取附加数据。
-     *
-     * @return 附加数据
-     */
-    public String getAttach() {
-        return attach;
-    }
-
-    /**
-     * 设置附加数据。
-     *
-     * @param attach 附加数据
-     */
-    public void setAttach(String attach) {
-        this.attach = attach;
-    }
-
-    /**
-     * 获取商品标记。
-     *
-     * @return 商品标记
-     */
-    public String getGoodsTag() {
-        return goodsTag;
-    }
-
-    /**
-     * 设置商品标记。
-     *
-     * @param goodsTag 商品标记
-     */
-    public void setGoodsTag(String goodsTag) {
-        this.goodsTag = goodsTag;
-    }
-
-    /**
-     * 获取子商户号。
-     *
-     * @return 子商户号
-     */
-    public String getSubMerchantId() {
-        return subMerchantId;
-    }
-
-    /**
-     * 设置子商户号。
-     *
-     * @param subMerchantId 子商户号
-     */
-    public void setSubMerchantId(String subMerchantId) {
-        this.subMerchantId = subMerchantId;
-    }
-
-    /**
-     * 获取扩展请求体字段。
-     *
-     * @return 扩展请求体字段
-     */
-    public Map<String, Object> getExtraBody() {
-        return extraBody;
-    }
-
-    /**
      * 写入一个扩展请求体字段。
      *
-     * @param key   字段名
+     * @param key 字段名
      * @param value 字段值
      */
     public void putExtraBody(String key, Object value) {

@@ -46,6 +46,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class AlipayFaceToFaceServiceImplTest {
 
+    /**
+     * 验证当面付条码支付结果映射。
+     */
     @Test
     void shouldPayByBarcode() {
         RecordingGateway gateway = new RecordingGateway();
@@ -75,6 +78,11 @@ class AlipayFaceToFaceServiceImplTest {
         assertEquals("store-001", gateway.lastOptionalArgs.get("store_id"));
     }
 
+    /**
+     * 构造测试使用的支付宝配置。
+     *
+     * @return 支付宝配置
+     */
     private PaymentProperties paymentProperties() {
         PaymentProperties properties = new PaymentProperties();
         PaymentProperties.Alipay alipay = properties.getAlipay();
@@ -85,11 +93,24 @@ class AlipayFaceToFaceServiceImplTest {
         return properties;
     }
 
+    /**
+     * 记录当面付调用信息的测试网关。
+     */
     private static final class RecordingGateway implements AlipayGateway {
 
+        /**
+         * 条码支付响应。
+         */
         private AlipayTradePayResponse facePayResponse;
+
+        /**
+         * 最近一次可选参数。
+         */
         private Map<String, Object> lastOptionalArgs = new LinkedHashMap<>();
 
+        /**
+         * 模拟当面付调用。
+         */
         @Override
         public AlipayTradePayResponse facePay(
                 String subject,
@@ -103,6 +124,9 @@ class AlipayFaceToFaceServiceImplTest {
             return facePayResponse;
         }
 
+        /**
+         * 模拟 APP 支付调用。
+         */
         @Override
         public AlipayTradeAppPayResponse appPay(
                 String subject,
@@ -114,6 +138,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeAppPayResponse();
         }
 
+        /**
+         * 模拟页面支付调用。
+         */
         @Override
         public AlipayTradePagePayResponse pagePay(
                 String subject,
@@ -126,6 +153,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradePagePayResponse();
         }
 
+        /**
+         * 模拟 WAP 支付调用。
+         */
         @Override
         public AlipayTradeWapPayResponse wapPay(
                 String subject,
@@ -139,6 +169,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeWapPayResponse();
         }
 
+        /**
+         * 模拟预下单调用。
+         */
         @Override
         public AlipayTradePrecreateResponse preCreate(
                 String subject,
@@ -150,6 +183,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradePrecreateResponse();
         }
 
+        /**
+         * 模拟订单查询调用。
+         */
         @Override
         public AlipayTradeQueryResponse query(
                 String outTradeNo,
@@ -158,6 +194,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeQueryResponse();
         }
 
+        /**
+         * 模拟退款调用。
+         */
         @Override
         public AlipayTradeRefundResponse refund(
                 String outTradeNo,
@@ -168,6 +207,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeRefundResponse();
         }
 
+        /**
+         * 模拟退款查询调用。
+         */
         @Override
         public AlipayTradeFastpayRefundQueryResponse queryRefund(
                 String outTradeNo,
@@ -177,6 +219,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeFastpayRefundQueryResponse();
         }
 
+        /**
+         * 模拟关单调用。
+         */
         @Override
         public AlipayTradeCloseResponse close(
                 String outTradeNo,
@@ -185,6 +230,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeCloseResponse();
         }
 
+        /**
+         * 模拟撤销调用。
+         */
         @Override
         public AlipayTradeCancelResponse cancel(
                 String outTradeNo,
@@ -193,6 +241,9 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayTradeCancelResponse();
         }
 
+        /**
+         * 模拟账单下载地址查询。
+         */
         @Override
         public AlipayDataDataserviceBillDownloadurlQueryResponse downloadBill(
                 String billType,
@@ -202,11 +253,17 @@ class AlipayFaceToFaceServiceImplTest {
             return new AlipayDataDataserviceBillDownloadurlQueryResponse();
         }
 
+        /**
+         * 模拟通知验签。
+         */
         @Override
         public boolean verifyNotify(Map<String, String> parameters) {
             return false;
         }
 
+        /**
+         * 模拟泛化调用。
+         */
         @Override
         public AlipayOpenApiGenericResponse execute(
                 String method,

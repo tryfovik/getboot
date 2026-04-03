@@ -34,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class PaymentPropertiesBindingTest {
 
+    /**
+     * 验证 kebab-case 配置能够绑定到嵌套支付属性。
+     */
     @Test
     void shouldBindNestedPaymentPropertiesFromKebabCaseConfiguration() {
         Map<String, String> source = new LinkedHashMap<>();

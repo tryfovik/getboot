@@ -48,6 +48,12 @@ public class AlipayApiServiceImpl implements AlipayApiService {
         this.gateway = gateway;
     }
 
+    /**
+     * 执行支付宝 OpenAPI 请求。
+     *
+     * @param request OpenAPI 请求
+     * @return OpenAPI 响应
+     */
     @Override
     public AlipayApiResponse execute(AlipayApiRequest request) {
         if (request == null || !StringUtils.hasText(request.getMethod())) {

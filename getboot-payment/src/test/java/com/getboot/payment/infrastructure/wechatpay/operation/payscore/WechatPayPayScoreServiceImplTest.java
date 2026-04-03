@@ -32,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class WechatPayPayScoreServiceImplTest {
 
+    /**
+     * 验证未配置 API V2 密钥时仍可查询支付分订单。
+     */
     @Test
     void shouldQueryPayScoreOrderWithoutApiV2Key() {
         RecordingGateway gateway = new RecordingGateway();
@@ -49,6 +52,9 @@ class WechatPayPayScoreServiceImplTest {
         );
     }
 
+    /**
+     * 验证未配置 API V2 密钥时仍可构建确认页参数。
+     */
     @Test
     void shouldBuildConfirmViewWithoutApiV2Key() {
         WechatPayPayScoreServiceImpl service = new WechatPayPayScoreServiceImpl(
@@ -62,6 +68,9 @@ class WechatPayPayScoreServiceImplTest {
         assertEquals("package=prepay_id%3Dwx123", response.getQueryString());
     }
 
+    /**
+     * 验证配置 API V2 密钥后会生成签名详情页参数。
+     */
     @Test
     void shouldBuildOrderDetailViewWithApiV2Signature() {
         WechatPayPayScoreServiceImpl service = new WechatPayPayScoreServiceImpl(
@@ -85,6 +94,12 @@ class WechatPayPayScoreServiceImplTest {
         );
     }
 
+    /**
+     * 构造测试使用的微信支付配置。
+     *
+     * @param withApiV2Key 是否注入 API V2 密钥
+     * @return 支付配置
+     */
     private PaymentProperties paymentProperties(boolean withApiV2Key) {
         PaymentProperties properties = new PaymentProperties();
         properties.getWechatpay().setMerchantId("1900001234");
@@ -94,21 +109,50 @@ class WechatPayPayScoreServiceImplTest {
         return properties;
     }
 
+    /**
+     * 记录支付分请求路径的测试网关。
+     */
     private static final class RecordingGateway implements WechatPayHttpGateway {
 
+        /**
+         * 最近一次 GET 请求路径。
+         */
         private String lastGetPath;
 
+        /**
+         * 模拟 GET 请求。
+         *
+         * @param path 请求路径
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 模拟响应
+         */
         @Override
         public <T> T get(String path, Class<T> responseType) {
             this.lastGetPath = path;
             return responseType.cast(Map.of("ok", true));
         }
 
+        /**
+         * 模拟 POST 请求。
+         *
+         * @param path 请求路径
+         * @param requestBody 请求体
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 模拟响应
+         */
         @Override
         public <T> T post(String path, Object requestBody, Class<T> responseType) {
             return responseType.cast(Map.of("ok", true));
         }
 
+        /**
+         * 模拟无响应 POST 请求。
+         *
+         * @param path 请求路径
+         * @param requestBody 请求体
+         */
         @Override
         public void postWithoutResponse(String path, Object requestBody) {
         }

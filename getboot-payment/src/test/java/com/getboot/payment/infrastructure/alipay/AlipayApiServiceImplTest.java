@@ -42,6 +42,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class AlipayApiServiceImplTest {
 
+    /**
+     * 验证泛化 OpenAPI 调用透传。
+     */
     @Test
     void shouldExecuteGenericOpenApi() {
         RecordingGateway gateway = new RecordingGateway();
@@ -65,14 +68,39 @@ class AlipayApiServiceImplTest {
         assertEquals("{\"ok\":true}", response.getHttpBody());
     }
 
+    /**
+     * 记录开放接口调用信息的测试网关。
+     */
     private static final class RecordingGateway implements AlipayGateway {
 
+        /**
+         * 泛化调用响应。
+         */
         private AlipayOpenApiGenericResponse genericResponse;
+
+        /**
+         * 最近一次方法名。
+         */
         private String lastMethod;
+
+        /**
+         * 最近一次文本参数。
+         */
         private Map<String, String> lastTextParams;
+
+        /**
+         * 最近一次业务参数。
+         */
         private Map<String, Object> lastBizParams;
+
+        /**
+         * 最近一次请求上下文。
+         */
         private AlipayRequestContext lastRequestContext;
 
+        /**
+         * 模拟 APP 支付调用。
+         */
         @Override
         public AlipayTradeAppPayResponse appPay(
                 String subject,
@@ -84,6 +112,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeAppPayResponse();
         }
 
+        /**
+         * 模拟页面支付调用。
+         */
         @Override
         public AlipayTradePagePayResponse pagePay(
                 String subject,
@@ -96,6 +127,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradePagePayResponse();
         }
 
+        /**
+         * 模拟 WAP 支付调用。
+         */
         @Override
         public AlipayTradeWapPayResponse wapPay(
                 String subject,
@@ -109,6 +143,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeWapPayResponse();
         }
 
+        /**
+         * 模拟预下单调用。
+         */
         @Override
         public AlipayTradePrecreateResponse preCreate(
                 String subject,
@@ -120,6 +157,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradePrecreateResponse();
         }
 
+        /**
+         * 模拟订单查询调用。
+         */
         @Override
         public AlipayTradeQueryResponse query(
                 String outTradeNo,
@@ -128,6 +168,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeQueryResponse();
         }
 
+        /**
+         * 模拟退款调用。
+         */
         @Override
         public AlipayTradeRefundResponse refund(
                 String outTradeNo,
@@ -138,6 +181,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeRefundResponse();
         }
 
+        /**
+         * 模拟退款查询调用。
+         */
         @Override
         public AlipayTradeFastpayRefundQueryResponse queryRefund(
                 String outTradeNo,
@@ -147,6 +193,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeFastpayRefundQueryResponse();
         }
 
+        /**
+         * 模拟关单调用。
+         */
         @Override
         public AlipayTradeCloseResponse close(
                 String outTradeNo,
@@ -155,6 +204,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeCloseResponse();
         }
 
+        /**
+         * 模拟撤销调用。
+         */
         @Override
         public AlipayTradeCancelResponse cancel(
                 String outTradeNo,
@@ -163,6 +215,9 @@ class AlipayApiServiceImplTest {
             return new AlipayTradeCancelResponse();
         }
 
+        /**
+         * 模拟账单下载地址查询。
+         */
         @Override
         public AlipayDataDataserviceBillDownloadurlQueryResponse downloadBill(
                 String billType,
@@ -172,11 +227,17 @@ class AlipayApiServiceImplTest {
             return new AlipayDataDataserviceBillDownloadurlQueryResponse();
         }
 
+        /**
+         * 模拟通知验签。
+         */
         @Override
         public boolean verifyNotify(Map<String, String> parameters) {
             return false;
         }
 
+        /**
+         * 模拟带上下文的泛化调用。
+         */
         @Override
         public AlipayOpenApiGenericResponse execute(
                 String method,

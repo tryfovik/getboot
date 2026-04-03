@@ -29,7 +29,14 @@ import java.util.List;
  */
 public class WechatPaySecurityServiceImpl implements WechatPaySecurityService {
 
+    /**
+     * 微信支付自动更新证书配置。
+     */
     private final RSAAutoCertificateConfig config;
+
+    /**
+     * 平台证书服务。
+     */
     private final CertificateService certificateService;
 
     /**
@@ -45,21 +52,42 @@ public class WechatPaySecurityServiceImpl implements WechatPaySecurityService {
         this.certificateService = certificateService;
     }
 
+    /**
+     * 获取平台证书服务。
+     *
+     * @return 平台证书服务
+     */
     @Override
     public CertificateService certificateService() {
         return certificateService;
     }
 
+    /**
+     * 下载微信支付平台证书。
+     *
+     * @return 平台证书列表
+     */
     @Override
     public List<X509Certificate> downloadPlatformCertificates() {
         return certificateService.downloadCertificate(config.createAeadCipher());
     }
 
+    /**
+     * 加密敏感字段值。
+     *
+     * @param value 待加密值
+     * @return 加密后的密文
+     */
     @Override
     public String encryptSensitiveValue(String value) {
         return config.createEncryptor().encrypt(value);
     }
 
+    /**
+     * 获取当前微信支付平台证书序列号。
+     *
+     * @return 平台证书序列号
+     */
     @Override
     public String currentWechatPaySerialNumber() {
         return config.createEncryptor().getWechatpaySerial();

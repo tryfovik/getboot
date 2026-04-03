@@ -68,6 +68,9 @@ import java.util.Set;
  */
 public class WechatPayPaymentService implements PaymentService {
 
+    /**
+     * 支持的支付方式集合。
+     */
     private static final Set<PaymentMode> SUPPORTED_MODES = Set.copyOf(EnumSet.of(
             PaymentMode.JSAPI,
             PaymentMode.MINI_PROGRAM,
@@ -76,20 +79,74 @@ public class WechatPayPaymentService implements PaymentService {
             PaymentMode.NATIVE
     ));
 
+    /**
+     * 通知头中的平台证书序列号键。
+     */
     private static final String HEADER_SERIAL = "Wechatpay-Serial";
+
+    /**
+     * 通知头中的时间戳键。
+     */
     private static final String HEADER_TIMESTAMP = "Wechatpay-Timestamp";
+
+    /**
+     * 通知头中的随机串键。
+     */
     private static final String HEADER_NONCE = "Wechatpay-Nonce";
+
+    /**
+     * 通知头中的签名键。
+     */
     private static final String HEADER_SIGNATURE = "Wechatpay-Signature";
+
+    /**
+     * 通知头中的签名类型键。
+     */
     private static final String HEADER_SIGN_TYPE = "Wechatpay-Signtype";
 
+    /**
+     * 微信支付渠道配置。
+     */
     private final PaymentProperties.WechatPay properties;
+
+    /**
+     * 通知解析器。
+     */
     private final NotificationParser notificationParser;
+
+    /**
+     * JSAPI 服务。
+     */
     private final JsapiService jsapiService;
+
+    /**
+     * JSAPI 前端拉起参数服务。
+     */
     private final JsapiServiceExtension jsapiServiceExtension;
+
+    /**
+     * App 前端拉起参数服务。
+     */
     private final AppServiceExtension appServiceExtension;
+
+    /**
+     * H5 支付服务。
+     */
     private final H5Service h5Service;
+
+    /**
+     * Native 支付服务。
+     */
     private final NativePayService nativePayService;
+
+    /**
+     * 退款服务。
+     */
     private final RefundService refundService;
+
+    /**
+     * 请求扩展器集合。
+     */
     private final List<WechatPayRequestCustomizer> requestCustomizers;
 
     /**
@@ -160,16 +217,32 @@ public class WechatPayPaymentService implements PaymentService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 返回当前服务支持的支付渠道。
+     *
+     * @return 支付渠道
+     */
     @Override
     public PaymentChannel channel() {
         return PaymentChannel.WECHAT_PAY;
     }
 
+    /**
+     * 返回当前服务支持的支付方式。
+     *
+     * @return 支付方式集合
+     */
     @Override
     public Set<PaymentMode> supportedModes() {
         return SUPPORTED_MODES;
     }
 
+    /**
+     * 创建微信支付订单。
+     *
+     * @param request 下单请求
+     * @return 下单响应
+     */
     @Override
     public PaymentCreateResponse create(PaymentCreateRequest request) {
         requireChannel(request.getChannel());
@@ -185,6 +258,12 @@ public class WechatPayPaymentService implements PaymentService {
         };
     }
 
+    /**
+     * 发起微信支付退款。
+     *
+     * @param request 退款请求
+     * @return 退款响应
+     */
     @Override
     public PaymentRefundResponse refund(PaymentRefundRequest request) {
         requireChannel(request.getChannel());
@@ -223,6 +302,12 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 查询微信支付订单。
+     *
+     * @param request 订单查询请求
+     * @return 查询响应
+     */
     @Override
     public PaymentOrderQueryResponse queryOrder(PaymentOrderQueryRequest request) {
         requireChannel(request.getChannel());
@@ -241,6 +326,12 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 查询微信支付退款。
+     *
+     * @param request 退款查询请求
+     * @return 查询响应
+     */
     @Override
     public PaymentRefundQueryResponse queryRefund(PaymentRefundQueryRequest request) {
         requireChannel(request.getChannel());
@@ -269,6 +360,12 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 关闭微信支付订单。
+     *
+     * @param request 关单请求
+     * @return 关单响应
+     */
     @Override
     public PaymentCloseResponse close(PaymentCloseRequest request) {
         requireChannel(request.getChannel());
@@ -287,6 +384,12 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 解析微信支付异步通知。
+     *
+     * @param request 通知请求
+     * @return 通知解析结果
+     */
     @Override
     public PaymentNotifyResponse parseNotify(PaymentNotifyRequest request) {
         requireChannel(request.getChannel());
@@ -302,6 +405,13 @@ public class WechatPayPaymentService implements PaymentService {
         };
     }
 
+    /**
+     * 创建 JSAPI/小程序支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createJsapiOrder(PaymentCreateRequest request, WechatPayRequestOptions options) {
         com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest prepayRequest =
                 new com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest();
@@ -336,6 +446,13 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 创建 App 支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createAppOrder(PaymentCreateRequest request, WechatPayRequestOptions options) {
         PrepayRequest prepayRequest = new PrepayRequest();
         fillCommonCreateRequest(prepayRequest, request, options);
@@ -365,6 +482,13 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 创建 H5 支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createH5Order(PaymentCreateRequest request, WechatPayRequestOptions options) {
         com.wechat.pay.java.service.payments.h5.model.PrepayRequest prepayRequest =
                 new com.wechat.pay.java.service.payments.h5.model.PrepayRequest();
@@ -387,6 +511,13 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 创建 Native 支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createNativeOrder(PaymentCreateRequest request, WechatPayRequestOptions options) {
         com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest prepayRequest =
                 new com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest();
@@ -409,6 +540,13 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 填充 JSAPI 预下单公共参数。
+     *
+     * @param prepayRequest 预下单请求
+     * @param request 下单请求
+     * @param options 请求选项
+     */
     private void fillCommonCreateRequest(
             com.wechat.pay.java.service.payments.jsapi.model.PrepayRequest prepayRequest,
             PaymentCreateRequest request,
@@ -429,6 +567,13 @@ public class WechatPayPaymentService implements PaymentService {
         prepayRequest.setAmount(amount);
     }
 
+    /**
+     * 填充 App 预下单公共参数。
+     *
+     * @param prepayRequest 预下单请求
+     * @param request 下单请求
+     * @param options 请求选项
+     */
     private void fillCommonCreateRequest(
             PrepayRequest prepayRequest,
             PaymentCreateRequest request,
@@ -449,6 +594,13 @@ public class WechatPayPaymentService implements PaymentService {
         prepayRequest.setAmount(amount);
     }
 
+    /**
+     * 填充 H5 预下单公共参数。
+     *
+     * @param prepayRequest 预下单请求
+     * @param request 下单请求
+     * @param options 请求选项
+     */
     private void fillCommonCreateRequest(
             com.wechat.pay.java.service.payments.h5.model.PrepayRequest prepayRequest,
             PaymentCreateRequest request,
@@ -469,6 +621,13 @@ public class WechatPayPaymentService implements PaymentService {
         prepayRequest.setAmount(amount);
     }
 
+    /**
+     * 填充 Native 预下单公共参数。
+     *
+     * @param prepayRequest 预下单请求
+     * @param request 下单请求
+     * @param options 请求选项
+     */
     private void fillCommonCreateRequest(
             com.wechat.pay.java.service.payments.nativepay.model.PrepayRequest prepayRequest,
             PaymentCreateRequest request,
@@ -489,6 +648,13 @@ public class WechatPayPaymentService implements PaymentService {
         prepayRequest.setAmount(amount);
     }
 
+    /**
+     * 构建 H5 支付场景信息。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 场景信息
+     */
     private com.wechat.pay.java.service.payments.h5.model.SceneInfo buildH5SceneInfo(
             PaymentCreateRequest request,
             WechatPayRequestOptions options) {
@@ -508,6 +674,13 @@ public class WechatPayPaymentService implements PaymentService {
         return sceneInfo;
     }
 
+    /**
+     * 查询微信支付交易。
+     *
+     * @param request 订单查询请求
+     * @param options 请求选项
+     * @return 交易对象
+     */
     private Transaction queryTransaction(PaymentOrderQueryRequest request, WechatPayRequestOptions options) {
         if (StringUtils.hasText(request.getPlatformOrderNo())) {
             com.wechat.pay.java.service.payments.jsapi.model.QueryOrderByIdRequest queryRequest =
@@ -527,6 +700,12 @@ public class WechatPayPaymentService implements PaymentService {
         );
     }
 
+    /**
+     * 解析支付通知。
+     *
+     * @param requestParam 通知参数
+     * @return 通知响应
+     */
     private PaymentNotifyResponse parsePaymentNotify(RequestParam requestParam) {
         Transaction transaction = PaymentInvoker.invoke(
                 () -> notificationParser.parse(requestParam, Transaction.class),
@@ -545,6 +724,12 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 解析退款通知。
+     *
+     * @param requestParam 通知参数
+     * @return 通知响应
+     */
     private PaymentNotifyResponse parseRefundNotify(RequestParam requestParam) {
         RefundNotification refundNotification = PaymentInvoker.invoke(
                 () -> notificationParser.parse(requestParam, RefundNotification.class),
@@ -565,6 +750,13 @@ public class WechatPayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 构建通知解析参数。
+     *
+     * @param headers 通知请求头
+     * @param body 通知请求体
+     * @return 解析参数
+     */
     private RequestParam buildRequestParam(Map<String, String> headers, String body) {
         String serialNumber = WechatPayRequestSupport.requiredHeader(headers, HEADER_SERIAL);
         String timestamp = WechatPayRequestSupport.requiredHeader(headers, HEADER_TIMESTAMP);
@@ -583,6 +775,13 @@ public class WechatPayPaymentService implements PaymentService {
         return builder.build();
     }
 
+    /**
+     * 校验下单请求。
+     *
+     * @param request 下单请求
+     * @param mode 支付方式
+     * @param options 请求选项
+     */
     private void validateCreateRequest(
             PaymentCreateRequest request,
             PaymentMode mode,
@@ -600,6 +799,12 @@ public class WechatPayPaymentService implements PaymentService {
         }
     }
 
+    /**
+     * 校验支付方式已被支持。
+     *
+     * @param mode 支付方式
+     * @return 支付方式
+     */
     private PaymentMode requireSupportedMode(PaymentMode mode) {
         if (!supports(mode)) {
             throw unsupportedMode(mode);
@@ -607,60 +812,145 @@ public class WechatPayPaymentService implements PaymentService {
         return mode;
     }
 
+    /**
+     * 构造不支持支付方式异常。
+     *
+     * @param mode 支付方式
+     * @return 业务异常
+     */
     private BusinessException unsupportedMode(PaymentMode mode) {
         return new BusinessException("Unsupported WeChat Pay mode: " + mode);
     }
 
+    /**
+     * 校验渠道是否为微信支付。
+     *
+     * @param channel 支付渠道
+     */
     private void requireChannel(PaymentChannel channel) {
         if (!PaymentChannel.WECHAT_PAY.equals(channel)) {
             throw new BusinessException("Unsupported channel for WeChat Pay service: " + channel);
         }
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 校验金额参数不为空。
+     *
+     * @param value 待校验金额
+     * @param message 校验失败消息
+     */
     private void requireAmount(BigDecimal value, String message) {
         if (value == null) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 解析下单使用的 AppId。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return AppId
+     */
     private String resolveAppId(PaymentCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getAppId(), resolveText(request.getAppId(), properties.getAppId()));
     }
 
+    /**
+     * 解析订单描述。
+     *
+     * @param request 下单请求
+     * @return 订单描述
+     */
     private String resolveDescription(PaymentCreateRequest request) {
         return resolveText(request.getDescription(), request.getSubject());
     }
 
+    /**
+     * 解析通知地址。
+     *
+     * @param requestNotifyUrl 请求中的通知地址
+     * @param options 请求选项
+     * @return 通知地址
+     */
     private String resolveNotifyUrl(String requestNotifyUrl, WechatPayRequestOptions options) {
         return resolveText(options.getNotifyUrl(), resolveText(requestNotifyUrl, properties.getNotifyUrl()));
     }
 
+    /**
+     * 解析附加数据。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 附加数据
+     */
     private String resolveAttach(PaymentCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getAttach(), WechatPayRequestSupport.text(request.getMetadata(), "attach"));
     }
 
+    /**
+     * 解析商品标记。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 商品标记
+     */
     private String resolveGoodsTag(PaymentCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getGoodsTag(), WechatPayRequestSupport.text(request.getMetadata(), "goodsTag"));
     }
 
+    /**
+     * 解析付款人标识。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 付款人标识
+     */
     private String resolvePayerId(PaymentCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getPayerId(), request.getPayerId());
     }
 
+    /**
+     * 解析客户端 IP。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 客户端 IP
+     */
     private String resolveClientIp(PaymentCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getClientIp(), request.getClientIp());
     }
 
+    /**
+     * 解析优先值与回退值。
+     *
+     * @param preferred 优先值
+     * @param fallback 回退值
+     * @return 最终值
+     */
     private String resolveText(String preferred, String fallback) {
         return StringUtils.hasText(preferred) ? preferred : fallback;
     }
 
+    /**
+     * 解析订单支付方式。
+     *
+     * @param mode 显式支付方式
+     * @param transaction 交易对象
+     * @return 支付方式
+     */
     private PaymentMode resolveMode(PaymentMode mode, Transaction transaction) {
         if (mode != null) {
             return mode;
@@ -677,6 +967,12 @@ public class WechatPayPaymentService implements PaymentService {
         };
     }
 
+    /**
+     * 从预支付包中提取预支付标识。
+     *
+     * @param packageValue 预支付包
+     * @return 预支付标识
+     */
     private String extractPrepayId(String packageValue) {
         if (!StringUtils.hasText(packageValue)) {
             return null;
@@ -685,6 +981,12 @@ public class WechatPayPaymentService implements PaymentService {
         return index >= 0 ? packageValue.substring(index + "prepay_id=".length()) : packageValue;
     }
 
+    /**
+     * 执行下单请求定制。
+     *
+     * @param request 下单请求
+     * @return 请求选项
+     */
     private WechatPayRequestOptions customizeCreate(PaymentCreateRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -693,6 +995,12 @@ public class WechatPayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 执行退款请求定制。
+     *
+     * @param request 退款请求
+     * @return 请求选项
+     */
     private WechatPayRequestOptions customizeRefund(PaymentRefundRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -701,6 +1009,12 @@ public class WechatPayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 执行订单查询请求定制。
+     *
+     * @param request 订单查询请求
+     * @return 请求选项
+     */
     private WechatPayRequestOptions customizeQueryOrder(PaymentOrderQueryRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -709,6 +1023,11 @@ public class WechatPayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 执行退款查询请求定制。
+     *
+     * @param request 退款查询请求
+     */
     private void customizeQueryRefund(PaymentRefundQueryRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -716,11 +1035,15 @@ public class WechatPayPaymentService implements PaymentService {
         }
     }
 
+    /**
+     * 执行关单请求定制。
+     *
+     * @param request 关单请求
+     */
     private void customizeClose(PaymentCloseRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
             requestCustomizer.customizeClose(request, options);
         }
     }
-
 }

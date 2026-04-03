@@ -58,6 +58,9 @@ import java.util.Set;
  */
 public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePaymentService {
 
+    /**
+     * 支持的合单支付模式集合。
+     */
     private static final Set<PaymentMode> SUPPORTED_MODES = Set.copyOf(EnumSet.of(
             PaymentMode.JSAPI,
             PaymentMode.MINI_PROGRAM,
@@ -66,16 +69,54 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
             PaymentMode.NATIVE
     ));
 
+    /**
+     * 通知证书序列号请求头。
+     */
     private static final String HEADER_SERIAL = "Wechatpay-Serial";
+
+    /**
+     * 通知时间戳请求头。
+     */
     private static final String HEADER_TIMESTAMP = "Wechatpay-Timestamp";
+
+    /**
+     * 通知随机串请求头。
+     */
     private static final String HEADER_NONCE = "Wechatpay-Nonce";
+
+    /**
+     * 通知签名请求头。
+     */
     private static final String HEADER_SIGNATURE = "Wechatpay-Signature";
+
+    /**
+     * 通知签名算法请求头。
+     */
     private static final String HEADER_SIGN_TYPE = "Wechatpay-Signtype";
 
+    /**
+     * 微信支付配置。
+     */
     private final PaymentProperties.WechatPay properties;
+
+    /**
+     * 微信通知解析器。
+     */
     private final NotificationParser notificationParser;
+
+    /**
+     * 微信官方配置对象。
+     */
     private final Config config;
+
+    /**
+     * 微信支付 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
+
+    /**
+     * 请求扩展器列表。
+     */
     private final List<WechatPayRequestCustomizer> requestCustomizers;
 
     /**
@@ -116,11 +157,22 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 返回当前实现支持的支付模式。
+     *
+     * @return 支持的支付模式集合
+     */
     @Override
     public Set<PaymentMode> supportedModes() {
         return SUPPORTED_MODES;
     }
 
+    /**
+     * 创建微信合单支付订单。
+     *
+     * @param request 合单创建请求
+     * @return 合单创建结果
+     */
     @Override
     public WechatPayCombineCreateResponse create(WechatPayCombineCreateRequest request) {
         PaymentMode mode = requireSupportedMode(request.getMode());
@@ -141,6 +193,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         };
     }
 
+    /**
+     * 查询微信合单支付订单。
+     *
+     * @param request 合单查询请求
+     * @return 合单查询结果
+     */
     @Override
     public WechatPayCombineOrderResponse queryOrder(WechatPayCombineOrderRequest request) {
         requireText(request.getCombineMerchantOrderNo(), "combineMerchantOrderNo must not be blank");
@@ -156,6 +214,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return mapQueryResponse(response);
     }
 
+    /**
+     * 关闭微信合单支付订单。
+     *
+     * @param request 合单关单请求
+     * @return 合单关单结果
+     */
     @Override
     public WechatPayCombineCloseResponse close(WechatPayCombineCloseRequest request) {
         requireText(request.getCombineMerchantOrderNo(), "combineMerchantOrderNo must not be blank");
@@ -176,6 +240,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 解析微信合单支付通知。
+     *
+     * @param request 合单通知请求
+     * @return 合单通知结果
+     */
     @Override
     public WechatPayCombineNotifyResponse parseNotify(WechatPayCombineNotifyRequest request) {
         requireText(request.getBody(), "body must not be blank");
@@ -187,6 +257,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return mapNotifyResponse(response);
     }
 
+    /**
+     * 根据支付模式解析下单路径。
+     *
+     * @param mode 支付模式
+     * @return 下单接口路径
+     */
     private String resolveCreatePath(PaymentMode mode) {
         return switch (mode) {
             case JSAPI, MINI_PROGRAM -> "/v3/combine-transactions/jsapi";
@@ -197,6 +273,13 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         };
     }
 
+    /**
+     * 构建合单下单请求体。
+     *
+     * @param request 合单下单请求
+     * @param options 请求扩展参数
+     * @return 下单请求体
+     */
     private Map<String, Object> buildCreateBody(
             WechatPayCombineCreateRequest request,
             WechatPayRequestOptions options) {
@@ -219,6 +302,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return body;
     }
 
+    /**
+     * 构建子订单列表。
+     *
+     * @param request 合单下单请求
+     * @return 子订单请求体列表
+     */
     private List<Map<String, Object>> buildSubOrders(WechatPayCombineCreateRequest request) {
         List<Map<String, Object>> subOrders = new ArrayList<>();
         for (WechatPayCombineCreateRequest.SubOrder subOrder : request.getSubOrders()) {
@@ -243,6 +332,13 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return subOrders;
     }
 
+    /**
+     * 构建 H5 合单支付场景信息。
+     *
+     * @param request 合单下单请求
+     * @param options 请求扩展参数
+     * @return H5 场景信息
+     */
     private Map<String, Object> buildH5SceneInfo(
             WechatPayCombineCreateRequest request,
             WechatPayRequestOptions options) {
@@ -260,6 +356,13 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return sceneInfo;
     }
 
+    /**
+     * 构建合单关单请求体。
+     *
+     * @param request 合单关单请求
+     * @param options 请求扩展参数
+     * @return 关单请求体
+     */
     private Map<String, Object> buildCloseBody(
             WechatPayCombineCloseRequest request,
             WechatPayRequestOptions options) {
@@ -278,6 +381,14 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return body;
     }
 
+    /**
+     * 构建 JSAPI 或小程序模式的下单响应。
+     *
+     * @param request 合单下单请求
+     * @param response 微信原始响应
+     * @param options 请求扩展参数
+     * @return 统一后的创建响应
+     */
     private WechatPayCombineCreateResponse buildJsapiCreateResponse(
             WechatPayCombineCreateRequest request,
             CombineCreateResult response,
@@ -310,6 +421,14 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 构建 APP 模式的下单响应。
+     *
+     * @param request 合单下单请求
+     * @param response 微信原始响应
+     * @param options 请求扩展参数
+     * @return 统一后的创建响应
+     */
     private WechatPayCombineCreateResponse buildAppCreateResponse(
             WechatPayCombineCreateRequest request,
             CombineCreateResult response,
@@ -342,6 +461,14 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 构建 H5 模式的下单响应。
+     *
+     * @param request 合单下单请求
+     * @param response 微信原始响应
+     * @param options 请求扩展参数
+     * @return 统一后的创建响应
+     */
     private WechatPayCombineCreateResponse buildH5CreateResponse(
             WechatPayCombineCreateRequest request,
             CombineCreateResult response,
@@ -359,6 +486,14 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 构建 Native 模式的下单响应。
+     *
+     * @param request 合单下单请求
+     * @param response 微信原始响应
+     * @param options 请求扩展参数
+     * @return 统一后的创建响应
+     */
     private WechatPayCombineCreateResponse buildNativeCreateResponse(
             WechatPayCombineCreateRequest request,
             CombineCreateResult response,
@@ -376,6 +511,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 将微信查询响应映射为统一响应对象。
+     *
+     * @param response 微信查询响应
+     * @return 统一查询响应
+     */
     private WechatPayCombineOrderResponse mapQueryResponse(CombineQueryResult response) {
         String state = WechatPayResponseSupport.firstNonBlank(
                 response.combine_state,
@@ -426,6 +567,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 将微信通知响应映射为统一通知对象。
+     *
+     * @param response 微信通知响应
+     * @return 统一通知响应
+     */
     private WechatPayCombineNotifyResponse mapNotifyResponse(CombineNotifyResult response) {
         List<WechatPayCombineOrderResponse.SubOrder> subOrders = new ArrayList<>();
         if (response.sub_orders != null) {
@@ -472,6 +619,13 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
                 .build();
     }
 
+    /**
+     * 构建微信通知解析参数。
+     *
+     * @param headers 通知请求头
+     * @param body 通知请求体
+     * @return 微信 SDK 请求参数
+     */
     private RequestParam buildRequestParam(Map<String, String> headers, String body) {
         String serialNumber = WechatPayRequestSupport.requiredHeader(headers, HEADER_SERIAL);
         String timestamp = WechatPayRequestSupport.requiredHeader(headers, HEADER_TIMESTAMP);
@@ -490,6 +644,13 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return builder.build();
     }
 
+    /**
+     * 校验合单下单请求。
+     *
+     * @param request 合单下单请求
+     * @param mode 支付模式
+     * @param options 请求扩展参数
+     */
     private void validateCreateRequest(
             WechatPayCombineCreateRequest request,
             PaymentMode mode,
@@ -509,6 +670,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         }
     }
 
+    /**
+     * 校验并返回支持的支付模式。
+     *
+     * @param mode 支付模式
+     * @return 已校验的支付模式
+     */
     private PaymentMode requireSupportedMode(PaymentMode mode) {
         if (mode == null || !SUPPORTED_MODES.contains(mode)) {
             throw new BusinessException("Unsupported WeChat combine mode: " + mode);
@@ -516,46 +683,111 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return mode;
     }
 
+    /**
+     * 校验文本参数非空。
+     *
+     * @param value 文本值
+     * @param message 失败提示
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 校验金额参数非空。
+     *
+     * @param value 金额
+     * @param message 失败提示
+     */
     private void requireAmount(BigDecimal value, String message) {
         if (value == null) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 解析有效的应用 ID。
+     *
+     * @param preferred 请求优先值
+     * @param options 请求扩展参数
+     * @return 最终应用 ID
+     */
     private String resolveAppId(String preferred, WechatPayRequestOptions options) {
         return resolveText(options.getAppId(), resolveText(preferred, properties.getAppId()));
     }
 
+    /**
+     * 解析有效的订单描述。
+     *
+     * @param request 合单下单请求
+     * @return 最终订单描述
+     */
     private String resolveDescription(WechatPayCombineCreateRequest request) {
         return resolveText(request.getDescription(), request.getSubject());
     }
 
+    /**
+     * 解析有效的通知地址。
+     *
+     * @param preferred 请求优先值
+     * @param options 请求扩展参数
+     * @return 最终通知地址
+     */
     private String resolveNotifyUrl(String preferred, WechatPayRequestOptions options) {
         return resolveText(options.getNotifyUrl(), resolveText(preferred, properties.getNotifyUrl()));
     }
 
+    /**
+     * 解析有效的付款人标识。
+     *
+     * @param request 合单下单请求
+     * @param options 请求扩展参数
+     * @return 最终付款人标识
+     */
     private String resolvePayerId(WechatPayCombineCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getPayerId(), request.getPayerId());
     }
 
+    /**
+     * 解析有效的客户端 IP。
+     *
+     * @param request 合单下单请求
+     * @param options 请求扩展参数
+     * @return 最终客户端 IP
+     */
     private String resolveClientIp(WechatPayCombineCreateRequest request, WechatPayRequestOptions options) {
         return resolveText(options.getClientIp(), request.getClientIp());
     }
 
+    /**
+     * 返回优先值或回退值。
+     *
+     * @param preferred 优先值
+     * @param fallback 回退值
+     * @return 最终值
+     */
     private String resolveText(String preferred, String fallback) {
         return StringUtils.hasText(preferred) ? preferred : fallback;
     }
 
+    /**
+     * 对路径参数执行 URL 编码。
+     *
+     * @param value 原始值
+     * @return 编码后的值
+     */
     private String encode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8);
     }
 
+    /**
+     * 应用合单下单请求扩展器。
+     *
+     * @param request 合单下单请求
+     * @return 扩展后的请求参数
+     */
     private WechatPayRequestOptions customizeCombineCreate(WechatPayCombineCreateRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -564,6 +796,11 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return options;
     }
 
+    /**
+     * 应用合单查单请求扩展器。
+     *
+     * @param request 合单查单请求
+     */
     private void customizeCombineQueryOrder(WechatPayCombineOrderRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -571,6 +808,12 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         }
     }
 
+    /**
+     * 应用合单关单请求扩展器。
+     *
+     * @param request 合单关单请求
+     * @return 扩展后的请求参数
+     */
     private WechatPayRequestOptions customizeCombineClose(WechatPayCombineCloseRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -579,61 +822,239 @@ public class WechatPayCombinePaymentServiceImpl implements WechatPayCombinePayme
         return options;
     }
 
+    /**
+     * 微信合单下单原始响应。
+     */
     private static final class CombineCreateResult {
+
+        /**
+         * 预支付交易会话标识。
+         */
         private String prepay_id;
+
+        /**
+         * H5 支付地址。
+         */
         private String h5_url;
+
+        /**
+         * Native 支付二维码地址。
+         */
         private String code_url;
     }
 
+    /**
+     * 微信合单查单原始响应。
+     */
     private static final class CombineQueryResult {
+
+        /**
+         * 合单应用 ID。
+         */
         private String combine_appid;
+
+        /**
+         * 合单商户号。
+         */
         private String combine_mchid;
+
+        /**
+         * 合单商户订单号。
+         */
         private String combine_out_trade_no;
+
+        /**
+         * 合单状态。
+         */
         private String combine_state;
+
+        /**
+         * 合单交易状态。
+         */
         private String combine_trade_state;
+
+        /**
+         * 通用状态字段。
+         */
         private String state;
+
+        /**
+         * 支付成功时间。
+         */
         private String success_time;
+
+        /**
+         * 微信交易单号。
+         */
         private String transaction_id;
+
+        /**
+         * 合单付款人信息。
+         */
         private CombinePayerInfo combine_payer_info;
+
+        /**
+         * 合单金额信息。
+         */
         private CombineAmount amount;
+
+        /**
+         * 子订单列表。
+         */
         private List<CombineSubOrder> sub_orders;
     }
 
+    /**
+     * 微信合单通知原始响应。
+     */
     private static final class CombineNotifyResult {
+
+        /**
+         * 合单应用 ID。
+         */
         private String combine_appid;
+
+        /**
+         * 合单商户号。
+         */
         private String combine_mchid;
+
+        /**
+         * 合单商户订单号。
+         */
         private String combine_out_trade_no;
+
+        /**
+         * 合单状态。
+         */
         private String combine_state;
+
+        /**
+         * 通用状态字段。
+         */
         private String state;
+
+        /**
+         * 支付成功时间。
+         */
         private String success_time;
+
+        /**
+         * 微信交易单号。
+         */
         private String transaction_id;
+
+        /**
+         * 合单付款人信息。
+         */
         private CombinePayerInfo combine_payer_info;
+
+        /**
+         * 合单金额信息。
+         */
         private CombineAmount amount;
+
+        /**
+         * 子订单列表。
+         */
         private List<CombineSubOrder> sub_orders;
     }
 
+    /**
+     * 微信合单付款人信息。
+     */
     private static final class CombinePayerInfo {
+
+        /**
+         * 用户 OpenID。
+         */
         private String openid;
     }
 
+    /**
+     * 微信合单子订单信息。
+     */
     private static final class CombineSubOrder {
+
+        /**
+         * 子订单商户号。
+         */
         private String mchid;
+
+        /**
+         * 子订单商户订单号。
+         */
         private String out_trade_no;
+
+        /**
+         * 子订单微信交易单号。
+         */
         private String transaction_id;
+
+        /**
+         * 交易类型。
+         */
         private String trade_type;
+
+        /**
+         * 交易状态。
+         */
         private String trade_state;
+
+        /**
+         * 通用状态字段。
+         */
         private String state;
+
+        /**
+         * 附加数据。
+         */
         private String attach;
+
+        /**
+         * 付款银行类型。
+         */
         private String bank_type;
+
+        /**
+         * 支付成功时间。
+         */
         private String success_time;
+
+        /**
+         * 子订单金额信息。
+         */
         private CombineAmount amount;
     }
 
+    /**
+     * 微信合单金额信息。
+     */
     private static final class CombineAmount {
+
+        /**
+         * 总金额，单位分。
+         */
         private Long total_amount;
+
+        /**
+         * 币种。
+         */
         private String currency;
+
+        /**
+         * 用户实付金额，单位分。
+         */
         private Long payer_amount;
+
+        /**
+         * 用户支付币种。
+         */
         private String payer_currency;
+
+        /**
+         * 清算汇率。
+         */
         private Long settlement_rate;
     }
 

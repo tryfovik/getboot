@@ -31,6 +31,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 class WechatPayBusinessCircleServiceImplTest {
 
+    /**
+     * 验证用户授权查询路径拼装。
+     */
     @Test
     void shouldBuildAuthorizationQueryPath() {
         RecordingGateway gateway = new RecordingGateway();
@@ -47,6 +50,9 @@ class WechatPayBusinessCircleServiceImplTest {
         );
     }
 
+    /**
+     * 验证积分同步状态查询路径拼装。
+     */
     @Test
     void shouldBuildCommitStatusQueryPath() {
         RecordingGateway gateway = new RecordingGateway();
@@ -66,21 +72,36 @@ class WechatPayBusinessCircleServiceImplTest {
         );
     }
 
+    /**
+     * 记录智慧商圈请求路径的测试网关。
+     */
     private static final class RecordingGateway implements WechatPayHttpGateway {
 
+        /**
+         * 最近一次 GET 请求路径。
+         */
         private String lastGetPath;
 
+        /**
+         * 模拟 GET 请求。
+         */
         @Override
         public <T> T get(String path, Class<T> responseType) {
             this.lastGetPath = path;
             return responseType.cast(Map.of("ok", true));
         }
 
+        /**
+         * 模拟 POST 请求。
+         */
         @Override
         public <T> T post(String path, Object requestBody, Class<T> responseType) {
             return responseType.cast(Map.of("ok", true));
         }
 
+        /**
+         * 模拟无响应 POST 请求。
+         */
         @Override
         public void postWithoutResponse(String path, Object requestBody) {
         }

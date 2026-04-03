@@ -42,6 +42,9 @@ public class PaymentProperties {
      */
     private WechatPay wechatpay = new WechatPay();
 
+    /**
+     * 支付宝渠道配置树。
+     */
     @Data
     public static class Alipay {
         /**
@@ -110,6 +113,9 @@ public class PaymentProperties {
         private boolean sandbox;
     }
 
+    /**
+     * 微信支付渠道配置树。
+     */
     @Data
     public static class WechatPay {
         /**

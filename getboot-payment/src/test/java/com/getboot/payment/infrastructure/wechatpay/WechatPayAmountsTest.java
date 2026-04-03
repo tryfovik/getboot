@@ -21,13 +21,24 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * 微信金额换算工具测试。
+ *
+ * @author qiheng
+ */
 class WechatPayAmountsTest {
 
+    /**
+     * 验证元到分的转换。
+     */
     @Test
     void shouldConvertYuanToFen() {
         assertEquals(1234, WechatPayAmounts.toFen(new BigDecimal("12.34")));
     }
 
+    /**
+     * 验证分到元的转换。
+     */
     @Test
     void shouldConvertFenToYuan() {
         assertEquals(new BigDecimal("12.34"), WechatPayAmounts.fromFen(1234));

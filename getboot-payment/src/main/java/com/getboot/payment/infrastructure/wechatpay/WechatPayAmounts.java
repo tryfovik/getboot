@@ -25,6 +25,9 @@ import java.math.RoundingMode;
  */
 public final class WechatPayAmounts {
 
+    /**
+     * 工具类不允许实例化。
+     */
     private WechatPayAmounts() {
     }
 

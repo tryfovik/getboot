@@ -40,8 +40,19 @@ import java.util.List;
  */
 public class AlipayFaceToFaceServiceImpl implements AlipayFaceToFaceService {
 
+    /**
+     * 支付宝渠道配置。
+     */
     private final PaymentProperties.Alipay properties;
+
+    /**
+     * 支付宝 SDK 网关。
+     */
     private final AlipayGateway gateway;
+
+    /**
+     * 请求扩展器集合。
+     */
     private final List<AlipayRequestCustomizer> requestCustomizers;
 
     /**
@@ -70,6 +81,12 @@ public class AlipayFaceToFaceServiceImpl implements AlipayFaceToFaceService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 发起支付宝当面付。
+     *
+     * @param request 当面付请求
+     * @return 当面付响应
+     */
     @Override
     public AlipayFaceToFacePayResponse pay(AlipayFaceToFacePayRequest request) {
         if (request == null) {
@@ -112,6 +129,12 @@ public class AlipayFaceToFaceServiceImpl implements AlipayFaceToFaceService {
                 .build();
     }
 
+    /**
+     * 构建当面付请求选项。
+     *
+     * @param request 当面付请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildOptions(AlipayFaceToFacePayRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         options.setNotifyUrl(resolveText(request.getNotifyUrl(), properties.getNotifyUrl()));
@@ -156,6 +179,12 @@ public class AlipayFaceToFaceServiceImpl implements AlipayFaceToFaceService {
         return options;
     }
 
+    /**
+     * 根据元数据创建请求选项。
+     *
+     * @param metadata 元数据
+     * @return 请求选项
+     */
     private AlipayRequestOptions newRequestOptions(java.util.Map<String, String> metadata) {
         AlipayRequestOptions options = new AlipayRequestOptions();
         options.setAppAuthToken(AlipayRequestSupport.text(metadata, AlipayRequestSupport.APP_AUTH_TOKEN));
@@ -164,20 +193,45 @@ public class AlipayFaceToFaceServiceImpl implements AlipayFaceToFaceService {
         return options;
     }
 
+    /**
+     * 解析优先值与回退值。
+     *
+     * @param candidate 优先值
+     * @param fallback 回退值
+     * @return 最终值
+     */
     private String resolveText(String candidate, String fallback) {
         return StringUtils.hasText(candidate) ? candidate : fallback;
     }
 
+    /**
+     * 将金额格式化为支付宝要求的文本。
+     *
+     * @param amount 金额
+     * @return 金额文本
+     */
     private String toAmountText(BigDecimal amount) {
         return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 校验金额参数不为空。
+     *
+     * @param value 待校验金额
+     * @param message 校验失败消息
+     */
     private void requireAmount(BigDecimal value, String message) {
         if (value == null) {
             throw new BusinessException(message);

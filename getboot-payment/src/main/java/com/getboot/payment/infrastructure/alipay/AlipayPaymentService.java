@@ -66,6 +66,9 @@ import java.util.Set;
  */
 public class AlipayPaymentService implements PaymentService {
 
+    /**
+     * 支持的支付方式集合。
+     */
     private static final Set<PaymentMode> SUPPORTED_MODES = Set.copyOf(EnumSet.of(
             PaymentMode.APP,
             PaymentMode.PAGE,
@@ -114,16 +117,32 @@ public class AlipayPaymentService implements PaymentService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 返回当前服务支持的支付渠道。
+     *
+     * @return 支付渠道
+     */
     @Override
     public PaymentChannel channel() {
         return PaymentChannel.ALIPAY;
     }
 
+    /**
+     * 返回当前服务支持的支付方式。
+     *
+     * @return 支付方式集合
+     */
     @Override
     public Set<PaymentMode> supportedModes() {
         return SUPPORTED_MODES;
     }
 
+    /**
+     * 创建支付宝支付订单。
+     *
+     * @param request 下单请求
+     * @return 下单响应
+     */
     @Override
     public PaymentCreateResponse create(PaymentCreateRequest request) {
         requireChannel(request.getChannel());
@@ -142,6 +161,12 @@ public class AlipayPaymentService implements PaymentService {
         };
     }
 
+    /**
+     * 发起支付宝退款。
+     *
+     * @param request 退款请求
+     * @return 退款响应
+     */
     @Override
     public PaymentRefundResponse refund(PaymentRefundRequest request) {
         requireChannel(request.getChannel());
@@ -171,6 +196,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 查询支付宝订单状态。
+     *
+     * @param request 订单查询请求
+     * @return 查询响应
+     */
     @Override
     public PaymentOrderQueryResponse queryOrder(PaymentOrderQueryRequest request) {
         requireChannel(request.getChannel());
@@ -206,6 +237,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 查询支付宝退款状态。
+     *
+     * @param request 退款查询请求
+     * @return 查询响应
+     */
     @Override
     public PaymentRefundQueryResponse queryRefund(PaymentRefundQueryRequest request) {
         requireChannel(request.getChannel());
@@ -236,6 +273,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 关闭支付宝订单。
+     *
+     * @param request 关单请求
+     * @return 关单响应
+     */
     @Override
     public PaymentCloseResponse close(PaymentCloseRequest request) {
         requireChannel(request.getChannel());
@@ -258,6 +301,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 解析支付宝异步通知。
+     *
+     * @param request 通知请求
+     * @return 通知解析结果
+     */
     @Override
     public PaymentNotifyResponse parseNotify(PaymentNotifyRequest request) {
         requireChannel(request.getChannel());
@@ -277,6 +326,13 @@ public class AlipayPaymentService implements PaymentService {
         };
     }
 
+    /**
+     * 创建支付宝 App 支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createAppOrder(
             PaymentCreateRequest request,
             AlipayRequestOptions options) {
@@ -296,6 +352,13 @@ public class AlipayPaymentService implements PaymentService {
         return createResponse;
     }
 
+    /**
+     * 创建支付宝页面支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createPageOrder(
             PaymentCreateRequest request,
             AlipayRequestOptions options) {
@@ -316,6 +379,13 @@ public class AlipayPaymentService implements PaymentService {
         return createResponse;
     }
 
+    /**
+     * 创建支付宝 WAP 支付订单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createWapOrder(
             PaymentCreateRequest request,
             AlipayRequestOptions options) {
@@ -338,6 +408,13 @@ public class AlipayPaymentService implements PaymentService {
         return createResponse;
     }
 
+    /**
+     * 创建支付宝扫码预下单。
+     *
+     * @param request 下单请求
+     * @param options 请求选项
+     * @return 下单响应
+     */
     private PaymentCreateResponse createNativeOrder(
             PaymentCreateRequest request,
             AlipayRequestOptions options) {
@@ -360,6 +437,12 @@ public class AlipayPaymentService implements PaymentService {
         return createResponse;
     }
 
+    /**
+     * 构建基础下单响应。
+     *
+     * @param request 下单请求
+     * @return 基础响应
+     */
     private PaymentCreateResponse baseCreateResponse(PaymentCreateRequest request) {
         return PaymentCreateResponse.builder()
                 .channel(PaymentChannel.ALIPAY)
@@ -368,6 +451,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 构建下单请求选项。
+     *
+     * @param request 下单请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildCreateOptions(PaymentCreateRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         options.setNotifyUrl(resolveText(request.getNotifyUrl(), properties.getNotifyUrl()));
@@ -430,6 +519,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 构建退款请求选项。
+     *
+     * @param request 退款请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildRefundOptions(PaymentRefundRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         options.setNotifyUrl(resolveText(request.getNotifyUrl(), properties.getNotifyUrl()));
@@ -457,6 +552,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 构建订单查询请求选项。
+     *
+     * @param request 订单查询请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildOrderQueryOptions(PaymentOrderQueryRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         AlipayRequestSupport.putIfText(options.getOptionalArgs(), "trade_no", request.getPlatformOrderNo());
@@ -466,6 +567,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 构建退款查询请求选项。
+     *
+     * @param request 退款查询请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildRefundQueryOptions(PaymentRefundQueryRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         AlipayRequestSupport.putIfText(options.getOptionalArgs(), "trade_no", request.getPlatformOrderNo());
@@ -475,6 +582,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 构建关单请求选项。
+     *
+     * @param request 关单请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildCloseOptions(PaymentCloseRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -483,6 +596,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 根据元数据创建请求选项。
+     *
+     * @param metadata 元数据
+     * @return 请求选项
+     */
     private AlipayRequestOptions newRequestOptions(Map<String, String> metadata) {
         AlipayRequestOptions options = new AlipayRequestOptions();
         options.setAppAuthToken(AlipayRequestSupport.text(metadata, AlipayRequestSupport.APP_AUTH_TOKEN));
@@ -491,6 +610,12 @@ public class AlipayPaymentService implements PaymentService {
         return options;
     }
 
+    /**
+     * 构建支付通知响应。
+     *
+     * @param parameters 通知参数
+     * @return 通知响应
+     */
     private PaymentNotifyResponse buildPaymentNotifyResponse(Map<String, String> parameters) {
         String status = parameters.get("trade_status");
         return PaymentNotifyResponse.builder()
@@ -505,6 +630,12 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 构建退款通知响应。
+     *
+     * @param parameters 通知参数
+     * @return 通知响应
+     */
     private PaymentNotifyResponse buildRefundNotifyResponse(Map<String, String> parameters) {
         String status = AlipayResponseSupport.firstNonBlank(parameters.get("refund_status"), parameters.get("trade_status"));
         boolean success = "REFUND_SUCCESS".equalsIgnoreCase(status)
@@ -523,14 +654,33 @@ public class AlipayPaymentService implements PaymentService {
                 .build();
     }
 
+    /**
+     * 解析优先值与回退值。
+     *
+     * @param candidate 优先值
+     * @param fallback 回退值
+     * @return 最终值
+     */
     private String resolveText(String candidate, String fallback) {
         return StringUtils.hasText(candidate) ? candidate : fallback;
     }
 
+    /**
+     * 将金额格式化为支付宝要求的文本。
+     *
+     * @param amount 金额
+     * @return 金额文本
+     */
     private String toAmountText(BigDecimal amount) {
         return amount.setScale(2, RoundingMode.HALF_UP).toPlainString();
     }
 
+    /**
+     * 校验支付方式已被支持。
+     *
+     * @param mode 支付方式
+     * @return 支付方式
+     */
     private PaymentMode requireSupportedMode(PaymentMode mode) {
         if (!supports(mode)) {
             throw unsupportedMode(mode);
@@ -538,22 +688,45 @@ public class AlipayPaymentService implements PaymentService {
         return mode;
     }
 
+    /**
+     * 构造不支持支付方式异常。
+     *
+     * @param mode 支付方式
+     * @return 业务异常
+     */
     private BusinessException unsupportedMode(PaymentMode mode) {
         return new BusinessException("Unsupported Alipay payment mode: " + mode);
     }
 
+    /**
+     * 校验渠道是否为支付宝。
+     *
+     * @param channel 支付渠道
+     */
     private void requireChannel(PaymentChannel channel) {
         if (channel != PaymentChannel.ALIPAY) {
             throw new BusinessException("channel must be ALIPAY");
         }
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 校验金额参数不为空。
+     *
+     * @param value 待校验金额
+     * @param message 校验失败消息
+     */
     private void requireAmount(BigDecimal value, String message) {
         if (value == null) {
             throw new BusinessException(message);

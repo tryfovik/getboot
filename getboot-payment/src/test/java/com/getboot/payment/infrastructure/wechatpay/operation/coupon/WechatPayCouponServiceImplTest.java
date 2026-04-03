@@ -32,6 +32,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPayCouponServiceImplTest {
 
+    /**
+     * 验证小程序发券插件参数构建。
+     */
     @Test
     void shouldBuildMiniProgramCouponPluginPayload() {
         WechatPayCouponServiceImpl service = new WechatPayCouponServiceImpl(paymentProperties());
@@ -61,6 +64,9 @@ class WechatPayCouponServiceImplTest {
         );
     }
 
+    /**
+     * 验证 H5 发券链接构建。
+     */
     @Test
     void shouldBuildH5CouponLaunchUrl() {
         WechatPayCouponServiceImpl service = new WechatPayCouponServiceImpl(paymentProperties());
@@ -80,6 +86,11 @@ class WechatPayCouponServiceImplTest {
         assertTrue(response.getUrl().endsWith("#wechat_pay&wechat_redirect"));
     }
 
+    /**
+     * 构造测试使用的微信支付配置。
+     *
+     * @return 支付配置
+     */
     private PaymentProperties paymentProperties() {
         PaymentProperties properties = new PaymentProperties();
         properties.getWechatpay().setMerchantId("1900001234");

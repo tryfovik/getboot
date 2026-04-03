@@ -38,10 +38,24 @@ import java.util.Map;
  */
 public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
 
+    /**
+     * 支付分服务订单基础路径。
+     */
     private static final String PAY_SCORE_ORDER_PATH = "/v3/payscore/serviceorder";
+
+    /**
+     * 退款基础路径。
+     */
     private static final String REFUND_PATH = "/v3/refund/domestic/refunds";
 
+    /**
+     * 支付配置。
+     */
     private final PaymentProperties paymentProperties;
+
+    /**
+     * 微信 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
 
     /**
@@ -57,11 +71,23 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         this.httpGateway = httpGateway;
     }
 
+    /**
+     * 创建支付分订单。
+     *
+     * @param requestBody 请求体
+     * @return 创建结果
+     */
     @Override
     public Map<String, Object> createOrder(Object requestBody) {
         return postForMap(PAY_SCORE_ORDER_PATH, requestBody);
     }
 
+    /**
+     * 查询支付分订单。
+     *
+     * @param request 查询请求
+     * @return 查询结果
+     */
     @Override
     public Map<String, Object> queryOrder(WechatPayPayScoreQueryRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -83,6 +109,12 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         return getForMap(PAY_SCORE_ORDER_PATH + "?" + buildQueryString(args));
     }
 
+    /**
+     * 取消支付分订单。
+     *
+     * @param outOrderNo 商户订单号
+     * @param requestBody 请求体
+     */
     @Override
     public void cancelOrder(String outOrderNo, Object requestBody) {
         Assert.hasText(outOrderNo, "outOrderNo must not be blank");
@@ -92,6 +124,12 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         );
     }
 
+    /**
+     * 完结支付分订单。
+     *
+     * @param outOrderNo 商户订单号
+     * @param requestBody 请求体
+     */
     @Override
     public void completeOrder(String outOrderNo, Object requestBody) {
         Assert.hasText(outOrderNo, "outOrderNo must not be blank");
@@ -101,6 +139,12 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         );
     }
 
+    /**
+     * 修改支付分订单金额。
+     *
+     * @param outOrderNo 商户订单号
+     * @param requestBody 请求体
+     */
     @Override
     public void modifyOrderAmount(String outOrderNo, Object requestBody) {
         Assert.hasText(outOrderNo, "outOrderNo must not be blank");
@@ -110,6 +154,12 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         );
     }
 
+    /**
+     * 同步支付分订单。
+     *
+     * @param outOrderNo 商户订单号
+     * @param requestBody 请求体
+     */
     @Override
     public void syncOrder(String outOrderNo, Object requestBody) {
         Assert.hasText(outOrderNo, "outOrderNo must not be blank");
@@ -119,17 +169,35 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         );
     }
 
+    /**
+     * 创建支付分订单退款。
+     *
+     * @param requestBody 请求体
+     * @return 创建结果
+     */
     @Override
     public Map<String, Object> createOrderRefund(Object requestBody) {
         return postForMap(REFUND_PATH, requestBody);
     }
 
+    /**
+     * 查询支付分订单退款。
+     *
+     * @param outRefundNo 商户退款单号
+     * @return 查询结果
+     */
     @Override
     public Map<String, Object> queryOrderRefund(String outRefundNo) {
         Assert.hasText(outRefundNo, "outRefundNo must not be blank");
         return getForMap(REFUND_PATH + "/" + urlEncode(outRefundNo));
     }
 
+    /**
+     * 构建 JSAPI 确认订单页面参数。
+     *
+     * @param packageValue 预支付包
+     * @return 页面参数
+     */
     @Override
     public WechatPayJsapiBusinessViewRequest buildJsapiConfirmOrderView(String packageValue) {
         Assert.hasText(packageValue, "packageValue must not be blank");
@@ -141,6 +209,12 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
                 .build();
     }
 
+    /**
+     * 构建 JSAPI 订单详情页参数。
+     *
+     * @param request 详情页请求
+     * @return 页面参数
+     */
     @Override
     public WechatPayJsapiBusinessViewRequest buildJsapiOrderDetailView(WechatPayPayScoreDetailViewRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -179,15 +253,34 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * 以 Map 形式发起 GET 请求。
+     *
+     * @param path 请求路径
+     * @return 响应结果
+     */
     private Map<String, Object> getForMap(String path) {
         return (Map<String, Object>) httpGateway.get(path, Map.class);
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * 以 Map 形式发起 POST 请求。
+     *
+     * @param path 请求路径
+     * @param requestBody 请求体
+     * @return 响应结果
+     */
     private Map<String, Object> postForMap(String path, Object requestBody) {
         return (Map<String, Object>) httpGateway.post(path, requestBody, Map.class);
     }
 
+    /**
+     * 构建查询字符串。
+     *
+     * @param args 查询参数
+     * @return 查询字符串
+     */
     private String buildQueryString(Map<String, Object> args) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, Object> entry : args.entrySet()) {
@@ -204,10 +297,21 @@ public class WechatPayPayScoreServiceImpl implements WechatPayPayScoreService {
         return builder.toString();
     }
 
+    /**
+     * 对参数执行 URL 编码。
+     *
+     * @param value 原始值
+     * @return 编码后的值
+     */
     private String urlEncode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }
 
+    /**
+     * 创建 V2 签名支持工具。
+     *
+     * @return V2 签名支持工具
+     */
     private WechatPayV2Support v2Support() {
         return new WechatPayV2Support(paymentProperties.getWechatpay().getApiV2Key());
     }

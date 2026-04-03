@@ -47,9 +47,24 @@ import java.util.Map;
  */
 public class WechatPayTradeServiceImpl implements WechatPayTradeService {
 
+    /**
+     * 微信支付官方配置。
+     */
     private final Config config;
+
+    /**
+     * 账单下载服务。
+     */
     private final BillDownloadService billDownloadService;
+
+    /**
+     * 微信 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
+
+    /**
+     * 请求扩展器集合。
+     */
     private final List<WechatPayRequestCustomizer> requestCustomizers;
 
     /**
@@ -85,6 +100,12 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 发起异常退款申请。
+     *
+     * @param request 异常退款请求
+     * @return 异常退款响应
+     */
     @Override
     public WechatPayAbnormalRefundResponse abnormalRefund(WechatPayAbnormalRefundRequest request) {
         requireText(request.getPlatformRefundNo(), "platformRefundNo must not be blank");
@@ -114,6 +135,12 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
                 .build();
     }
 
+    /**
+     * 查询交易账单下载地址。
+     *
+     * @param request 交易账单请求
+     * @return 账单响应
+     */
     @Override
     public WechatPayBillResponse queryTradeBill(WechatPayTradeBillRequest request) {
         requireText(request.getBillDate(), "billDate must not be blank");
@@ -135,6 +162,12 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         return mapBillResponse(request.getBillDate(), response);
     }
 
+    /**
+     * 查询资金账单下载地址。
+     *
+     * @param request 资金账单请求
+     * @return 账单响应
+     */
     @Override
     public WechatPayBillResponse queryFundFlowBill(WechatPayFundFlowBillRequest request) {
         requireText(request.getBillDate(), "billDate must not be blank");
@@ -155,6 +188,13 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         return mapBillResponse(request.getBillDate(), response);
     }
 
+    /**
+     * 映射账单查询响应。
+     *
+     * @param billDate 账单日期
+     * @param response 官方响应
+     * @return 账单响应
+     */
     private WechatPayBillResponse mapBillResponse(String billDate, QueryBillEntity response) {
         return WechatPayBillResponse.builder()
                 .billDate(billDate)
@@ -164,16 +204,35 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
                 .build();
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 解析优先值与回退值。
+     *
+     * @param preferred 优先值
+     * @param fallback 回退值
+     * @return 最终值
+     */
     private String resolveText(String preferred, String fallback) {
         return StringUtils.hasText(preferred) ? preferred : fallback;
     }
 
+    /**
+     * 执行交易账单请求定制。
+     *
+     * @param request 交易账单请求
+     * @return 请求选项
+     */
     private WechatPayRequestOptions customizeTradeBill(WechatPayTradeBillRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -182,6 +241,11 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         return options;
     }
 
+    /**
+     * 执行资金账单请求定制。
+     *
+     * @param request 资金账单请求
+     */
     private void customizeFundFlowBill(WechatPayFundFlowBillRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -189,6 +253,12 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         }
     }
 
+    /**
+     * 执行异常退款请求定制。
+     *
+     * @param request 异常退款请求
+     * @return 请求选项
+     */
     private WechatPayRequestOptions customizeAbnormalRefund(WechatPayAbnormalRefundRequest request) {
         WechatPayRequestOptions options = new WechatPayRequestOptions();
         for (WechatPayRequestCustomizer requestCustomizer : requestCustomizers) {
@@ -196,5 +266,4 @@ public class WechatPayTradeServiceImpl implements WechatPayTradeService {
         }
         return options;
     }
-
 }

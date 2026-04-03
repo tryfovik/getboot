@@ -93,6 +93,9 @@ public final class AlipayRequestSupport {
      */
     public static final String SERVICE_PROVIDER_ID = "serviceProviderId";
 
+    /**
+     * 工具类不允许实例化。
+     */
     private AlipayRequestSupport() {
     }
 

@@ -34,6 +34,9 @@ import java.util.Map;
  */
 public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCircleService {
 
+    /**
+     * 微信 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
 
     /**
@@ -45,11 +48,22 @@ public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCirc
         this.httpGateway = httpGateway;
     }
 
+    /**
+     * 同步用户积分信息。
+     *
+     * @param requestBody 请求体
+     */
     @Override
     public void syncPoints(Object requestBody) {
         httpGateway.postWithoutResponse("/v3/businesscircle/points/notify", requestBody);
     }
 
+    /**
+     * 查询用户授权状态。
+     *
+     * @param request 授权查询请求
+     * @return 授权查询结果
+     */
     @Override
     public Map<String, Object> queryUserAuthorization(WechatPayBusinessCircleAuthorizationQueryRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -64,6 +78,12 @@ public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCirc
         );
     }
 
+    /**
+     * 查询积分提交状态。
+     *
+     * @param request 提交状态查询请求
+     * @return 提交状态结果
+     */
     @Override
     public Map<String, Object> queryCommitStatus(WechatPayBusinessCircleCommitStatusQueryRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -84,16 +104,33 @@ public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCirc
         );
     }
 
+    /**
+     * 同步停车信息。
+     *
+     * @param requestBody 请求体
+     */
     @Override
     public void syncParking(Object requestBody) {
         httpGateway.postWithoutResponse("/v3/businesscircle/parkings", requestBody);
     }
 
     @SuppressWarnings("unchecked")
+    /**
+     * 以 Map 形式发起 GET 请求。
+     *
+     * @param path 请求路径
+     * @return 响应结果
+     */
     private Map<String, Object> getForMap(String path) {
         return (Map<String, Object>) httpGateway.get(path, Map.class);
     }
 
+    /**
+     * 构建查询字符串。
+     *
+     * @param args 查询参数
+     * @return 查询字符串
+     */
     private String buildQueryString(Map<String, Object> args) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, Object> entry : args.entrySet()) {
@@ -110,6 +147,12 @@ public class WechatPayBusinessCircleServiceImpl implements WechatPayBusinessCirc
         return builder.toString();
     }
 
+    /**
+     * 对参数执行 URL 编码。
+     *
+     * @param value 原始值
+     * @return 编码后的值
+     */
     private String urlEncode(String value) {
         return URLEncoder.encode(value, StandardCharsets.UTF_8).replace("+", "%20");
     }

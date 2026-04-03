@@ -110,6 +110,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         this.requestCustomizers = requestCustomizers == null ? List.of() : List.copyOf(requestCustomizers);
     }
 
+    /**
+     * 发起支付宝单笔转账。
+     *
+     * @param request 转账请求
+     * @return 转账响应
+     */
     @Override
     public AlipayTransferResponse transfer(AlipayTransferRequest request) {
         if (request == null) {
@@ -158,6 +164,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 解析支付宝转账通知。
+     *
+     * @param request 转账通知请求
+     * @return 转账通知响应
+     */
     @Override
     public AlipayTransferNotifyResponse parseTransferNotify(AlipayTransferNotifyRequest request) {
         if (request == null) {
@@ -196,6 +208,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 查询支付宝转账状态。
+     *
+     * @param request 转账查询请求
+     * @return 转账查询响应
+     */
     @Override
     public AlipayTransferQueryResponse queryTransfer(AlipayTransferQueryRequest request) {
         if (request == null) {
@@ -242,6 +260,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 查询支付宝账户余额。
+     *
+     * @param request 账户查询请求
+     * @return 账户查询响应
+     */
     @Override
     public AlipayAccountQueryResponse queryAccount(AlipayAccountQueryRequest request) {
         if (request == null) {
@@ -276,6 +300,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 申请支付宝电子回单。
+     *
+     * @param request 电子回单申请请求
+     * @return 电子回单申请响应
+     */
     @Override
     public AlipayElectronicReceiptApplyResponse applyElectronicReceipt(AlipayElectronicReceiptApplyRequest request) {
         if (request == null) {
@@ -311,6 +341,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 查询支付宝电子回单。
+     *
+     * @param request 电子回单查询请求
+     * @return 电子回单查询响应
+     */
     @Override
     public AlipayElectronicReceiptQueryResponse queryElectronicReceipt(AlipayElectronicReceiptQueryRequest request) {
         if (request == null) {
@@ -348,6 +384,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
                 .build();
     }
 
+    /**
+     * 构建转账请求选项。
+     *
+     * @param request 转账请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildTransferOptions(AlipayTransferRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -356,6 +398,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 构建转账查询请求选项。
+     *
+     * @param request 转账查询请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildTransferQueryOptions(AlipayTransferQueryRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -364,6 +412,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 构建账户查询请求选项。
+     *
+     * @param request 账户查询请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildAccountQueryOptions(AlipayAccountQueryRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -372,6 +426,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 构建电子回单申请请求选项。
+     *
+     * @param request 电子回单申请请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildElectronicReceiptApplyOptions(AlipayElectronicReceiptApplyRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -380,6 +440,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 构建电子回单查询请求选项。
+     *
+     * @param request 电子回单查询请求
+     * @return 请求选项
+     */
     private AlipayRequestOptions buildElectronicReceiptQueryOptions(AlipayElectronicReceiptQueryRequest request) {
         AlipayRequestOptions options = newRequestOptions(request.getMetadata());
         for (AlipayRequestCustomizer customizer : requestCustomizers) {
@@ -388,6 +454,12 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 根据元数据创建请求选项。
+     *
+     * @param metadata 元数据
+     * @return 请求选项
+     */
     private AlipayRequestOptions newRequestOptions(Map<String, String> metadata) {
         AlipayRequestOptions options = new AlipayRequestOptions();
         options.setAppAuthToken(AlipayRequestSupport.text(metadata, AlipayRequestSupport.APP_AUTH_TOKEN));
@@ -396,18 +468,37 @@ public class AlipaySettlementServiceImpl implements AlipaySettlementService {
         return options;
     }
 
+    /**
+     * 校验文本参数不为空。
+     *
+     * @param value 待校验值
+     * @param message 校验失败消息
+     */
     private void requireText(String value, String message) {
         if (!StringUtils.hasText(value)) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 校验金额参数不为空。
+     *
+     * @param value 待校验金额
+     * @param message 校验失败消息
+     */
     private void requireAmount(BigDecimal value, String message) {
         if (value == null) {
             throw new BusinessException(message);
         }
     }
 
+    /**
+     * 在文本有值时写入参数。
+     *
+     * @param target 目标参数表
+     * @param key 参数名
+     * @param value 参数值
+     */
     private void putIfText(Map<String, Object> target, String key, String value) {
         if (target != null && StringUtils.hasText(key) && StringUtils.hasText(value)) {
             target.put(key, value);

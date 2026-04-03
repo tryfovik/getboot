@@ -58,12 +58,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 class WechatPayTradeServiceImplTest {
 
+    /**
+     * 验证交易账单查询会应用 SPI 子商户号扩展。
+     */
     @Test
     void shouldApplySpiCustomizerToTradeBillRequest() {
         RecordingBillHttpClient httpClient = new RecordingBillHttpClient();
         BillDownloadService billDownloadService = newBillDownloadService(httpClient);
 
         WechatPayRequestCustomizer customizer = new WechatPayRequestCustomizer() {
+            /**
+             * 为交易账单请求注入测试扩展参数。
+             *
+             * @param request 账单请求
+             * @param options 请求选项
+             */
             @Override
             public void customizeTradeBill(WechatPayTradeBillRequest request, WechatPayRequestOptions options) {
                 options.setSubMerchantId("1900009999");
@@ -87,6 +96,9 @@ class WechatPayTradeServiceImplTest {
         assertEquals("https://bill.example.com/trade.csv", result.getDownloadUrl());
     }
 
+    /**
+     * 验证异常退款请求会应用 SPI 扩展参数。
+     */
     @Test
     void shouldApplySpiCustomizerToAbnormalRefundRequest() {
         RecordingGateway gateway = new RecordingGateway();
@@ -122,6 +134,9 @@ class WechatPayTradeServiceImplTest {
         assertTrue(response.isAccepted());
     }
 
+    /**
+     * 验证资金账单查询会拼装正确参数。
+     */
     @Test
     void shouldQueryFundFlowBill() {
         RecordingBillHttpClient httpClient = new RecordingBillHttpClient();
@@ -143,6 +158,9 @@ class WechatPayTradeServiceImplTest {
         assertEquals("https://bill.example.com/trade.csv", result.getDownloadUrl());
     }
 
+    /**
+     * 验证网关异常会被包装为业务异常。
+     */
     @Test
     void shouldWrapGatewayExceptionWhenApplyingAbnormalRefund() {
         RecordingGateway gateway = new RecordingGateway();
@@ -165,22 +183,59 @@ class WechatPayTradeServiceImplTest {
         assertSame(gateway.postWithoutResponseException, exception.getCause());
     }
 
+    /**
+     * 记录微信 HTTP 网关调用信息的测试桩。
+     */
     private static final class RecordingGateway implements WechatPayHttpGateway {
 
+        /**
+         * 最近一次无响应 POST 请求路径。
+         */
         private String lastPostWithoutResponsePath;
+
+        /**
+         * 最近一次无响应 POST 请求体。
+         */
         private Object lastPostWithoutResponseBody;
+
+        /**
+         * 无响应 POST 请求异常。
+         */
         private RuntimeException postWithoutResponseException;
 
+        /**
+         * 模拟 GET 请求。
+         *
+         * @param path 请求路径
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 空响应
+         */
         @Override
         public <T> T get(String path, Class<T> responseType) {
             return null;
         }
 
+        /**
+         * 模拟 POST 请求。
+         *
+         * @param path 请求路径
+         * @param requestBody 请求体
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 空响应
+         */
         @Override
         public <T> T post(String path, Object requestBody, Class<T> responseType) {
             return null;
         }
 
+        /**
+         * 模拟无响应 POST 请求。
+         *
+         * @param path 请求路径
+         * @param requestBody 请求体
+         */
         @Override
         public void postWithoutResponse(String path, Object requestBody) {
             if (postWithoutResponseException != null) {
@@ -191,10 +246,24 @@ class WechatPayTradeServiceImplTest {
         }
     }
 
+    /**
+     * 记录账单下载请求的测试 HTTP 客户端。
+     */
     private static final class RecordingBillHttpClient implements HttpClient {
 
+        /**
+         * 最近一次 HTTP 请求。
+         */
         private HttpRequest lastRequest;
 
+        /**
+         * 模拟执行账单下载查询请求。
+         *
+         * @param request HTTP 请求
+         * @param responseType 响应类型
+         * @param <T> 响应泛型
+         * @return 模拟响应
+         */
         @Override
         public <T> HttpResponse<T> execute(HttpRequest request, Class<T> responseType) {
             this.lastRequest = request;
@@ -211,12 +280,24 @@ class WechatPayTradeServiceImplTest {
             }
         }
 
+        /**
+         * 模拟下载账单文件。
+         *
+         * @param url 下载地址
+         * @return 空输入流
+         */
         @Override
         public InputStream download(String url) {
             return new ByteArrayInputStream(new byte[0]);
         }
     }
 
+    /**
+     * 通过反射构造账单下载服务。
+     *
+     * @param httpClient HTTP 客户端
+     * @return 账单下载服务
+     */
     private static BillDownloadService newBillDownloadService(HttpClient httpClient) {
         try {
             Constructor<BillDownloadService> constructor = BillDownloadService.class.getDeclaredConstructor(
@@ -232,16 +313,35 @@ class WechatPayTradeServiceImplTest {
         }
     }
 
+    /**
+     * 提供固定签名能力的测试配置。
+     */
     private static final class StubConfig implements Config {
 
+        /**
+         * 返回透传加密器。
+         *
+         * @return 透传加密器
+         */
         @Override
         public PrivacyEncryptor createEncryptor() {
             return new PrivacyEncryptor() {
+                /**
+                 * 透传加密原文。
+                 *
+                 * @param plaintext 原文
+                 * @return 原文
+                 */
                 @Override
                 public String encrypt(String plaintext) {
                     return plaintext;
                 }
 
+                /**
+                 * 返回测试证书序列号。
+                 *
+                 * @return 证书序列号
+                 */
                 @Override
                 public String getWechatpaySerial() {
                     return "serial";
@@ -249,29 +349,60 @@ class WechatPayTradeServiceImplTest {
             };
         }
 
+        /**
+         * 返回空解密器。
+         *
+         * @return 空解密器
+         */
         @Override
         public PrivacyDecryptor createDecryptor() {
             return null;
         }
 
+        /**
+         * 返回空凭证。
+         *
+         * @return 空凭证
+         */
         @Override
         public Credential createCredential() {
             return null;
         }
 
+        /**
+         * 返回空校验器。
+         *
+         * @return 空校验器
+         */
         @Override
         public Validator createValidator() {
             return null;
         }
 
+        /**
+         * 返回固定签名器。
+         *
+         * @return 固定签名器
+         */
         @Override
         public Signer createSigner() {
             return new Signer() {
+                /**
+                 * 返回固定签名结果。
+                 *
+                 * @param message 待签名内容
+                 * @return 固定签名结果
+                 */
                 @Override
                 public SignatureResult sign(String message) {
                     return new SignatureResult("signed-value", "serial");
                 }
 
+                /**
+                 * 返回签名算法名称。
+                 *
+                 * @return 算法名称
+                 */
                 @Override
                 public String getAlgorithm() {
                     return "SHA256-RSA";
@@ -280,6 +411,16 @@ class WechatPayTradeServiceImplTest {
         }
     }
 
+    /**
+     * 构造测试用 HTTP 响应。
+     *
+     * @param request 原始请求
+     * @param serviceResponse 服务响应
+     * @param body JSON 响应体
+     * @param <T> 响应泛型
+     * @return HTTP 响应
+     * @throws Exception 反射失败
+     */
     @SuppressWarnings("unchecked")
     private static <T> HttpResponse<T> httpResponse(HttpRequest request, T serviceResponse, String body) throws Exception {
         Constructor<?> constructor = HttpResponse.class.getDeclaredConstructors()[0];

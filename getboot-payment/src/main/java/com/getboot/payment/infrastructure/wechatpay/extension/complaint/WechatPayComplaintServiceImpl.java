@@ -34,7 +34,14 @@ import java.nio.charset.StandardCharsets;
  */
 public class WechatPayComplaintServiceImpl implements WechatPayComplaintService {
 
+    /**
+     * 图片上传服务。
+     */
     private final FileUploadService fileUploadService;
+
+    /**
+     * 微信 HTTP 网关。
+     */
     private final WechatPayHttpGateway httpGateway;
 
     /**
@@ -50,6 +57,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         this.httpGateway = httpGateway;
     }
 
+    /**
+     * 上传投诉处理图片。
+     *
+     * @param request 图片上传请求
+     * @return 图片上传响应
+     */
     @Override
     public WechatPayComplaintImageUploadResponse uploadImage(WechatPayComplaintImageUploadRequest request) {
         Assert.notNull(request, "request must not be null");
@@ -71,6 +84,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         }
     }
 
+    /**
+     * 回复投诉。
+     *
+     * @param complaintId 投诉单号
+     * @param requestBody 回复请求体
+     */
     @Override
     public void reply(String complaintId, Object requestBody) {
         httpGateway.postWithoutResponse(
@@ -79,6 +98,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         );
     }
 
+    /**
+     * 完结投诉。
+     *
+     * @param complaintId 投诉单号
+     * @param requestBody 完结请求体
+     */
     @Override
     public void complete(String complaintId, Object requestBody) {
         httpGateway.postWithoutResponse(
@@ -87,6 +112,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         );
     }
 
+    /**
+     * 更新退款进度。
+     *
+     * @param complaintId 投诉单号
+     * @param requestBody 退款进度请求体
+     */
     @Override
     public void updateRefundProgress(String complaintId, Object requestBody) {
         httpGateway.postWithoutResponse(
@@ -96,6 +127,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         );
     }
 
+    /**
+     * 回复立即处理服务请求。
+     *
+     * @param complaintId 投诉单号
+     * @param requestBody 回复请求体
+     */
     @Override
     public void replyImmediateService(String complaintId, Object requestBody) {
         httpGateway.postWithoutResponse(
@@ -105,6 +142,12 @@ public class WechatPayComplaintServiceImpl implements WechatPayComplaintService 
         );
     }
 
+    /**
+     * 对投诉单号进行 URL 编码。
+     *
+     * @param complaintId 投诉单号
+     * @return 编码后的投诉单号
+     */
     private String urlEncodeComplaintId(String complaintId) {
         Assert.hasText(complaintId, "complaintId must not be blank");
         return URLEncoder.encode(complaintId, StandardCharsets.UTF_8).replace("+", "%20");

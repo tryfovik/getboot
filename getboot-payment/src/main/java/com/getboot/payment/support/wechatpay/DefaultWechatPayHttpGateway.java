@@ -28,8 +28,14 @@ import com.wechat.pay.java.core.util.GsonUtil;
  */
 public class DefaultWechatPayHttpGateway implements WechatPayHttpGateway {
 
+    /**
+     * 微信支付官方 API 基础地址。
+     */
     private static final String BASE_URL = "https://api.mch.weixin.qq.com";
 
+    /**
+     * 已签名 HTTP 客户端。
+     */
     private final HttpClient httpClient;
 
     /**
@@ -41,6 +47,14 @@ public class DefaultWechatPayHttpGateway implements WechatPayHttpGateway {
         this.httpClient = httpClient;
     }
 
+    /**
+     * 发起 GET 请求。
+     *
+     * @param path API 路径
+     * @param responseType 响应类型
+     * @param <T> 响应泛型
+     * @return 响应对象
+     */
     @Override
     public <T> T get(String path, Class<T> responseType) {
         try {
@@ -50,6 +64,15 @@ public class DefaultWechatPayHttpGateway implements WechatPayHttpGateway {
         }
     }
 
+    /**
+     * 发起 POST 请求。
+     *
+     * @param path API 路径
+     * @param requestBody 请求体
+     * @param responseType 响应类型
+     * @param <T> 响应泛型
+     * @return 响应对象
+     */
     @Override
     public <T> T post(String path, Object requestBody, Class<T> responseType) {
         try {
@@ -62,6 +85,12 @@ public class DefaultWechatPayHttpGateway implements WechatPayHttpGateway {
         }
     }
 
+    /**
+     * 发起无需解析响应体的 POST 请求。
+     *
+     * @param path API 路径
+     * @param requestBody 请求体
+     */
     @Override
     public void postWithoutResponse(String path, Object requestBody) {
         post(path, requestBody, Void.class);

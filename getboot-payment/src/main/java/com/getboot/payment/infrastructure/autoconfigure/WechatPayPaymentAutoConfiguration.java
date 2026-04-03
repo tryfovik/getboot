@@ -633,6 +633,11 @@ public class WechatPayPaymentAutoConfiguration {
         return new WechatPayComplaintServiceImpl(fileUploadService, httpGateway);
     }
 
+    /**
+     * 校验微信支付配置是否完整。
+     *
+     * @param properties 微信支付配置
+     */
     private static void validateWechatPayProperties(PaymentProperties.WechatPay properties) {
         Assert.hasText(properties.getAppId(), "getboot.payment.wechatpay.app-id must not be blank");
         Assert.hasText(properties.getMerchantId(), "getboot.payment.wechatpay.merchant-id must not be blank");
@@ -648,6 +653,13 @@ public class WechatPayPaymentAutoConfiguration {
         Assert.hasText(properties.getNotifyUrl(), "getboot.payment.wechatpay.notify-url must not be blank");
     }
 
+    /**
+     * 从资源路径加载商户私钥内容。
+     *
+     * @param location 资源路径
+     * @param resourceLoader 资源加载器
+     * @return 私钥内容
+     */
     private static String loadPrivateKeyContent(String location, ResourceLoader resourceLoader) {
         Resource resource = resourceLoader.getResource(location);
         try (InputStream inputStream = resource.getInputStream()) {

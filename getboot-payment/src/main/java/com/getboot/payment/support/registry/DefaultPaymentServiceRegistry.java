@@ -54,17 +54,34 @@ public class DefaultPaymentServiceRegistry implements PaymentServiceRegistry {
         this.services = Collections.unmodifiableMap(serviceMap);
     }
 
+    /**
+     * 获取指定渠道的支付服务。
+     *
+     * @param channel 支付渠道
+     * @return 支付服务可选值
+     */
     @Override
     public Optional<PaymentService> get(PaymentChannel channel) {
         return Optional.ofNullable(services.get(channel));
     }
 
+    /**
+     * 获取指定渠道的支付服务，不存在时抛出异常。
+     *
+     * @param channel 支付渠道
+     * @return 支付服务
+     */
     @Override
     public PaymentService getRequired(PaymentChannel channel) {
         return get(channel)
                 .orElseThrow(() -> new IllegalStateException("No PaymentService bean configured for channel: " + channel));
     }
 
+    /**
+     * 获取全部已注册的支付服务映射。
+     *
+     * @return 渠道与服务映射
+     */
     @Override
     public Map<PaymentChannel, PaymentService> asMap() {
         return services;
