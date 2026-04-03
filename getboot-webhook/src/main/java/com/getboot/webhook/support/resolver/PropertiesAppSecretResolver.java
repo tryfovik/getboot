@@ -32,12 +32,26 @@ import java.util.List;
  */
 public class PropertiesAppSecretResolver implements AppSecretResolver {
 
+    /**
+     * Webhook 安全配置。
+     */
     private final WebhookSecurityProperties securityProperties;
 
+    /**
+     * 创建基于配置的应用密钥解析器。
+     *
+     * @param securityProperties Webhook 安全配置
+     */
     public PropertiesAppSecretResolver(WebhookSecurityProperties securityProperties) {
         this.securityProperties = securityProperties;
     }
 
+    /**
+     * 从配置列表中解析调用方签名密钥。
+     *
+     * @param appKey 调用方应用标识
+     * @return 调用方签名密钥
+     */
     @Override
     public String getAppSecret(String appKey) {
         List<WebhookSecurityProperties.AppCredentials> credentialsList = securityProperties.getCredentials();

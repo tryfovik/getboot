@@ -53,17 +53,22 @@ public class WebhookSecurityProperties {
 
     /**
      * 单个应用凭证配置。
+     *
+     * @author qiheng
      */
     @Data
     public static class AppCredentials {
+
         /**
          * 凭证名称，用于区分不同调用方。
          */
         private String name;
+
         /**
          * 调用方应用标识。
          */
         private String appKey;
+
         /**
          * 调用方签名密钥。
          */

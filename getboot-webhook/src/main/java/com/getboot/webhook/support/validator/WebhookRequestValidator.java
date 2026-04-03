@@ -39,13 +39,31 @@ import java.util.Objects;
 @Slf4j
 public class WebhookRequestValidator {
 
+    /**
+     * 应用密钥解析器。
+     */
     private final AppSecretResolver appSecretResolver;
+
+    /**
+     * 扩展校验钩子集合。
+     */
     private final List<WebhookRequestValidationHook> validationHooks;
 
+    /**
+     * 创建仅使用默认校验逻辑的请求校验器。
+     *
+     * @param appSecretResolver 应用密钥解析器
+     */
     public WebhookRequestValidator(AppSecretResolver appSecretResolver) {
         this(appSecretResolver, List.of());
     }
 
+    /**
+     * 创建支持扩展钩子的请求校验器。
+     *
+     * @param appSecretResolver 应用密钥解析器
+     * @param validationHooks 扩展校验钩子集合
+     */
     public WebhookRequestValidator(
             AppSecretResolver appSecretResolver,
             List<WebhookRequestValidationHook> validationHooks) {
@@ -54,7 +72,12 @@ public class WebhookRequestValidator {
     }
 
     /**
-     * Validates request integrity and freshness.
+     * 校验请求头完整性、时间戳有效性与请求签名。
+     *
+     * @param checksum 请求签名
+     * @param appKey 调用方应用标识
+     * @param time 请求时间戳
+     * @param requestBody 原始请求体
      */
     public void validateRequest(String checksum, String appKey, String time, String requestBody) {
         validateRequiredHeaders(checksum, appKey, time);
@@ -64,7 +87,12 @@ public class WebhookRequestValidator {
     }
 
     /**
-     * Validates request integrity without checking timestamp freshness.
+     * 校验请求头完整性与请求签名，但跳过时间戳时效检查。
+     *
+     * @param checksum 请求签名
+     * @param appKey 调用方应用标识
+     * @param time 请求时间戳
+     * @param requestBody 原始请求体
      */
     public void validateRequestNoTimestamp(String checksum, String appKey, String time, String requestBody) {
         validateRequiredHeaders(checksum, appKey, time);
@@ -72,12 +100,24 @@ public class WebhookRequestValidator {
         applyValidationHooks(checksum, appKey, time, requestBody, false);
     }
 
+    /**
+     * 校验请求头中必需字段是否齐全。
+     *
+     * @param checksum 请求签名
+     * @param appKey 调用方应用标识
+     * @param time 请求时间戳
+     */
     private void validateRequiredHeaders(String checksum, String appKey, String time) {
         if (Objects.isNull(checksum) || Objects.isNull(appKey) || Objects.isNull(time)) {
             throw new BusinessException(CommonErrorCode.MISSING_REQUIRED_HEADERS);
         }
     }
 
+    /**
+     * 校验请求时间戳是否仍在允许窗口内。
+     *
+     * @param timeHeader 请求时间戳
+     */
     private void validateTimestamp(String timeHeader) {
         long requestTime;
         try {
@@ -90,6 +130,14 @@ public class WebhookRequestValidator {
         }
     }
 
+    /**
+     * 校验请求签名是否与服务端计算结果一致。
+     *
+     * @param checksum 请求签名
+     * @param appKey 调用方应用标识
+     * @param time 请求时间戳
+     * @param requestBody 原始请求体
+     */
     private void validateChecksum(String checksum, String appKey, String time, String requestBody) {
         String appSecret = appSecretResolver.getAppSecret(appKey);
         String safeRequestBody = StringUtils.hasText(requestBody) ? requestBody : "";
@@ -105,6 +153,15 @@ public class WebhookRequestValidator {
         }
     }
 
+    /**
+     * 将默认校验结果传递给业务扩展钩子继续处理。
+     *
+     * @param checksum 请求签名
+     * @param appKey 调用方应用标识
+     * @param time 请求时间戳
+     * @param requestBody 原始请求体
+     * @param timestampValidated 是否已校验时间戳
+     */
     private void applyValidationHooks(
             String checksum,
             String appKey,

@@ -54,8 +54,16 @@ import org.springframework.core.Ordered;
 @ConditionalOnProperty(prefix = "getboot.webhook.security", name = "enabled", havingValue = "true")
 public class WebhookAutoConfiguration {
 
+    /**
+     * Webhook 安全配置。
+     */
     private final WebhookSecurityProperties webhookSecurityProperties;
 
+    /**
+     * 创建 Webhook 自动配置。
+     *
+     * @param webhookSecurityProperties Webhook 安全配置
+     */
     public WebhookAutoConfiguration(WebhookSecurityProperties webhookSecurityProperties) {
         this.webhookSecurityProperties = webhookSecurityProperties;
     }
@@ -75,6 +83,7 @@ public class WebhookAutoConfiguration {
      * 注册 Webhook 请求校验器。
      *
      * @param appSecretResolver 应用密钥解析器
+     * @param validationHooks 扩展校验钩子集合
      * @return Webhook 请求校验器
      */
     @Bean

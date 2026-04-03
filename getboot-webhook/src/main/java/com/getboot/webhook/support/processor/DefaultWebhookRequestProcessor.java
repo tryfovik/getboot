@@ -40,12 +40,33 @@ import java.util.function.Supplier;
  */
 public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
 
+    /**
+     * Webhook 幂等记录保留时长。
+     */
     private static final Duration WEBHOOK_IDEMPOTENCY_TTL = Duration.ofHours(24);
 
+    /**
+     * Webhook 请求校验器。
+     */
     private final WebhookRequestValidator webhookRequestValidator;
+
+    /**
+     * 限流器。
+     */
     private final RateLimiter rateLimiter;
+
+    /**
+     * 幂等存储。
+     */
     private final IdempotencyStore idempotencyStore;
 
+    /**
+     * 创建默认 Webhook 请求处理器。
+     *
+     * @param webhookRequestValidator 请求校验器
+     * @param rateLimiter 限流器
+     * @param idempotencyStore 幂等存储
+     */
     public DefaultWebhookRequestProcessor(
             WebhookRequestValidator webhookRequestValidator,
             RateLimiter rateLimiter,
@@ -55,6 +76,21 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
         this.idempotencyStore = idempotencyStore;
     }
 
+    /**
+     * 执行带幂等控制的 Webhook 请求处理流程。
+     *
+     * @param appKey 调用方应用标识
+     * @param rateLimitKey 限流键
+     * @param rateLimit 限流阈值
+     * @param lockPrefix 幂等键前缀
+     * @param checksum 请求签名
+     * @param time 请求时间戳
+     * @param rawRequest 原始请求对象
+     * @param processor 业务处理逻辑
+     * @param fingerprintGenerator 指纹生成器
+     * @return 业务处理结果
+     * @param <T> 返回值类型
+     */
     @Override
     public <T> T handle(
             String appKey,
@@ -97,6 +133,19 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
         }
     }
 
+    /**
+     * 执行仅需验签与限流的查询型 Webhook 请求处理流程。
+     *
+     * @param appKey 调用方应用标识
+     * @param rateLimitKey 限流键
+     * @param rateLimit 限流阈值
+     * @param checksum 请求签名
+     * @param time 请求时间戳
+     * @param rawRequest 原始请求对象
+     * @param processor 业务处理逻辑
+     * @return 业务处理结果
+     * @param <T> 返回值类型
+     */
     @Override
     public <T> T handleQuery(
             String appKey,
@@ -114,6 +163,12 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
         return processor.get();
     }
 
+    /**
+     * 提取缓存后的原始请求体内容。
+     *
+     * @param request 请求对象
+     * @return 原始请求体文本
+     */
     private String getRawRequestBody(HttpServletRequest request) {
         if (request instanceof CachedBodyHttpServletRequest wrapper) {
             return new String(wrapper.getCachedBody(), StandardCharsets.UTF_8);
@@ -124,6 +179,13 @@ public class DefaultWebhookRequestProcessor implements WebhookRequestProcessor {
         );
     }
 
+    /**
+     * 根据幂等记录返回既有结果或处理中状态。
+     *
+     * @param record 幂等记录
+     * @return 已完成请求的处理结果
+     * @param <T> 返回值类型
+     */
     @SuppressWarnings("unchecked")
     private <T> T handleDuplicateRecord(IdempotencyRecord record) {
         if (record.getStatus() == IdempotencyStatus.COMPLETED) {

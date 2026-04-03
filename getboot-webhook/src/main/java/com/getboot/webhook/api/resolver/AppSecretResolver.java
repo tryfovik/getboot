@@ -24,5 +24,11 @@ package com.getboot.webhook.api.resolver;
  */
 public interface AppSecretResolver {
 
+    /**
+     * 根据应用标识解析对应签名密钥。
+     *
+     * @param appKey 调用方应用标识
+     * @return 调用方签名密钥
+     */
     String getAppSecret(String appKey);
 }

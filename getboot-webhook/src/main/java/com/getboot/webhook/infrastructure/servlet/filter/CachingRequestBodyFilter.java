@@ -28,6 +28,16 @@ import java.io.IOException;
  * @author qiheng
  */
 public class CachingRequestBodyFilter implements Filter {
+
+    /**
+     * 使用支持重复读取的请求包装器继续传递过滤链。
+     *
+     * @param request 原始请求
+     * @param response 原始响应
+     * @param chain 过滤器链
+     * @throws IOException 读取请求体失败时抛出
+     * @throws ServletException 过滤链执行失败时抛出
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {

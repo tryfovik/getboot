@@ -28,6 +28,21 @@ import java.util.function.Supplier;
  */
 public interface WebhookRequestProcessor {
 
+    /**
+     * 处理需要幂等控制的 Webhook 请求。
+     *
+     * @param appKey 调用方应用标识
+     * @param rateLimitKey 限流键
+     * @param rateLimit 限流阈值
+     * @param lockPrefix 幂等键前缀
+     * @param checksum 请求签名
+     * @param time 请求时间戳
+     * @param rawRequest 原始请求对象
+     * @param processor 业务处理逻辑
+     * @param fingerprintGenerator 指纹生成器
+     * @return 业务处理结果
+     * @param <T> 返回值类型
+     */
     <T> T handle(
             String appKey,
             String rateLimitKey,
@@ -39,6 +54,19 @@ public interface WebhookRequestProcessor {
             Supplier<T> processor,
             Function<String, String> fingerprintGenerator);
 
+    /**
+     * 处理仅需验签与限流的查询型 Webhook 请求。
+     *
+     * @param appKey 调用方应用标识
+     * @param rateLimitKey 限流键
+     * @param rateLimit 限流阈值
+     * @param checksum 请求签名
+     * @param time 请求时间戳
+     * @param rawRequest 原始请求对象
+     * @param processor 业务处理逻辑
+     * @return 业务处理结果
+     * @param <T> 返回值类型
+     */
     <T> T handleQuery(
             String appKey,
             String rateLimitKey,

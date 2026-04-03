@@ -28,11 +28,25 @@ import java.security.NoSuchAlgorithmException;
  */
 public final class RequestSignatureChecksumGenerator {
 
+    /**
+     * 十六进制字符表。
+     */
     private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+    /**
+     * 工具类不允许实例化。
+     */
     private RequestSignatureChecksumGenerator() {
     }
 
+    /**
+     * 生成请求签名摘要。
+     *
+     * @param appSecret 调用方签名密钥
+     * @param nonce 请求体摘要
+     * @param time 请求时间戳
+     * @return SHA-1 十六进制摘要
+     */
     public static String encode(String appSecret, String nonce, String time) {
         String content = appSecret + nonce + time;
         try {
@@ -44,6 +58,12 @@ public final class RequestSignatureChecksumGenerator {
         }
     }
 
+    /**
+     * 将字节数组格式化为十六进制字符串。
+     *
+     * @param bytes 待转换字节数组
+     * @return 十六进制字符串
+     */
     private static String getFormattedText(byte[] bytes) {
         int len = bytes.length;
         StringBuilder buf = new StringBuilder(len * 2);
