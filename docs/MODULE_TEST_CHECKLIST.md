@@ -51,7 +51,7 @@
 
 ### P2：已有一定测试，但仍需本轮逐个确认
 
-- [ ] `getboot-support`：当前 `3` 个测试；确认公共 support、上下文与环境桥接没有漏测区域
+- [x] `getboot-support`：当前 `5` 个测试；已补齐 support 自动配置回退、Micrometer 上下文注册与 Trace 传播工具边界，`2026-04-04` 已执行模块级 Maven `test`
 - [ ] `getboot-storage`：当前 `3` 个测试；确认上传、预签名、自动配置边界是否完整
 - [ ] `getboot-sms`：当前 `3` 个测试；确认模板变量、供应商适配、自动配置是否完整
 - [ ] `getboot-search`：当前 `4` 个测试；确认查询条件、分页排序和自动配置边界是否完整
