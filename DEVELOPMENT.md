@@ -16,10 +16,10 @@
 
 1. 根 `README.md`
 2. `docs/MODULE_MAP.md`
-3. `docs/MODULE_ROADMAP.md`
+3. 目标模块自己的 `README.md`
 4. `docs/DDD_PACKAGE_RULES.md`
-5. 目标模块自己的 `README.md`
-6. `docs/TODO.md`
+5. `docs/MODULE_ROADMAP.md`
+6. 按需再看 `docs/COMMON_CAPABILITY_ASSESSMENT.md` / `docs/SEATA_SHARDING_COMPATIBILITY.md`
 
 ## 2. 仓库定位
 
@@ -164,10 +164,13 @@ mvn "-Dmaven.repo.local=D:\project\getboot\.m2-repo" -pl <module> -am test
 
 - 架构地图
 - 包结构规则
-- 路线图 / TODO
-- 历史专项清单
+- 路线图
+- 能力评估
+- 兼容说明
 
 不要再放“索引页的索引页”或和根文档重复的一套入口说明。
+
+已经完成的阶段性治理清单，不再作为根级长期文档保留。
 
 ### 6.3 模块文档默认只有一个 README
 
@@ -279,7 +282,7 @@ mvn -q -Dmaven.repo.local=.m2 -pl <module> -am test
 如果是文档型改动，再额外检查：
 
 - 根目录是否仍然只保留 `README.md` 和 `DEVELOPMENT.md` 两个主入口
-- `docs/` 是否只保留技术参考、路线图和专项清单
+- `docs/` 是否只保留技术参考、路线图和必要兼容说明
 - 模块 README 是否足够支撑接入，不需要读代码才能知道怎么用
 - 第一次接触仓库的人，是否能只靠文档完成“父 `pom` -> 模块选择 -> 配置接入”这条路径
 
@@ -287,6 +290,6 @@ mvn -q -Dmaven.repo.local=.m2 -pl <module> -am test
 
 - 模块地图：`docs/MODULE_MAP.md`
 - 包结构规则：`docs/DDD_PACKAGE_RULES.md`
-- 风格治理清单：`docs/MODULE_STYLE_CHECKLIST.md`
-- 测试治理清单：`docs/MODULE_TEST_CHECKLIST.md`
-- 路线图：`docs/TODO.md`
+- 路线图：`docs/MODULE_ROADMAP.md`
+- 能力评估：`docs/COMMON_CAPABILITY_ASSESSMENT.md`
+- 兼容说明：`docs/SEATA_SHARDING_COMPATIBILITY.md`

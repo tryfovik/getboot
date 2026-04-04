@@ -89,5 +89,4 @@
   统一收敛在 [`docs/COMMON_CAPABILITY_ASSESSMENT.md`](./COMMON_CAPABILITY_ASSESSMENT.md)
 - `Seata + ShardingSphere` 组合说明
   统一收敛在 [`docs/SEATA_SHARDING_COMPATIBILITY.md`](./SEATA_SHARDING_COMPATIBILITY.md)
-
-更细仓库级尾项看 [`docs/TODO.md`](./TODO.md)。
+如果后续出现新的仓库级方向，统一先回写到 [`docs/MODULE_ROADMAP.md`](./MODULE_ROADMAP.md)。
