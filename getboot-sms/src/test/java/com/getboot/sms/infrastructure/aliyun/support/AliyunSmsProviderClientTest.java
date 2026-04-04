@@ -17,6 +17,7 @@ package com.getboot.sms.infrastructure.aliyun.support;
 
 import com.alibaba.fastjson2.JSON;
 import com.aliyun.dysmsapi20170525.Client;
+import com.aliyun.teaopenapi.models.Config;
 import com.getboot.sms.api.exception.SmsException;
 import com.getboot.sms.api.model.SmsProviderType;
 import com.getboot.sms.api.request.SmsBatchSendItem;
@@ -26,19 +27,15 @@ import com.getboot.sms.api.response.SmsBatchSendResponse;
 import com.getboot.sms.api.response.SmsSendResponse;
 import com.getboot.sms.spi.SmsTemplateParamSerializer;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * 阿里云短信供应商客户端测试。
@@ -54,11 +51,9 @@ class AliyunSmsProviderClientTest {
      */
     @Test
     void shouldSendSingleSmsViaAliyunClient() throws Exception {
-        Client client = mock(Client.class);
-        SmsTemplateParamSerializer serializer = mock(SmsTemplateParamSerializer.class);
-        when(serializer.serialize(anyMap())).thenReturn("{\"code\":\"123456\"}");
-        when(client.sendSms(any(com.aliyun.dysmsapi20170525.models.SendSmsRequest.class)))
-                .thenReturn(singleSendResponse("OK", "Success", "request-001", "biz-001"));
+        RecordingAliyunClient client = new RecordingAliyunClient();
+        RecordingSmsTemplateParamSerializer serializer = new RecordingSmsTemplateParamSerializer();
+        client.sendSmsResponse = singleSendResponse("OK", "Success", "request-001", "biz-001");
 
         AliyunSmsProviderClient providerClient = new AliyunSmsProviderClient(client, serializer);
 
@@ -71,16 +66,13 @@ class AliyunSmsProviderClientTest {
 
         SmsSendResponse response = providerClient.send(request);
 
-        ArgumentCaptor<com.aliyun.dysmsapi20170525.models.SendSmsRequest> captor =
-                ArgumentCaptor.forClass(com.aliyun.dysmsapi20170525.models.SendSmsRequest.class);
-        verify(client).sendSms(captor.capture());
-        verify(serializer).serialize(request.getTemplateParams());
-
-        assertEquals("13800138000", captor.getValue().getPhoneNumbers());
-        assertEquals("NoticeSign", captor.getValue().getSignName());
-        assertEquals("SMS_NOTICE_001", captor.getValue().getTemplateCode());
-        assertEquals("out-001", captor.getValue().getOutId());
-        assertEquals("{\"code\":\"123456\"}", captor.getValue().getTemplateParam());
+        assertNotNull(client.lastSendSmsRequest);
+        assertEquals(List.of(Map.of("code", "123456")), serializer.serializedParams);
+        assertEquals("13800138000", client.lastSendSmsRequest.getPhoneNumbers());
+        assertEquals("NoticeSign", client.lastSendSmsRequest.getSignName());
+        assertEquals("SMS_NOTICE_001", client.lastSendSmsRequest.getTemplateCode());
+        assertEquals("out-001", client.lastSendSmsRequest.getOutId());
+        assertEquals("{\"code\":\"123456\"}", client.lastSendSmsRequest.getTemplateParam());
 
         assertEquals(SmsProviderType.ALIYUN, response.getProvider());
         assertEquals("OK", response.getCode());
@@ -96,11 +88,14 @@ class AliyunSmsProviderClientTest {
      */
     @Test
     void shouldThrowExceptionWhenAliyunSingleSendFails() throws Exception {
-        Client client = mock(Client.class);
-        SmsTemplateParamSerializer serializer = mock(SmsTemplateParamSerializer.class);
-        when(serializer.serialize(anyMap())).thenReturn("{\"code\":\"123456\"}");
-        when(client.sendSms(any(com.aliyun.dysmsapi20170525.models.SendSmsRequest.class)))
-                .thenReturn(singleSendResponse("BUSINESS_LIMIT_CONTROL", "isv.BUSINESS_LIMIT_CONTROL", "request-002", "biz-002"));
+        RecordingAliyunClient client = new RecordingAliyunClient();
+        RecordingSmsTemplateParamSerializer serializer = new RecordingSmsTemplateParamSerializer();
+        client.sendSmsResponse = singleSendResponse(
+                "BUSINESS_LIMIT_CONTROL",
+                "isv.BUSINESS_LIMIT_CONTROL",
+                "request-002",
+                "biz-002"
+        );
 
         AliyunSmsProviderClient providerClient = new AliyunSmsProviderClient(client, serializer);
 
@@ -124,12 +119,9 @@ class AliyunSmsProviderClientTest {
      */
     @Test
     void shouldSendBatchSmsViaAliyunClient() throws Exception {
-        Client client = mock(Client.class);
-        SmsTemplateParamSerializer serializer = mock(SmsTemplateParamSerializer.class);
-        when(serializer.serialize(anyMap()))
-                .thenReturn("{\"code\":\"123456\"}", "{\"code\":\"654321\"}");
-        when(client.sendBatchSms(any(com.aliyun.dysmsapi20170525.models.SendBatchSmsRequest.class)))
-                .thenReturn(batchSendResponse("OK", "Success", "request-003", "biz-003"));
+        RecordingAliyunClient client = new RecordingAliyunClient();
+        RecordingSmsTemplateParamSerializer serializer = new RecordingSmsTemplateParamSerializer();
+        client.sendBatchSmsResponse = batchSendResponse("OK", "Success", "request-003", "biz-003");
 
         AliyunSmsProviderClient providerClient = new AliyunSmsProviderClient(client, serializer);
 
@@ -150,19 +142,25 @@ class AliyunSmsProviderClientTest {
 
         SmsBatchSendResponse response = providerClient.sendBatch(request);
 
-        ArgumentCaptor<com.aliyun.dysmsapi20170525.models.SendBatchSmsRequest> captor =
-                ArgumentCaptor.forClass(com.aliyun.dysmsapi20170525.models.SendBatchSmsRequest.class);
-        verify(client).sendBatchSms(captor.capture());
-        verify(serializer, times(2)).serialize(anyMap());
-
-        assertEquals(List.of("13800138000", "13900139000"), JSON.parseArray(captor.getValue().getPhoneNumberJson(), String.class));
-        assertEquals(List.of("NoticeSign", "AlertSign"), JSON.parseArray(captor.getValue().getSignNameJson(), String.class));
+        assertNotNull(client.lastSendBatchSmsRequest);
+        assertEquals(
+                List.of(Map.of("code", "123456"), Map.of("code", "654321")),
+                serializer.serializedParams
+        );
+        assertEquals(
+                List.of("13800138000", "13900139000"),
+                JSON.parseArray(client.lastSendBatchSmsRequest.getPhoneNumberJson(), String.class)
+        );
+        assertEquals(
+                List.of("NoticeSign", "AlertSign"),
+                JSON.parseArray(client.lastSendBatchSmsRequest.getSignNameJson(), String.class)
+        );
         assertEquals(
                 List.of("{\"code\":\"123456\"}", "{\"code\":\"654321\"}"),
-                JSON.parseArray(captor.getValue().getTemplateParamJson(), String.class)
+                JSON.parseArray(client.lastSendBatchSmsRequest.getTemplateParamJson(), String.class)
         );
-        assertEquals("SMS_BATCH_001", captor.getValue().getTemplateCode());
-        assertEquals("batch-001", captor.getValue().getOutId());
+        assertEquals("SMS_BATCH_001", client.lastSendBatchSmsRequest.getTemplateCode());
+        assertEquals("batch-001", client.lastSendBatchSmsRequest.getOutId());
 
         assertEquals(SmsProviderType.ALIYUN, response.getProvider());
         assertEquals("OK", response.getCode());
@@ -214,5 +212,96 @@ class AliyunSmsProviderClientTest {
                         .setRequestId(requestId)
                         .setBizId(bizId);
         return new com.aliyun.dysmsapi20170525.models.SendBatchSmsResponse().setBody(body);
+    }
+
+    /**
+     * 记录请求的阿里云客户端。
+     */
+    private static final class RecordingAliyunClient extends Client {
+
+        /**
+         * 最近一次单发请求。
+         */
+        private com.aliyun.dysmsapi20170525.models.SendSmsRequest lastSendSmsRequest;
+
+        /**
+         * 最近一次批量请求。
+         */
+        private com.aliyun.dysmsapi20170525.models.SendBatchSmsRequest lastSendBatchSmsRequest;
+
+        /**
+         * 预设单发响应。
+         */
+        private com.aliyun.dysmsapi20170525.models.SendSmsResponse sendSmsResponse;
+
+        /**
+         * 预设批量响应。
+         */
+        private com.aliyun.dysmsapi20170525.models.SendBatchSmsResponse sendBatchSmsResponse;
+
+        /**
+         * 创建测试客户端。
+         *
+         * @throws Exception 初始化客户端失败
+         */
+        private RecordingAliyunClient() throws Exception {
+            super(new Config()
+                    .setEndpoint("dysmsapi.aliyuncs.com")
+                    .setRegionId("cn-hangzhou")
+                    .setAccessKeyId("test-access-key")
+                    .setAccessKeySecret("test-secret"));
+        }
+
+        /**
+         * 记录单发请求。
+         *
+         * @param request 单发请求
+         * @return 预设响应
+         */
+        @Override
+        public com.aliyun.dysmsapi20170525.models.SendSmsResponse sendSms(
+                com.aliyun.dysmsapi20170525.models.SendSmsRequest request) {
+            this.lastSendSmsRequest = request;
+            return sendSmsResponse;
+        }
+
+        /**
+         * 记录批量请求。
+         *
+         * @param request 批量请求
+         * @return 预设响应
+         */
+        @Override
+        public com.aliyun.dysmsapi20170525.models.SendBatchSmsResponse sendBatchSms(
+                com.aliyun.dysmsapi20170525.models.SendBatchSmsRequest request) {
+            this.lastSendBatchSmsRequest = request;
+            return sendBatchSmsResponse;
+        }
+    }
+
+    /**
+     * 记录模板变量序列化调用。
+     */
+    private static final class RecordingSmsTemplateParamSerializer implements SmsTemplateParamSerializer {
+
+        /**
+         * 最近序列化的模板变量。
+         */
+        private final List<Map<String, Object>> serializedParams = new ArrayList<>();
+
+        /**
+         * 记录并序列化模板变量。
+         *
+         * @param templateParams 模板变量
+         * @return JSON 字符串
+         */
+        @Override
+        public String serialize(Map<String, Object> templateParams) {
+            Map<String, Object> copiedParams = templateParams == null
+                    ? new LinkedHashMap<>()
+                    : new LinkedHashMap<>(templateParams);
+            serializedParams.add(copiedParams);
+            return JSON.toJSONString(copiedParams);
+        }
     }
 }
