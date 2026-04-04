@@ -67,4 +67,32 @@ class ApiResponseTest {
         assertEquals("trace-123", response.getDebug().getTid());
         assertEquals(25L, response.getDebug().getCost());
     }
+
+    /**
+     * 验证自定义成功状态码不会被误判为默认成功响应。
+     */
+    @Test
+    void shouldTreatCustomSuccessCodeAsNonDefaultSuccess() {
+        ApiResponse<Void> response = ApiResponse.success(201, "created");
+
+        assertFalse(response.isSuccess());
+        assertTrue(response.isFail());
+        assertEquals(ApiResponse.SUCCESS_STATUS, response.getStatus());
+        assertEquals(201, response.getCode());
+        assertEquals("created", response.getMessage());
+    }
+
+    /**
+     * 验证带数据和自定义状态码的失败响应会保留响应上下文。
+     */
+    @Test
+    void shouldCreateFailResponseWithDataAndCustomCode() {
+        ApiResponse<String> response = ApiResponse.fail("payload", 409, "conflict");
+
+        assertTrue(response.isFail());
+        assertEquals(ApiResponse.FAIL_STATUS, response.getStatus());
+        assertEquals(409, response.getCode());
+        assertEquals("payload", response.getData());
+        assertEquals("conflict", response.getMessage());
+    }
 }

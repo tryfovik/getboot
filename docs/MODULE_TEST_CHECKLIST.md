@@ -33,12 +33,12 @@
 - [x] `getboot-coordination`：当前 `3` 个测试；已补齐 Redisson 别名桥接、Curator 配置绑定与 `CuratorZookeeperAutoConfiguration` 验证，`2026-04-04` 已执行模块级 Maven `test`
 - [x] `getboot-wechat`：当前 `3` 个测试；已补齐 `WechatProperties` 绑定、服务工厂初始化与 `WechatAutoConfiguration` 条件验证，`2026-04-04` 已执行模块级 Maven `test`
 - [x] `getboot-exception`：当前 `2` 个测试；已补齐错误码边界与 `BusinessException` 构造分支验证，`2026-04-04` 已执行模块级 Maven `test`
+- [x] `getboot-web`：当前 `4` 个测试；已补齐统一响应边界、全局异常处理与自动配置验证，`2026-04-04` 已执行模块级 Maven `test`
 
 ### P0：先清零测试空白
 
 ### P1：薄覆盖模块
 
-- [ ] `getboot-web`：当前 `2` 个测试；补统一响应边界与分页请求异常分支
 - [ ] `getboot-database`：当前 `1` 个测试；补数据源别名桥接或自动配置边界
 - [ ] `getboot-http-client`：当前 `2` 个测试；补自动配置或多客户端出站透传边界
 - [ ] `getboot-mq`：当前 `2` 个测试；补配置绑定、自动配置或 RocketMQ/Kafka 另一侧关键路径
