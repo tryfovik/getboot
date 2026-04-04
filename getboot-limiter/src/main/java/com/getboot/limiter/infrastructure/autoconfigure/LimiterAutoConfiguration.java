@@ -30,10 +30,10 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration
 @Import({
-        RateLimiterCoreAutoConfiguration.class,
         RateLimiterAutoConfiguration.class,
         LeakyBucketRateLimiterAutoConfiguration.class,
-        TokenBucketRateLimiterAutoConfiguration.class
+        TokenBucketRateLimiterAutoConfiguration.class,
+        RateLimiterCoreAutoConfiguration.class
 })
 public class LimiterAutoConfiguration {
 }
