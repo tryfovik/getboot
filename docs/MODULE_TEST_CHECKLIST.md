@@ -29,10 +29,10 @@
 
 - [x] `getboot-mail`：当前 `4` 个测试；已补齐 SMTP 发送、模板渲染、配置绑定与自动配置验证，`2026-04-03` 已执行模块级 Maven `test`
 - [x] `getboot-cache`：当前 `3` 个测试；已补齐 Redis 别名桥接、自动配置与 `RedisCacheOperator` 验证，`2026-04-04` 已执行模块级 Maven `test`
+- [x] `getboot-auth`：当前 `3` 个测试；已补齐 Sa-Token 别名桥接、自动配置与 `SaTokenCurrentUserAccessor` 主要路径验证，`2026-04-04` 已执行模块级 Maven `test`
 
 ### P0：先清零测试空白
 
-- [ ] `getboot-auth`：当前 `0` 个测试；重点补 `SaTokenPropertyAliasEnvironmentPostProcessor`、`SaTokenAuthAutoConfiguration`、`SaTokenCurrentUserAccessor`
 - [ ] `getboot-coordination`：当前 `0` 个测试；重点补 Redisson 别名桥接、Curator 配置绑定、`CuratorZookeeperAutoConfiguration`
 - [ ] `getboot-wechat`：当前 `0` 个测试；重点补 `WechatProperties` 绑定、服务工厂初始化、自动配置条件
 
