@@ -23,7 +23,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * 搜索自动配置测试。
@@ -55,5 +57,45 @@ class SearchAutoConfigurationTest {
             assertInstanceOf(ElasticsearchRestGateway.class, context.getBean(ElasticsearchRestGateway.class));
             assertInstanceOf(SearchOperator.class, context.getBean(SearchOperator.class));
         });
+    }
+
+    /**
+     * 验证禁用搜索能力时跳过全部相关 Bean。
+     */
+    @Test
+    void shouldSkipAllSearchBeansWhenDisabled() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(SearchAutoConfiguration.class))
+                .withPropertyValues(
+                        "getboot.search.enabled=false",
+                        "getboot.search.elasticsearch.uris[0]=http://127.0.0.1:9200"
+                )
+                .run(context -> {
+                    assertFalse(context.containsBean("searchIndexNameResolver"));
+                    assertFalse(context.containsBean("elasticsearchRestClient"));
+                    assertFalse(context.containsBean("elasticsearchRestGateway"));
+                    assertFalse(context.containsBean("searchOperator"));
+                });
+    }
+
+    /**
+     * 验证切换为非 Elasticsearch 类型时，仅保留核心索引名解析器。
+     */
+    @Test
+    void shouldSkipElasticsearchBeansWhenTypeIsNotElasticsearch() {
+        new ApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(SearchAutoConfiguration.class))
+                .withPropertyValues(
+                        "getboot.search.enabled=true",
+                        "getboot.search.type=opensearch",
+                        "getboot.search.elasticsearch.enabled=true",
+                        "getboot.search.elasticsearch.uris[0]=http://127.0.0.1:9200"
+                )
+                .run(context -> {
+                    assertTrue(context.containsBean("searchIndexNameResolver"));
+                    assertFalse(context.containsBean("elasticsearchRestClient"));
+                    assertFalse(context.containsBean("elasticsearchRestGateway"));
+                    assertFalse(context.containsBean("searchOperator"));
+                });
     }
 }
