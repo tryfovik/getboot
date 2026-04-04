@@ -59,7 +59,7 @@
 - [x] `getboot-limiter`：当前 `8` 个测试；已补齐 limiter 自动配置、滑动窗口实现边界，并修正核心装配顺序问题，`2026-04-04` 已执行模块级 Maven `test`
 - [x] `getboot-observability`：当前 `7` 个测试；已补齐 servlet/reactive/reactor 自动配置与 Prometheus 公共标签边界，并修正测试级 Reactor 钩子清理，`2026-04-05` 已执行模块级 Maven `test`
 - [x] `getboot-transaction`：当前 `3` 个测试；已确认 Seata 别名桥接、自动配置正反向分支与兼容性校验边界，`2026-04-05` 已执行模块级 Maven `test`
-- [ ] `getboot-payment`：当前 `18` 个测试；仍需补模块级 Maven 验证并确认支付主链路没有漏测区域
+- [x] `getboot-payment`：当前 `20` 个测试；已补齐支付模块总入口与支付宝自动配置验证，并复核属性绑定、服务注册及主支付链路覆盖，`2026-04-05` 已执行模块级 Maven `test`
 
 ## 验收口径
 
