@@ -37,12 +37,12 @@
 - [x] `getboot-database`：当前 `3` 个测试；已补齐数据库别名桥接、数据源自动配置边界与 MongoDB 初始化验证，`2026-04-04` 已执行模块级 Maven `test`
 - [x] `getboot-http-client`：当前 `3` 个测试；已补齐三类 HTTP 客户端自动配置、单客户端关闭与自定义 Bean 回退验证，`2026-04-04` 已执行模块级 Maven `test`
 - [x] `getboot-mq`：当前 `4` 个测试；已补齐 RocketMQ/Kafka 配置桥接，并复核 Kafka 发送与监听 Trace 关键路径，`2026-04-04` 已执行模块级 Maven `test`
+- [x] `getboot-rpc`：当前 `3` 个测试；已补齐 Dubbo 配置桥接、RPC 安全自动配置与错误配置失败边界，`2026-04-04` 已执行模块级 Maven `test`
 
 ### P0：先清零测试空白
 
 ### P1：薄覆盖模块
 
-- [ ] `getboot-rpc`：当前 `1` 个测试；补自动配置与安全透传边界
 - [ ] `getboot-job`：当前 `1` 个测试；补自动配置与参数校验边界
 - [ ] `getboot-lock`：当前 `2` 个测试；补注解解析、默认键策略或自动配置边界
 - [ ] `getboot-idempotency`：当前 `2` 个测试；补配置绑定、自动配置或执行中请求分支
