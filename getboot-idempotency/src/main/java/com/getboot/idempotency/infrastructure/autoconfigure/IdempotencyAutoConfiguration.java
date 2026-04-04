@@ -26,8 +26,8 @@ import org.springframework.context.annotation.Import;
  */
 @AutoConfiguration
 @Import({
-        IdempotencyCoreAutoConfiguration.class,
-        RedisIdempotencyAutoConfiguration.class
+        RedisIdempotencyAutoConfiguration.class,
+        IdempotencyCoreAutoConfiguration.class
 })
 public class IdempotencyAutoConfiguration {
 }
