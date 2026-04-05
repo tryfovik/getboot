@@ -57,6 +57,7 @@ getboot:
     trace:
       enabled: true                          # 是否启用 Trace 过滤器
       header-name: X-Trace-Id                # Trace 请求头名称，缺失时会自动生成
+      request-header-propagation-enabled: true # 是否在请求头中补齐 TraceId，便于链路透传
       response-header-enabled: true          # 是否回写 Trace 响应头
       mdc-key: traceId                       # 日志 MDC 中使用的键名
       request-attribute-name: GETBOOT_TRACE_ID # 请求属性中保存 TraceId 的键名

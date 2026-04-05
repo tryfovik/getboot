@@ -45,6 +45,11 @@ public class ObservabilityTraceProperties {
     private boolean responseHeaderEnabled = true;
 
     /**
+     * 是否在请求头中补齐 TraceId。
+     */
+    private boolean requestHeaderPropagationEnabled = true;
+
+    /**
      * 日志 MDC 中使用的键名。
      */
     private String mdcKey = "traceId";

@@ -154,6 +154,7 @@ getboot:
     trace:
       enabled: true
       header-name: X-Trace-Id
+      request-header-propagation-enabled: true
       response-header-enabled: true
     metrics:
       enabled: true

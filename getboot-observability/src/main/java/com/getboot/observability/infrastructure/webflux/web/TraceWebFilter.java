@@ -90,10 +90,11 @@ public class TraceWebFilter implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String traceId = resolveTraceId(exchange);
+        ServerWebExchange traceExchange = propagateTraceHeader(exchange, traceId);
         Map<String, String> mdcEntries = new LinkedHashMap<>();
         mdcEntries.put(traceProperties.getMdcKey(), traceId);
 
-        ReactiveTraceContext traceContext = new ReactiveTraceContext(traceId, exchange);
+        ReactiveTraceContext traceContext = new ReactiveTraceContext(traceId, traceExchange);
         traceContextCustomizers.forEach(customizer -> {
             Map<String, String> customizedEntries = customizer.customize(traceContext);
             if (customizedEntries == null || customizedEntries.isEmpty()) {
@@ -106,22 +107,39 @@ public class TraceWebFilter implements WebFilter {
             });
         });
 
-        exchange.getAttributes().put(traceProperties.getRequestAttributeName(), traceId);
+        traceExchange.getAttributes().put(traceProperties.getRequestAttributeName(), traceId);
         if (traceProperties.isResponseHeaderEnabled() && StringUtils.hasText(traceProperties.getHeaderName())) {
-            exchange.getResponse().getHeaders().set(traceProperties.getHeaderName(), traceId);
+            traceExchange.getResponse().getHeaders().set(traceProperties.getHeaderName(), traceId);
         }
 
         // WebFlux 过滤链在订阅时才真正执行，因此 ThreadLocal 绑定也要延后到订阅阶段。
         return Mono.defer(() -> {
             String previousTraceId = TraceContextHolder.bindTraceId(traceId);
             Map<String, String> previousMdcValues = applyMdcEntries(mdcEntries);
-            return chain.filter(exchange)
+            return chain.filter(traceExchange)
                     .contextCapture()
                     .doFinally(signalType -> {
                         restoreMdc(previousMdcValues);
                         TraceContextHolder.restoreTraceId(previousTraceId);
                     });
         });
+    }
+
+    /**
+     * 将 TraceId 补齐到请求头，便于后续转发链路复用同一标识。
+     *
+     * @param exchange 当前请求交换器
+     * @param traceId 当前 TraceId
+     * @return 透传请求头后的交换器
+     */
+    private ServerWebExchange propagateTraceHeader(ServerWebExchange exchange, String traceId) {
+        String headerName = traceProperties.getHeaderName();
+        if (!traceProperties.isRequestHeaderPropagationEnabled() || !StringUtils.hasText(headerName)) {
+            return exchange;
+        }
+        return exchange.mutate()
+                .request(builder -> builder.headers(headers -> headers.set(headerName, traceId)))
+                .build();
     }
 
     /**

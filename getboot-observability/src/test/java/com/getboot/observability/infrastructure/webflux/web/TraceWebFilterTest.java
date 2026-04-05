@@ -62,6 +62,8 @@ class TraceWebFilterTest {
             assertEquals("generated-trace-id", MDC.get("traceId"));
             assertEquals("tenant-001", MDC.get("tenantId"));
             assertEquals("generated-trace-id", serverWebExchange.getAttribute("GETBOOT_TRACE_ID"));
+            assertEquals("generated-trace-id",
+                    serverWebExchange.getRequest().getHeaders().getFirst("X-Trace-Id"));
             assertEquals("generated-trace-id", serverWebExchange.getResponse().getHeaders().getFirst("X-Trace-Id"));
         });
 

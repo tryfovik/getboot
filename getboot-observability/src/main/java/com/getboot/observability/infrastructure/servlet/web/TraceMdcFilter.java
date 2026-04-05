@@ -25,12 +25,16 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import java.util.Collections;
+import java.util.Enumeration;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -97,11 +101,12 @@ public class TraceMdcFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String traceId = resolveTraceId(request);
+        HttpServletRequest requestToUse = decorateRequestWithTraceHeader(request, traceId);
         String previousTraceId = TraceContextHolder.bindTraceId(traceId);
         Map<String, String> mdcEntries = new LinkedHashMap<>();
         mdcEntries.put(traceProperties.getMdcKey(), traceId);
 
-        TraceContext traceContext = new TraceContext(traceId, request, response);
+        TraceContext traceContext = new TraceContext(traceId, requestToUse, response);
         traceContextCustomizers.forEach(customizer -> {
             Map<String, String> customizedEntries = customizer.customize(traceContext);
             if (customizedEntries == null || customizedEntries.isEmpty()) {
@@ -119,17 +124,59 @@ public class TraceMdcFilter extends OncePerRequestFilter {
             previousMdcValues.put(key, MDC.get(key));
             MDC.put(key, value);
         });
-        request.setAttribute(traceProperties.getRequestAttributeName(), traceId);
+        requestToUse.setAttribute(traceProperties.getRequestAttributeName(), traceId);
         if (traceProperties.isResponseHeaderEnabled() && StringUtils.hasText(traceProperties.getHeaderName())) {
             response.setHeader(traceProperties.getHeaderName(), traceId);
         }
 
         try {
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(requestToUse, response);
         } finally {
             restoreMdc(previousMdcValues);
             TraceContextHolder.restoreTraceId(previousTraceId);
         }
+    }
+
+    /**
+     * 将 TraceId 补齐到请求头，便于应用内后续处理与转发链路复用同一标识。
+     *
+     * @param request 当前请求
+     * @param traceId 当前 TraceId
+     * @return 包装后的请求
+     */
+    private HttpServletRequest decorateRequestWithTraceHeader(HttpServletRequest request, String traceId) {
+        String headerName = traceProperties.getHeaderName();
+        if (!traceProperties.isRequestHeaderPropagationEnabled() || !StringUtils.hasText(headerName)) {
+            return request;
+        }
+        return new HttpServletRequestWrapper(request) {
+            @Override
+            public String getHeader(String name) {
+                if (headerName.equalsIgnoreCase(name)) {
+                    return traceId;
+                }
+                return super.getHeader(name);
+            }
+
+            @Override
+            public Enumeration<String> getHeaders(String name) {
+                if (headerName.equalsIgnoreCase(name)) {
+                    return Collections.enumeration(List.of(traceId));
+                }
+                return super.getHeaders(name);
+            }
+
+            @Override
+            public Enumeration<String> getHeaderNames() {
+                LinkedHashSet<String> headerNames = new LinkedHashSet<>();
+                Enumeration<String> names = super.getHeaderNames();
+                while (names != null && names.hasMoreElements()) {
+                    headerNames.add(names.nextElement());
+                }
+                headerNames.add(headerName);
+                return Collections.enumeration(headerNames);
+            }
+        };
     }
 
     /**
