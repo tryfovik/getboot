@@ -14,6 +14,7 @@
         <java.version>17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <getboot.version>1.0.0</getboot.version>
         <spring-boot.version>3.2.12</spring-boot.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
         <spring-cloud-alibaba.version>2023.0.1.0</spring-cloud-alibaba.version>
@@ -87,132 +88,132 @@
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-web</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-cache</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-coordination</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-observability</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-governance</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-http-client</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-support</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-database</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-transaction</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-exception</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-webhook</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-job</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-limiter</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-lock</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-idempotency</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-storage</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-sms</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-ai</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-mail</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-search</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-mq</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-rpc</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-websocket</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-auth</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-wechat</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.dt</groupId>
                 <artifactId>getboot-payment</artifactId>
-                <version>${project.version}</version>
+                <version>${getboot.version}</version>
             </dependency>
 
             <!-- Spring Cloud依赖管理 -->

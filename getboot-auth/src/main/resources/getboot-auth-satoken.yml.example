@@ -6,3 +6,13 @@ getboot:
       active-timeout: -1
       is-share: true
       is-log: false
+      webflux:
+        filter:
+          enabled: false
+          include-paths:
+            - /api/admin/**
+          exclude-paths:
+            - /api/admin/system/ping
+          skip-options-request: true
+          unauthorized-message: Unauthorized
+          forbidden-message: Forbidden
