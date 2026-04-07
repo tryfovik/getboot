@@ -20,11 +20,11 @@ import com.getboot.limiter.api.model.LimiterRule;
 import com.getboot.limiter.api.properties.TokenBucketRateLimiterProperties;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RRateLimiter;
-import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateLimiterConfig;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
 import java.lang.reflect.Proxy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,8 +52,7 @@ class RedissonTokenBucketRateLimiterHandlerTest {
         assertEquals(1, state.trySetRateCalls);
         assertEquals(0, state.setRateCalls);
         assertEquals(5, state.rate);
-        assertEquals(1, state.interval);
-        assertEquals(RateIntervalUnit.SECONDS, state.intervalUnit);
+        assertEquals(Duration.ofSeconds(1), state.intervalDuration);
         assertEquals(2, state.lastPermits);
         assertEquals("rate_limiter_token_bucket:login:bucket", state.lastLimiterName);
     }
@@ -75,8 +74,7 @@ class RedissonTokenBucketRateLimiterHandlerTest {
         assertEquals(2, state.trySetRateCalls);
         assertEquals(1, state.setRateCalls);
         assertEquals(10, state.rate);
-        assertEquals(2, state.interval);
-        assertEquals(RateIntervalUnit.MINUTES, state.intervalUnit);
+        assertEquals(Duration.ofMinutes(2), state.intervalDuration);
     }
 
     /**
@@ -154,8 +152,7 @@ class RedissonTokenBucketRateLimiterHandlerTest {
                         if (!state.initialized) {
                             state.initialized = true;
                             state.rate = (Long) args[1];
-                            state.interval = (Long) args[2];
-                            state.intervalUnit = (RateIntervalUnit) args[3];
+                            state.intervalDuration = (Duration) args[2];
                             yield true;
                         }
                         yield false;
@@ -163,13 +160,12 @@ class RedissonTokenBucketRateLimiterHandlerTest {
                     case "getConfig" -> new RateLimiterConfig(
                             RateType.OVERALL,
                             state.rate,
-                            state.intervalUnit.toMillis(state.interval)
+                            state.intervalDuration.toMillis()
                     );
                     case "setRate" -> {
                         state.setRateCalls++;
                         state.rate = (Long) args[1];
-                        state.interval = (Long) args[2];
-                        state.intervalUnit = (RateIntervalUnit) args[3];
+                        state.intervalDuration = (Duration) args[2];
                         state.initialized = true;
                         yield null;
                     }
@@ -202,14 +198,9 @@ class RedissonTokenBucketRateLimiterHandlerTest {
         private long rate;
 
         /**
-         * 当前窗口大小。
+         * 当前窗口时长。
          */
-        private long interval;
-
-        /**
-         * 当前窗口单位。
-         */
-        private RateIntervalUnit intervalUnit = RateIntervalUnit.SECONDS;
+        private Duration intervalDuration = Duration.ofSeconds(1);
 
         /**
          * 最近一次申请的许可数量。

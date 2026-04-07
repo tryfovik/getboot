@@ -20,8 +20,8 @@ import com.getboot.limiter.api.model.LimiterRule;
 import com.getboot.limiter.api.properties.TokenBucketRateLimiterProperties;
 import com.getboot.limiter.spi.RateLimiterAlgorithmHandler;
 import lombok.RequiredArgsConstructor;
-import org.redisson.api.RateIntervalUnit;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -112,7 +112,7 @@ public class RedissonTokenBucketRateLimiterHandler implements RateLimiterAlgorit
         if (normalizedRule.getInterval() <= 0) {
             throw new IllegalArgumentException("Interval must be greater than 0.");
         }
-        toRateIntervalUnit(normalizedRule);
+        toIntervalDuration(normalizedRule);
     }
 
     /**
@@ -133,8 +133,7 @@ public class RedissonTokenBucketRateLimiterHandler implements RateLimiterAlgorit
         return tokenBucketRedisSupport.tryAcquire(
                 limiterName,
                 normalizedRule.getRate(),
-                normalizedRule.getInterval(),
-                toRateIntervalUnit(normalizedRule),
+                toIntervalDuration(normalizedRule),
                 permits
         );
     }
@@ -168,12 +167,12 @@ public class RedissonTokenBucketRateLimiterHandler implements RateLimiterAlgorit
     }
 
     /**
-     * 将规则中的时间单位转换为 Redisson 单位。
+     * 将规则中的时间单位转换为时间窗口时长。
      *
      * @param rule 限流规则
-     * @return Redisson 时间单位
+     * @return 时间窗口时长
      */
-    private RateIntervalUnit toRateIntervalUnit(LimiterRule rule) {
+    private Duration toIntervalDuration(LimiterRule rule) {
         TimeUnit intervalUnit;
         try {
             intervalUnit = rule.resolveIntervalUnit();
@@ -182,11 +181,11 @@ public class RedissonTokenBucketRateLimiterHandler implements RateLimiterAlgorit
                     + rule.getIntervalUnit(), ex);
         }
         return switch (intervalUnit) {
-            case MILLISECONDS -> RateIntervalUnit.MILLISECONDS;
-            case SECONDS -> RateIntervalUnit.SECONDS;
-            case MINUTES -> RateIntervalUnit.MINUTES;
-            case HOURS -> RateIntervalUnit.HOURS;
-            case DAYS -> RateIntervalUnit.DAYS;
+            case MILLISECONDS -> Duration.ofMillis(rule.getInterval());
+            case SECONDS -> Duration.ofSeconds(rule.getInterval());
+            case MINUTES -> Duration.ofMinutes(rule.getInterval());
+            case HOURS -> Duration.ofHours(rule.getInterval());
+            case DAYS -> Duration.ofDays(rule.getInterval());
             default -> throw new IllegalArgumentException(
                     "Token bucket limiter does not support interval unit '" + rule.getIntervalUnit()
                             + "'. Supported values: MILLISECONDS / SECONDS / MINUTES / HOURS / DAYS.");

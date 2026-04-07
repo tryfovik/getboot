@@ -16,11 +16,11 @@
 package com.getboot.limiter.infrastructure.tokenbucket.redisson.support;
 
 import org.redisson.api.RRateLimiter;
-import org.redisson.api.RateIntervalUnit;
 import org.redisson.api.RateLimiterConfig;
 import org.redisson.api.RateType;
 import org.redisson.api.RedissonClient;
 
+import java.time.Duration;
 import java.util.Objects;
 
 /**
@@ -63,14 +63,13 @@ public class TokenBucketRedisSupport {
      *
      * @param limiterName 限流器名称
      * @param rate 速率阈值
-     * @param interval 时间窗口大小
-     * @param intervalUnit 时间窗口单位
+     * @param intervalDuration 时间窗口时长
      * @param permits 令牌数量
      * @return 是否获取成功
      */
-    public boolean tryAcquire(String limiterName, long rate, long interval, RateIntervalUnit intervalUnit, long permits) {
+    public boolean tryAcquire(String limiterName, long rate, Duration intervalDuration, long permits) {
         RRateLimiter rateLimiter = getRateLimiter(limiterName);
-        configureRate(rateLimiter, rate, interval, intervalUnit);
+        configureRate(rateLimiter, rate, intervalDuration);
         return rateLimiter.tryAcquire(permits);
     }
 
@@ -89,20 +88,19 @@ public class TokenBucketRedisSupport {
      *
      * @param rateLimiter Redisson 令牌桶
      * @param rate 速率阈值
-     * @param interval 时间窗口大小
-     * @param intervalUnit 时间窗口单位
+     * @param intervalDuration 时间窗口时长
      */
-    private void configureRate(RRateLimiter rateLimiter, long rate, long interval, RateIntervalUnit intervalUnit) {
-        if (rateLimiter.trySetRate(RateType.OVERALL, rate, interval, intervalUnit)) {
+    private void configureRate(RRateLimiter rateLimiter, long rate, Duration intervalDuration) {
+        if (rateLimiter.trySetRate(RateType.OVERALL, rate, intervalDuration)) {
             return;
         }
         RateLimiterConfig currentConfig = rateLimiter.getConfig();
-        long expectedIntervalMillis = intervalUnit.toMillis(interval);
+        long expectedIntervalMillis = intervalDuration.toMillis();
         if (currentConfig == null
                 || currentConfig.getRateType() != RateType.OVERALL
                 || !Objects.equals(currentConfig.getRate(), rate)
                 || !Objects.equals(currentConfig.getRateInterval(), expectedIntervalMillis)) {
-            rateLimiter.setRate(RateType.OVERALL, rate, interval, intervalUnit);
+            rateLimiter.setRate(RateType.OVERALL, rate, intervalDuration);
         }
     }
 
